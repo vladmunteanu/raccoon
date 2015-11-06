@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="assets/img/favicon.ico">
+    <link rel="icon" href="{{ static_url("assets/img/favicon.ico")  }}">
 
     <title>Raccoon Dashboard</title>
 
-    <link href="assets/thirdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/thirdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/thirdparty/gridster/css/jquery.gridster.min.css" rel="stylesheet">
-    <link href="assets/css/switch.css" rel="stylesheet">
-    <link href="assets/css/dashboard.css" rel="stylesheet">
-    <link href="assets/css/slidemenu.css" rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/bootstrap/css/bootstrap.min.css")  }}"  rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/font-awesome/css/font-awesome.min.css")  }}" rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/gridster/css/jquery.gridster.min.css")  }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/switch.css")  }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/dashboard.css")  }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/slidemenu.css")  }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <li class="media">
               <div class="media-left">
                 <a href="#">
-                  <img class="media-object img-circle" src="assets/img/user.jpg" alt="Alexandru Mihai">
+                  <img class="media-object img-circle" src="{{ static_url("assets/img/user.jpg")  }}" alt="Alexandru Mihai">
                 </a>
               </div>
               <div class="media-body">
@@ -75,7 +75,7 @@
                         <span class="media">
                           <div class="media-left">
                             <a href="#">
-                              <img class="media-object img-circle" src="assets/img/user.jpg" alt="Alexandru Mihai" style="width: 50px;">
+                              <img class="media-object img-circle" src="{{ static_url("assets/img/user.jpg")  }}" alt="Alexandru Mihai" style="width: 50px;">
                             </a>
                           </div>
                           <div class="media-body">
@@ -112,15 +112,15 @@
     </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="assets/thirdparty/jquery/js/jquery.min.js"></script>
-    <script src="assets/thirdparty/bootstrap/js/bootstrap.min.js"></script>
-    <!-- <script src="assets/thirdparty/react/js/es5-shim.min.js"></script> -->
-    <!-- <script src="assets/thirdparty/react/js/es5-sham.min.js"></script> -->
-    <!-- <script src="assets/thirdparty/react/js/console-polyfill.js"></script> -->
-    <!-- <script src="assets/thirdparty/react/js/react.js"></script> -->
-    <!-- <script src="assets/thirdparty/react/js/JSXTransformer.js"></script> -->
-    <!-- <script src="assets/thirdparty/gridster/js/jquery.gridster.min.js"></script> -->
-    <script src="assets/js/raccoon.js"></script>
+    <script src="{{ static_url("assets/thirdparty/jquery/js/jquery.min.js")  }}"></script>
+    <script src="{{ static_url("assets/thirdparty/bootstrap/js/bootstrap.min.js")  }}"></script>
+    <!-- <script src="{{ static_url("assets/thirdparty/react/js/es5-shim.min.js")  }}"></script> -->
+    <!-- <script src="{{ static_url("assets/thirdparty/react/js/es5-sham.min.js")  }}"></script> -->
+    <!-- <script src="{{ static_url("assets/thirdparty/react/js/console-polyfill.js")  }}"></script> -->
+    <!-- <script src="{{ static_url("assets/thirdparty/react/js/react.js")  }}"></script> -->
+    <!-- <script src="{{ static_url("assets/thirdparty/react/js/JSXTransformer.js")  }}"></script> -->
+    <!-- <script src="{{ static_url("assets/thirdparty/gridster/js/jquery.gridster.min.js")  }}"></script> -->
+    <script src="{{ static_url("assets/js/raccoon.js")  }}"></script>
 
   </body>
 </html>
