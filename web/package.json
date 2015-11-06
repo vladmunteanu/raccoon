@@ -2,9 +2,13 @@
   "name": "raccoon",
   "version": "1.0.0",
   "description": "Deployment App",
-  "author": "Alexandru Mihai",
+  "author": "Raccoon Team",
   "license": "ISC",
   "main": "assets/js/menu.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.dtc.avira.com/racoon/raccoon"
+  },
   "dependencies": {
     "react": "^0.13.3"
   },
