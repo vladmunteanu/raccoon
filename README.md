@@ -1,4 +1,4 @@
-raccoon
+Raccoon
 =======
 
 Main repository for Raccoon
