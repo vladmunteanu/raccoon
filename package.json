@@ -1,0 +1,29 @@
+{
+  "name": "raccoon",
+  "version": "1.0.0",
+  "description": "Deployment App",
+  "author": "Alexandru Mihai",
+  "license": "ISC",
+  "main": "assets/js/menu.js",
+  "dependencies": {
+    "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "browserify": "^11.0.1",
+    "envify": "^3.4.0",
+    "watchify": "^3.3.1",
+    "uglify-js": "^2.4.24",
+    "babelify": "^6.1.3"
+  },
+  "scripts": {
+    "start": "watchify -o assets/js/raccoon.js -v -d assets/js/menu.js",
+    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > assets/js/raccoon.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "browserify": {
+    "transform": [
+      ["babelify", { "blacklist": ["regenerator"] }],
+      "envify"
+    ]
+  }
+}
