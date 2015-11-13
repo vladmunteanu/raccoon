@@ -1,17 +1,16 @@
-from motorengine import Document, UUIDField, StringField, EmailField
+from motorengine import Document, UUIDField, StringField, EmailField, ListField, DateTimeField, ReferenceField
+from raccoon.models import Right
 
 
 class User(Document):
     __collection__ = 'users'
 
     id = UUIDField()
+    name = StringField()
     email = EmailField(required=True, unique=True)
     username = StringField(required=True, unique=True)
     password = StringField(required=True)
-    first_name = StringField()
-    last_name = StringField()
+    rights = ReferenceField(reference_document_type=Right)
+    date_added = ListField(DateTimeField(required=True, auto_now_on_insert=True))
 
 
-    @property
-    def full_name(self):
-        return '%s, %s' % (self.last_name, self.first_name)
