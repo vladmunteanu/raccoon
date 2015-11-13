@@ -1,4 +1,6 @@
-from motorengine import Document, UUIDField, StringField, EmailField, ListField, DateTimeField, ReferenceField
+from __future__ import absolute_import
+
+from motorengine import Document, UUIDField, StringField, DateTimeField, ReferenceField
 from raccoon.models import Build
 
 
@@ -8,5 +10,5 @@ class Install(Document):
     id = UUIDField()
     build = ReferenceField(reference_document_type=Build)
     environment = StringField(required=True)
-    date_added = ListField(DateTimeField(required=True, auto_now_on_insert=True))
+    date_added = DateTimeField(required=True, auto_now_on_insert=True)
 

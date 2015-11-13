@@ -1,5 +1,10 @@
-from motorengine import Document, UUIDField, StringField, EmailField, ListField, DateTimeField, ReferenceField
-from raccoon.models import Project, Environment, Method
+from __future__ import absolute_import
+
+from motorengine import Document, UUIDField, StringField, ReferenceField, DateTimeField
+
+from raccoon.models.project import Project
+from raccoon.models.environment import Environment
+from raccoon.models.method import Method
 
 
 class Action(Document):

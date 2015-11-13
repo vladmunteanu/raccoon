@@ -1,8 +1,11 @@
+from __future__ import absolute_import
+
 from distutils.core import setup
 from setuptools import find_packages
 import subprocess
 import sys
 import os
+
 
 version = '1.0.0' 
 desc = "Raccoon - Deployment tool"
@@ -25,20 +28,21 @@ setup(
     version=version,
     description=desc,
     classifiers=[],
-    packages=find_packages(exclude=['tests', 'web/node_modules']),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     include_package_data=True,
     zip_safe=True,
     install_requires=[
-      'pip3',
+      'pip',
       'tornado>=4.2.1',
     ],
-    data_files=[] +
-        recursiveFileList('/usr/share/raccoon/web', 'web') +
-        recursiveConfigFileList('/etc/raccoon', 'sys/config') + 
-        [
-            ('/usr/bin', ['sys/bin/raccoon', 'sys/bin/raccoonshell']),
-            ('/etc/init', ['sys/init/raccoon.conf']),
-        ],
+    #data_files=[] +
+    #    recursiveFileList('/usr/share/raccoon/web', 'web') +
+    #    recursiveConfigFileList('/etc/raccoon', 'sys/config') + 
+    #    [
+    #        ('/usr/bin', ['sys/bin/raccoon', 'sys/bin/raccoonshell']),
+    #        ('/etc/init', ['sys/init/raccoon.conf']),
+    #    ],
     entry_points={},
 )
 

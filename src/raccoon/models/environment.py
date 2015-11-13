@@ -1,4 +1,6 @@
-from motorengine import Document, UUIDField, StringField
+from __future__ import absolute_import
+
+from motorengine import Document, UUIDField, StringField, DateTimeField
 
 
 class Environment(Document):

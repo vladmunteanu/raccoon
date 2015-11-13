@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from motorengine import Document, UUIDField, StringField, EmailField, ListField, DateTimeField, ReferenceField
 from raccoon.models import Right
 
