@@ -1,3 +1,8 @@
-#!/bin/bash
+#!/usr/bin/python
 
+from raccoon.server import main
+
+
+if __name__ == '__main__':
+    main()
 

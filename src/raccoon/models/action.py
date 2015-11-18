@@ -2,9 +2,9 @@ from __future__ import absolute_import
 
 from motorengine import Document, UUIDField, StringField, ReferenceField, DateTimeField
 
-from raccoon.models.project import Project
-from raccoon.models.environment import Environment
-from raccoon.models.method import Method
+from raccoon.models import Project
+from raccoon.models import Environment
+from raccoon.models import Method
 
 
 class Action(Document):

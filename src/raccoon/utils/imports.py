@@ -9,6 +9,7 @@ def import_submodules(context, root_module, path):
     >>> import_submodules(locals(), __name__, __path__)
     """
     for loader, module_name, is_pkg in pkgutil.walk_packages(path, root_module + '.'):
+        print ('Module', module_name)
         module = loader.find_module(module_name).load_module(module_name)
         for k, v in vars(module).iteritems():
             if not k.startswith('_'):
