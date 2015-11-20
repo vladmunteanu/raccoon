@@ -9,7 +9,7 @@ ROOT_PATH = os.path.dirname(__file__)
 DB = {
     'host': '10.2.1.77',
     'port': 27017,
-    'name': 'test',
+    'name': 'raccoon',
 }
 
 DEBUG = True

@@ -10,7 +10,7 @@ from raccoon.models import Method
 class Action(Document):
     __collection__ = 'actions'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     name = StringField(required=True)
     label = StringField()
     project = ReferenceField(reference_document_type=Project)

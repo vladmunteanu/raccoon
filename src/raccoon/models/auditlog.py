@@ -6,7 +6,7 @@ from motorengine import Document, UUIDField, StringField, DateTimeField
 class AuditLog(Document):
     __collection__ = 'auditlogs'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     message = StringField(required=True)
     user = StringField(required=True)
     action = StringField(required=True)

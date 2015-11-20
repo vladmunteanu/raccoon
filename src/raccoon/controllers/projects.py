@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
 import logging
+from tornado import gen
 
 from raccoon.controllers.base import BaseController
+from raccoon.models import Project
 from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
@@ -12,37 +14,17 @@ class ProjectsController(BaseController):
     Projects Controller
     """
 
-    dummy_reponse = [
-            {
-                'id': 'applogic',
-                'name': 'Applogic',
-                'date_added': '2012-10-11 10:00 PM',
-            },
-            {
-                'id': 'webserver',
-                'name': 'Webserver',
-                'date_added': '2012-10-12 10:00 PM',
-            },
-            {
-                'id': 'mya',
-                'name': 'My Account',
-                'date_added': '2012-10-12 11:00 PM',
-            }
-        ]
-
     @classmethod
-    def all(self):
-        return self.dummy_reponse
-
-    @classmethod
+    @gen.coroutine
     def get(cls, id=None, *args, **kwargs):
-        response = cls.dummy_reponse
-
         if id:
-            for project in response:
-                if project.get('id') == id:
-                    return project
+            response = yield Project.objects.get(id=id)
+            if not response:
+                raise ReplyError(404)
 
-            raise ReplyError(404)
+            response = response.to_son()
+        else:
+            response = yield Project.objects.find_all()
+            response = [r.to_son() for r in response]
 
-        return response
+        raise gen.Return(response)

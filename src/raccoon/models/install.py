@@ -7,7 +7,7 @@ from raccoon.models import Build
 class Install(Document):
     __collection__ = 'installs'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     build = ReferenceField(reference_document_type=Build)
     environment = StringField(required=True)
     date_added = DateTimeField(required=True, auto_now_on_insert=True)

@@ -7,7 +7,7 @@ from raccoon.models import Connector
 class Method(Document):
     __collection__ = 'methods'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     name = StringField(required=True)
     connector = ReferenceField(reference_document_type=Connector)
     method = StringField(required=True)

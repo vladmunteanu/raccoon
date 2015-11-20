@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import logging
 import json
 import traceback
+from tornado import gen
 
 import tornado.web
 import tornado.websocket
@@ -26,6 +27,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_authorization(self):
         return True
 
+    @gen.coroutine
     def on_message(self, message):
         """
         javascript
@@ -55,7 +57,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 raise ReplyError(404)
 
             params.update(jdata)
-            response = method(**params)
+            log.info(['alexm: aaaaaaaaa', controller, method, params])
+            response = yield method(**params)
 
             self.write_message(json.dumps(response))
         except ReplyError as e:

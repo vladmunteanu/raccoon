@@ -6,7 +6,7 @@ from motorengine import Document, UUIDField, StringField, DateTimeField, JsonFie
 class Connector(Document):
     __collection__ = 'connectors'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     name = StringField(required=True)
     config = JsonField()
     date_added = DateTimeField(required=True, auto_now_on_insert=True)

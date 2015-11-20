@@ -7,7 +7,7 @@ from raccoon.models import Project
 class Build(Document):
     __collection__ = 'builds'
 
-    id = UUIDField()
+    id = StringField(unique=True)
     project = ReferenceField(reference_document_type=Project)
     version = StringField(required=True)
     branch = StringField(required=True)
