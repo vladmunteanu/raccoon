@@ -12,7 +12,7 @@ import tornado.options
 import tornado.web
 
 from settings import DB, APP, PORT
-from raccoon.handlers import WebHandler, ApiHandler
+from raccoon.handlers import WebHandler, ApiWebSocketHandler
 
 
 log = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', WebHandler),
-            (r'/api/v1/(.*)', ApiHandler),
+            (r'/websocket', ApiWebSocketHandler),
             (r'/static/(.*)', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
         ]
         tornado.web.Application.__init__(self, handlers, **APP)

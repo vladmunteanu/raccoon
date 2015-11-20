@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from raccoon.utils.imports import import_submodules
+# from raccoon.utils.imports import import_submodules
 
 
 # Import all submodules
@@ -19,4 +19,3 @@ from .install import *
 from .method import *
 from .action import *
 from .user import *
-
