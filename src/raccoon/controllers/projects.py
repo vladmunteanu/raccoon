@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import logging
 
 from raccoon.controllers.base import BaseController
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -11,8 +12,7 @@ class ProjectsController(BaseController):
     Projects Controller
     """
 
-    def get(self):
-        return [
+    dummy_reponse = [
             {
                 'id': 'applogic',
                 'name': 'Applogic',
@@ -29,3 +29,22 @@ class ProjectsController(BaseController):
                 'date_added': '2012-10-12 11:00 PM',
             }
         ]
+
+    @classmethod
+    def all(self):
+        return self.dummy_reponse
+
+    @classmethod
+    def get(cls, id=None, *args, **kwargs):
+        response = cls.dummy_reponse
+
+        1/0
+
+        if id:
+            for project in response:
+                if project.get('id') == id:
+                    return project
+
+            raise ReplyError(404)
+
+        return response

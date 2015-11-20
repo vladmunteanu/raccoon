@@ -9,15 +9,23 @@ class BaseController(object):
     """
     Base Controller
     """
-    
-    def get(self):
+
+    @classmethod
+    def get(self, *args, **kwargs):
         pass
 
-    def post(self):
+    @classmethod
+    def post(self, *args, **kwargs):
         pass
 
-    def put(self):
+    @classmethod
+    def put(self, *args, **kwargs):
         pass
 
-    def patch(self):
+    @classmethod
+    def patch(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def delete(self, *args, **kwargs):
         pass

@@ -18,7 +18,7 @@ class Router(object):
     """
 
     urlpatterns = [
-        (r'^/api/v1/projects/$', ProjectsController),
+        (r'^/api/v1/projects/(?P<id>[a-zA-Z0-9\-\_\.]*)$', ProjectsController),
     ]
 
     def __init__(self):
@@ -27,7 +27,8 @@ class Router(object):
     @classmethod
     def get(cls, url):
         for url_regex, handler in cls.urlpatterns:
-            if re.match(url_regex, url):
-                return handler
+            match = re.match(url_regex, url)
+            if match:
+                return handler, match.groupdict()
 
         raise ReplyError(404)

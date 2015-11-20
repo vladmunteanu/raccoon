@@ -2,12 +2,18 @@ from __future__ import absolute_import
 
 import json
 import logging
+import traceback
 
 
 log = logging.getLogger(__name__)
 
 
-ERROR_MESSAGES = {}
+ERROR_MESSAGES = {
+    200: 'Success',
+    403: 'Not authorized',
+    404: 'Not found',
+    500: 'Internal Server Error',
+}
 
 
 class ReplyError(Exception):
@@ -23,10 +29,14 @@ class ReplyError(Exception):
             self.message = ERROR_MESSAGES.get(code)
 
     def to_json(self):
-        return json.dumps({
+        response = {
             'code': self.code,
             'message': self.message,
-        })
+        }
+        if True:
+            response['details'] = traceback.format_exc()
+
+        return json.dumps(response)
 
     def __repr__(self):
         return self.to_json()
