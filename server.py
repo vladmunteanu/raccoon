@@ -12,17 +12,11 @@ import tornado.options
 import tornado.web
 
 from settings import DB, APP, PORT
+from raccoon.handlers import WebHandler, ApiHandler
 
 
 log = logging.getLogger(__name__)
 
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.render('index.html', title='Raccoon - Deployment Tool', cdn='web')
-
-class PingHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.write({'ping': 'pong'})
 
 class Application(tornado.web.Application):
     """
@@ -30,8 +24,8 @@ class Application(tornado.web.Application):
     """
     def __init__(self):
         handlers = [
-            (r'/', MainHandler),
-            (r'/ping', PingHandler),
+            (r'/', WebHandler),
+            (r'/api/v1/(.*)', ApiHandler),
             (r'/static/(.*)', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
         ]
         tornado.web.Application.__init__(self, handlers, **APP)
