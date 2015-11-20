@@ -11,7 +11,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
-from settings import DB, APP
+from settings import DB, APP, PORT
 
 
 log = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class Application(tornado.web.Application):
 
 def main():
     app = Application()
-    app.listen(8888)
+    app.listen(PORT)
 
     # Connect to Mongo Server
     io_loop = tornado.ioloop.IOLoop.instance()
@@ -53,4 +53,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
