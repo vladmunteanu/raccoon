@@ -48,7 +48,7 @@ body {
   border-bottom: 1px solid #273948;
   position: fixed;
   z-index: 10;
-  width: 25%;
+  width: 16%; /***************************** XXXXXXXXXXXXXXXXXXXXXXXXXXX TODO: changed this*******/
 }
 .nav-sidebar .media img {
   width: 50px;
