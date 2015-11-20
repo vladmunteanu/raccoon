@@ -60,9 +60,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             self.write_message(json.dumps(response))
         except ReplyError as e:
             self.write_message(str(e))
-        except Exception as e:
+        except Exception:
             ex = ReplyError(500)
-            # ex.details = traceback.format_exc()
             self.write_message(str(ex))
 
     def on_close(self):

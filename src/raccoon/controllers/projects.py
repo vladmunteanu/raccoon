@@ -38,8 +38,6 @@ class ProjectsController(BaseController):
     def get(cls, id=None, *args, **kwargs):
         response = cls.dummy_reponse
 
-        1/0
-
         if id:
             for project in response:
                 if project.get('id') == id:
