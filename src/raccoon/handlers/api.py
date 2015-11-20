@@ -50,6 +50,5 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         except ReplyError as e:
             self.write_message(str(e))
 
-
     def on_close(self):
         log.info('WebSocket closed')
