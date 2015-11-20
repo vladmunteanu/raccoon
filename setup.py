@@ -15,6 +15,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'tornado>=4.2.1',
+        'motorengine',
     ],
 )
-
