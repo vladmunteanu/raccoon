@@ -19,6 +19,11 @@ Create virtual environment. Run:
 ```bash
 $ virtualenv venv
 ```
+Add ```PYTHONPATH``` to yourenv/bin/activate
+```bash
+export PYTHONPATH=$PYTHONPATH:"path-to-raccoon-repo/src"
+```
+
 Activate virtual environment. Run:
 ```bash
 $ source venv/bin/activate
