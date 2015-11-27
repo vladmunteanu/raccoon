@@ -16,22 +16,24 @@ function getRaccoonState() {
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
+        ProjectStore.fetchAll();
+
         return getRaccoonState();
     },
 
-    // componentDidMount: function() {
-    //     ProjectStore.addListener(this._onChange);
-    //     EnvironmentStore.addListener(this._onChange);
-    // },
+    componentDidMount: function() {
+        ProjectStore.addListener(this._onChange);
+        // EnvironmentStore.addListener(this._onChange);
+    },
 
-    // componentWillUnmount: function() {
-    //     ProjectStore.removeChangeListener(this._onChange);
-    //     EnvironmentStore.removeChangeListener(this._onChange);
-    // },
+    componentWillUnmount: function() {
+        ProjectStore.removeChangeListener(this._onChange);
+        // EnvironmentStore.removeChangeListener(this._onChange);
+    },
 
-    // _onChange: function() {
-    //     this.setState(getRaccoonState());
-    // },
+    _onChange: function() {
+        this.setState(getRaccoonState());
+    },
 
     /**
     * @return {object}
@@ -40,9 +42,11 @@ var DashboardApp = React.createClass({
         return (
             <div>
                 <h1>Hello from the other side!</h1>
-                <div>
-                    {this.state.allProjects}
-                </div>
+                <ul>
+                    {this.state.allProjects.map(function(project) {
+                      return <li key={project.name}>{project.name}</li>;
+                    })}
+                </ul>
             </div>
         );
     },

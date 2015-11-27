@@ -4,77 +4,40 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-import { WS_URL } from '../config/Config';
+import Connector from '../utils/Connector';
 
 
-var _projects = ['Applogic', 'MYA'];
-
-
-var ProjectStore =  assign(EventEmitter.prototype, {
-    //mixins: [FluxStore],
+var ProjectStore =  assign(Connector, EventEmitter.prototype, {
+    _projects: [],
 
     emitChange: function() {
-        this.emit('PULA_CHANGED');
+        this.emit('change');
     },
 
-    getInitialState: function () {
-        console.log(WS_URL);
-        
-        var ws = new WebSocket(WS_URL);
-        ws.onopen = this._onOpen;
-        ws.onmessage = this._onMessage;
-
-        return {
-            'ws': ws
-        }
+    addListener: function(callback) {
+        this.on('change', callback);
     },
 
-    _onOpen: function () {
-        this.state.ws.send('{"verb": "get", "resource": "/api/v1/projects/"}')
+    removeListener: function(callback) {
+        this.removeListener('change', callback);
     },
 
-    _onMessage: function (event) {
-        var data = JSON.parse(event.data);
-        this._projects = data;
+    fetchAll: function () {
+        var self = this;
 
-        console.log(['message', data, this]);
-    },
+        this.sendRequest({"verb": "get", "resource": "/api/v1/projects/"}, function (response) {
+            console.log(response);
+            self._projects = response.data;
+            self.emitChange();
 
-    _onError: function () {
-        console.log('error');
-    },
-
-    _onClose: function () {
-        console.log('close');
+            return response.data;
+        });
     },
 
     getAll: function () {
-        return _projects;
+        return this._projects;
     },
-
-    __onDispatch: function (action) {
-        console.log('********************');
-      switch(action.type) {
-        case 'an-action':
-          changeState(action.someData);
-          this.__emitChange();
-          break;
-        case 'another-action':
-          changeStateAnotherWay(action.otherData);
-          this.__emitChange();
-          break;
-        default:
-          // no op
-      }
-    
-    },
-
-    render: function () {
-
-    }
-
 });
 
 
-// module.exports = new ProjectStore(AppDispatcher);
-// module.exports = ProjectStore;
+module.exports = ProjectStore;
