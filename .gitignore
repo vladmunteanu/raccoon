@@ -95,3 +95,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#Others
+.DS_Store
+*/**/.DS_Store
