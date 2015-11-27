@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from motorengine import Document, UUIDField, StringField, ReferenceField, DateTimeField
+from motorengine import Document, StringField, ReferenceField, DateTimeField
 
 from raccoon.models import Project
 from raccoon.models import Environment
@@ -10,7 +10,6 @@ from raccoon.models import Method
 class Action(Document):
     __collection__ = 'actions'
 
-    id = StringField(unique=True)
     name = StringField(required=True)
     label = StringField()
     project = ReferenceField(reference_document_type=Project)

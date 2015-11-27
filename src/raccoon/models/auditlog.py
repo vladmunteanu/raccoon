@@ -1,12 +1,11 @@
 from __future__ import absolute_import
 
-from motorengine import Document, UUIDField, StringField, DateTimeField
+from motorengine import Document, StringField, DateTimeField
 
 
 class AuditLog(Document):
     __collection__ = 'auditlogs'
 
-    id = StringField(unique=True)
     message = StringField(required=True)
     user = StringField(required=True)
     action = StringField(required=True)

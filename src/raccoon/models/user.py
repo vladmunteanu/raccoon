@@ -1,13 +1,12 @@
 from __future__ import absolute_import
 
-from motorengine import Document, UUIDField, StringField, EmailField, ListField, DateTimeField, ReferenceField
+from motorengine import Document, StringField, EmailField, ListField, DateTimeField, ReferenceField
 from raccoon.models import Right
 
 
 class User(Document):
     __collection__ = 'users'
 
-    id = UUIDField()
     name = StringField()
     email = EmailField(required=True, unique=True)
     username = StringField(required=True, unique=True)

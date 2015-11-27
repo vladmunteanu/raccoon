@@ -1,13 +1,12 @@
 from __future__ import absolute_import
 
-from motorengine import Document, UUIDField, StringField, ListField, DateTimeField, ReferenceField, JsonField
+from motorengine import Document, StringField, ListField, DateTimeField, ReferenceField, JsonField
 from raccoon.models import Project
 
 
 class Build(Document):
     __collection__ = 'builds'
 
-    id = StringField(unique=True)
     project = ReferenceField(reference_document_type=Project)
     version = StringField(required=True)
     branch = StringField(required=True)
