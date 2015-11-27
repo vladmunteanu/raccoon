@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import logging
 import json
+from bson import json_util
 import traceback
 from tornado import gen
 
@@ -57,10 +58,9 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 raise ReplyError(404)
 
             params.update(jdata)
-            log.info(['alexm: aaaaaaaaa', controller, method, params])
             response = yield method(**params)
 
-            self.write_message(json.dumps(response))
+            self.write_message(json.dumps(response, default=json_util.default))
         except ReplyError as e:
             self.write_message(str(e))
         except Exception:
