@@ -7,7 +7,7 @@ import assign from 'object-assign';
 import Connector from '../utils/Connector';
 
 
-var ProjectStore =  assign(Connector, EventEmitter.prototype, {
+var ProjectStore =  assign(EventEmitter.prototype, {
     _projects: [],
 
     emitChange: function() {
@@ -23,9 +23,10 @@ var ProjectStore =  assign(Connector, EventEmitter.prototype, {
     },
 
     fetchAll: function () {
+        let connector = new Connector();
         var self = this;
 
-        this.sendRequest({"verb": "get", "resource": "/api/v1/projects/"}, function (response) {
+        connector.send({"verb": "get", "resource": "/api/v1/projects/"}, function (response) {
             console.log(response);
             self._projects = response.data;
             self.emitChange();
@@ -39,5 +40,5 @@ var ProjectStore =  assign(Connector, EventEmitter.prototype, {
     },
 });
 
-
-module.exports = ProjectStore;
+export default ProjectStore;
+//module.exports = ProjectStore;

@@ -25,4 +25,6 @@ var AppDispatcher = React.createClass({
 
 });
 
-module.exports = AppDispatcher;
+export default AppDispatcher;
+
+//module.exports = AppDispatcher;

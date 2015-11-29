@@ -1,10 +1,10 @@
 var keyMirror = require('keyMirror');
 
-
+//
 // Define constants
 module.exports = {
     // connection
-    WS_URL: 'ws://raccoon.local:8888/websocket',
+    WS_URL: 'ws://localhost:8888/websocket',
     WS_CLOSE: null,
     WS_ERROR: null,
     WS_CONNECTING: null,
