@@ -6,7 +6,10 @@ let connector = null;
 
 class Connector {
 
-    // singleton
+    /**
+     * Creates connector instance.
+     * @returns singleton instance
+     */
     constructor() {
         // deal with the instance before starting to allocate resources
         if (!connector) {
@@ -36,7 +39,10 @@ class Connector {
         }
     }
 
-    // ws context, using connector instance 
+    /**
+     * Implementation of ws.onopen
+     * Send all pendingRequests to the backend.
+     */
     static onOpen() {
         connector.connected = true;
 
@@ -48,11 +54,18 @@ class Connector {
         }
     }
 
-    // ws context, using connector instance
+    /**
+     * Implementation of ws.onmessage
+     * @param message
+     */
     static onMessage(message) {
         connector.processMessage(JSON.parse(message.data));
     }
 
+    /**
+     * Process the response of the backend server by running the assigned callback.
+     * @param message
+     */
     processMessage(message) {
         if (this.pendingCallbacks.hasOwnProperty(message.$id)) {
             this.pendingCallbacks[message.$id](message);
@@ -61,6 +74,10 @@ class Connector {
         }
     }
 
+    /**
+     * Generates an unique id.
+     * @returns {string}
+     */
     generateMessageId() {
         if (this.currentMessageId > 10000)
             this.currentMessageId = 0;
@@ -68,6 +85,12 @@ class Connector {
         return new Date().getTime().toString() + '~' + (++this.currentMessageId).toString();
     }
 
+    /**
+     * Send the request to server. Add to pendingRequests if connection is not yet available.
+     * @param request
+     * @param callback
+     * @returns request.$id
+     */
     send(request, callback) {
         if(this.ws && ~[2,3].indexOf(this.ws.readyState)) {
             this.connected = false;
@@ -86,6 +109,10 @@ class Connector {
         return request.$id;
     }
 
+    /**
+     * Stops on-going request id and re-initializes the connection.
+     * @param id
+     */
     stopRequest(id) {
         this.ws.close();
         this.connect();
