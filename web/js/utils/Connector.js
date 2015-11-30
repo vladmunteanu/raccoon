@@ -1,4 +1,5 @@
 import config from '../config/Config';
+import Utils from '../utils/Utils';
 
 'use strict';
 
@@ -67,29 +68,18 @@ class Connector {
      * @param message
      */
     processMessage(message) {
-        if (this.pendingCallbacks.hasOwnProperty(message.$id)) {
-            this.pendingCallbacks[message.$id](message);
+        if (this.pendingCallbacks.hasOwnProperty(message.requestId)) {
+            this.pendingCallbacks[message.requestId](message);
             // freeing some memory
-            delete this.pendingCallbacks[message.$id];
+            delete this.pendingCallbacks[message.requestId];
         }
-    }
-
-    /**
-     * Generates an unique id.
-     * @returns {string}
-     */
-    generateMessageId() {
-        if (this.currentMessageId > 10000)
-            this.currentMessageId = 0;
-
-        return new Date().getTime().toString() + '~' + (++this.currentMessageId).toString();
     }
 
     /**
      * Send the request to server. Add to pendingRequests if connection is not yet available.
      * @param request
      * @param callback
-     * @returns request.$id
+     * @returns request.requestId
      */
     send(request, callback) {
         if(this.ws && ~[2,3].indexOf(this.ws.readyState)) {
@@ -97,8 +87,8 @@ class Connector {
             this.connect();
         }
 
-        request.$id = this.generateMessageId();
-        this.pendingCallbacks[request.$id] = callback;
+        request.requestId = Utils.uuid();
+        this.pendingCallbacks[request.requestId] = callback;
 
         if (!this.connected) {
             this.pendingRequests.push(request);
@@ -106,7 +96,7 @@ class Connector {
             this.ws.send(JSON.stringify(request));
         }
 
-        return request.$id;
+        return request.requestId;
     }
 
     /**

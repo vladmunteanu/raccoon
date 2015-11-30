@@ -61,7 +61,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             response = yield method(**params)
 
             self.write_message(json.dumps({
-                '$id': jdata.get('$id'),
+                'requestId': jdata.get('requestId'),
                 'data': response
             }, default=json_util.default))
         except ReplyError as e:
