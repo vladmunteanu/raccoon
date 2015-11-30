@@ -1,30 +1,27 @@
-import React from 'react';
 import Dispatcher from 'flux';
-import assign from 'object-assign';
+
+let appDispatcher = null;
 
 
-var AppDispatcher = React.createClass({
+class AppDispatcher {
+    constructor () {
+        // make it singleton
+        if (!appDispatcher) {
+            appDispatcher = this;
+        } else {
+            return appDispatcher;
+        }
 
-  mixins: [Dispatcher],
+        this.dispatcher = new Dispatcher();
+    }
 
-  /**
-   * A bridge function between the views and the dispatcher, marking the action
-   * as a view action.  Another variant here could be handleServerAction.
-   * @param  {object} action The data coming from the view.
-   */
-  handleViewAction: function(action) {
-    this.dispatch({
-      source: 'VIEW_ACTION',
-      action: action
-    });
-  },
-
-  render: function () {
-    
-  }
-
-});
+    handleViewAction (action) {
+        this.dispatcher.dispatch({
+            source: 'VIEW_ACTION',
+            action: action
+        });
+    }
+}
 
 export default AppDispatcher;
 
-//module.exports = AppDispatcher;

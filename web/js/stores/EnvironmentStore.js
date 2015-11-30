@@ -1,41 +1,48 @@
 import React from 'react';
 import FluxStore from 'flux';
-import AppDispatcher from '../dispatcher/AppDispatcher';
+//import AppDispatcher from '../dispatcher/AppDispatcher';
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 //var MyDispatcher = require('MyDispatcher');
 
+var EnvironmentStore = assign(EventEmitter.prototype, {
+   // mixins: [FluxStore],
 
-var _environments;
+    _environments: [],
 
+    emitChange: function() {
+        this.emit('change');
+    },
 
-var EnvironmentStore = React.createClass({
-    mixins: [FluxStore],
+    addListener: function(callback) {
+        this.on('change', callback);
+    },
+
+    removeListener: function(callback) {
+        this.removeListener('change', callback);
+    },
 
     getAll: function () {
-        return _environments;
+        return this._environments;
     },
 
     __onDispatch: function (action) {
-      switch(action.type) {
-        case 'an-action':
-          changeState(action.someData);
-          this.__emitChange();
-          break;
-        case 'another-action':
-          changeStateAnotherWay(action.otherData);
-          this.__emitChange();
-          break;
-        default:
-          // no op
-      }
+        console.log(action);
+        switch (action.type) {
+            case 'an-action':
+                changeState(action.someData);
+                this.__emitChange();
+                break;
+            case 'another-action':
+                changeStateAnotherWay(action.otherData);
+                this.__emitChange();
+                break;
+            default:
+            // no op
+        }
     },
-
-    render: function () {
-
-    }
 
 });
 
-
-module.exports = new EnvironmentStore(AppDispatcher);
-// module.exports = EnvironmentStore;
+export default EnvironmentStore;

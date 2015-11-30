@@ -1,4 +1,4 @@
-import { WS_URL } from '../config/Config';
+import config from '../config/Config';
 
 'use strict';
 
@@ -29,7 +29,7 @@ class Connector {
 
     connect() {
         if (!this.ws) {
-            this.ws = new WebSocket(WS_URL);
+            this.ws = new WebSocket(config.WS_URL);
             this.ws.onopen = Connector.onOpen;
             this.ws.onmessage = Connector.onMessage;
             //this.ws.onclose = Connector.onClose;

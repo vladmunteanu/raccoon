@@ -2,36 +2,41 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, Link } from 'react-router';
 
-import ProjectStore from '../stores/ProjectStore';
-import EnvironmentStore from '../stores/EnvironmentStore';
+import projectStore from '../stores/ProjectStore';
+//import EnvironmentStore from '../stores/EnvironmentStore';
 
 
 function getRaccoonState() {
     return {
-        allProjects: ProjectStore.getAll(),
-        allEnvironments: EnvironmentStore.getAll(),
+        allProjects: projectStore.getAll(),
+       // allEnvironments: EnvironmentStore.getAll(),
     };
 }
 
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
-        ProjectStore.fetchAll();
+        console.log('initial state');
+        projectStore.fetchAll();
 
         return getRaccoonState();
     },
 
     componentDidMount: function() {
-        ProjectStore.addListener(this._onChange);
+        projectStore.addListener(this._onChange);
         // EnvironmentStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
-        ProjectStore.removeChangeListener(this._onChange);
+        projectStore.removeChangeListener(this._onChange);
         // EnvironmentStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
+        let s = getRaccoonState();
+
+        console.log(s);
+        console.log(projectStore.getAll());
         this.setState(getRaccoonState());
     },
 

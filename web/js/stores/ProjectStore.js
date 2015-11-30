@@ -7,38 +7,51 @@ import assign from 'object-assign';
 import Connector from '../utils/Connector';
 
 
-var ProjectStore =  assign(EventEmitter.prototype, {
-    _projects: [],
+class ProjectStore extends EventEmitter {
 
-    emitChange: function() {
+    constructor() {
+        /*if (!projectStore) {
+            super();
+            projectStore = this;
+        } else {
+            return projectStore;
+        }*/
+        super();
+        this._projects = [];
+    }
+
+    emitChange() {
         this.emit('change');
-    },
+    }
 
-    addListener: function(callback) {
+    addListener(callback) {
         this.on('change', callback);
-    },
+    }
 
-    removeListener: function(callback) {
-        this.removeListener('change', callback);
-    },
+    removeListener(callback) {
+        super.removeListener('change', callback);
+    }
 
-    fetchAll: function () {
+    fetchAll() {
         let connector = new Connector();
         var self = this;
 
         connector.send({"verb": "get", "resource": "/api/v1/projects/"}, function (response) {
             console.log(response);
-            self._projects = response.data;
-            self.emitChange();
+            this._projects = response.data;
+            this.emitChange();
 
-            return response.data;
-        });
-    },
+            //return response.data;
+        }.bind(this));
+    }
 
-    getAll: function () {
+    getAll() {
+        console.log(this._projects);
         return this._projects;
-    },
-});
+    }
 
-export default ProjectStore;
-//module.exports = ProjectStore;
+}
+
+let projectStore = new ProjectStore();
+
+export default projectStore;

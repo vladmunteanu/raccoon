@@ -1,13 +1,23 @@
-var keyMirror = require('keyMirror');
+//var keyMirror = require('keyMirror');
 
 //
 // Define constants
-module.exports = {
+class Config {
+
+    constructor () {
+        this.WS_URL = 'ws://localhost:8888/websocket';
+
+    }
     // connection
-    WS_URL: 'ws://localhost:8888/websocket',
-    WS_CLOSE: null,
-    WS_ERROR: null,
-    WS_CONNECTING: null,
-    WS_CONNECTED: null,
-    WS_DISCONNECTED: null,
-};
+    //public const WS_URL = 'ws://localhost:8888/websocket';
+    /*const WS_CLOSE: null;
+    var WS_ERROR: null;
+    var WS_CONNECTING: null;
+    var WS_CONNECTED: null;
+    var WS_DISCONNECTED: null;*/
+
+}
+
+let config = new Config();
+
+export default config;

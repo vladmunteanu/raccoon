@@ -2,25 +2,39 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, Link } from 'react-router';
 
-var ProjectStore = require('../stores/ProjectStore');
-var EnvironmentStore = require('../stores/EnvironmentStore');
+//var ProjectStore = require('../stores/ProjectStore');
+//var EnvironmentStore = require('../stores/EnvironmentStore');
 
 import DashboardApp from './DashboardApp.react';
 
 
 
-function getRaccoonState() {
+/*function getRaccoonState() {
     return {
         allProjects: ProjectStore.getAll(),
-        allEnvironments: EnvironmentStore.getAll(),
+        //allEnvironments: EnvironmentStore.getAll(),
     };
 }
 
-var RaccoonApp = React.createClass({
+*/
+let raccoonApp = null;
+class RaccoonApp extends React.Component {
 
-    getInitialState: function() {
-        return getRaccoonState();
-    },
+    constructor() {
+        if (!raccoonApp) {
+            super();
+            raccoonApp = this;
+        } else {
+            return raccoonApp;
+        }
+
+    }
+
+    static getInitialState () {
+        console.log('Raccoon app, initial state');
+        return {};
+        //return getRaccoonState();
+    }
 
     // componentDidMount: function() {
     //     ProjectStore.addChangeListener(this._onChange);
@@ -35,7 +49,7 @@ var RaccoonApp = React.createClass({
     /**
     * @return {object}
     */
-    render: function() {
+    render () {
         return (
             <Router>
                 <Route path="/" component={DashboardApp}>
@@ -44,12 +58,13 @@ var RaccoonApp = React.createClass({
                 </Route>
             </Router>
         );
-    },
-
-    _onChange: function() {
-        this.setState(getRaccoonState());
     }
 
-});
+   /* _onChange: function() {
+        this.setState(getRaccoonState());
 
-module.exports = RaccoonApp;
+    }
+*/
+}
+
+export default RaccoonApp;
