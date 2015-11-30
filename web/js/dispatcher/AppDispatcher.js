@@ -1,4 +1,4 @@
-import Dispatcher from 'flux';
+import { Dispatcher } from 'flux';
 
 let appDispatcher = null;
 
@@ -13,15 +13,9 @@ class AppDispatcher {
         }
 
         this.dispatcher = new Dispatcher();
-    }
-
-    handleViewAction (action) {
-        this.dispatcher.dispatch({
-            source: 'VIEW_ACTION',
-            action: action
-        });
+        return this.dispatcher;
     }
 }
 
-export default AppDispatcher;
+export default new AppDispatcher();
 

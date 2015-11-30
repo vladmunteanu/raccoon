@@ -1,5 +1,6 @@
 import config from '../config/Config';
 import Utils from '../utils/Utils';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
 'use strict';
 
@@ -68,7 +69,10 @@ class Connector {
      * @param message
      */
     processMessage(message) {
-        if (this.pendingCallbacks.hasOwnProperty(message.requestId)) {
+        // dispatch message
+        AppDispatcher.dispatch(message);
+
+        if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
             this.pendingCallbacks[message.requestId](message);
             // freeing some memory
             delete this.pendingCallbacks[message.requestId];

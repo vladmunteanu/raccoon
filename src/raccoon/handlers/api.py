@@ -62,6 +62,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
             self.write_message(json.dumps({
                 'requestId': jdata.get('requestId'),
+                'requestVerb': jdata.get('verb'),
+                'requestResource': jdata.get('resource'),
                 'data': response,
             }, default=json_util.default))
         except ReplyError as e:

@@ -7,6 +7,8 @@ import assign from 'object-assign';
 import Connector from '../utils/Connector';
 
 
+let _projects = [];
+
 class ProjectStore extends EventEmitter {
 
     constructor() {
@@ -17,7 +19,7 @@ class ProjectStore extends EventEmitter {
             return projectStore;
         }*/
         super();
-        this._projects = [];
+        _projects = [];
     }
 
     emitChange() {
@@ -34,24 +36,29 @@ class ProjectStore extends EventEmitter {
 
     fetchAll() {
         let connector = new Connector();
-        var self = this;
-
-        connector.send({"verb": "get", "resource": "/api/v1/projects/"}, function (response) {
-            console.log(response);
-            this._projects = response.data;
-            this.emitChange();
-
-            //return response.data;
-        }.bind(this));
+        connector.send({verb: 'get', resource: '/api/v1/projects/'});
     }
 
     getAll() {
-        console.log(this._projects);
-        return this._projects;
+        // console.log(_projects);
+        return _projects;
     }
 
 }
 
 let projectStore = new ProjectStore();
+
+ProjectStore.dispatchToken = AppDispatcher.register(function(payload) {
+    switch (payload.requestResource) {
+        case '/api/v1/projects/':
+            _projects = payload.data;
+            projectStore.emitChange();
+            break;
+
+        default:
+            // do nothing
+
+    }
+});
 
 export default projectStore;
