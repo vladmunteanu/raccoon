@@ -4,6 +4,8 @@ import json
 import logging
 import traceback
 
+from settings import DEBUG
+
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +35,7 @@ class ReplyError(Exception):
             'code': self.code,
             'message': self.message,
         }
-        if True:
+        if DEBUG and self.code == 500:
             response['details'] = traceback.format_exc()
 
         return json.dumps(response)

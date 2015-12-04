@@ -2,6 +2,8 @@ from __future__ import absolute_import
 
 import logging
 from tornado import gen
+
+from raccoon.utils.decorators import authenticated
 from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
@@ -14,7 +16,7 @@ class BaseController(object):
 
     @classmethod
     @gen.coroutine
-    def get(cls, id=None, *args, **kwargs):
+    def get(cls, request, id=None, *args, **kwargs):
         if not cls.model:
             raise NotImplemented
 
@@ -28,24 +30,24 @@ class BaseController(object):
             response = yield cls.model.objects.find_all()
             response = [r.to_son() for r in response]
 
-        raise gen.Return(response)
+        yield request.send(response)
 
     @classmethod
     @gen.coroutine
     def post(cls, *args, **kwargs):
-        pass
+        raise NotImplemented
 
     @classmethod
     @gen.coroutine
     def put(cls, *args, **kwargs):
-        pass
+        raise NotImplemented
 
     @classmethod
     @gen.coroutine
     def patch(cls, *args, **kwargs):
-        pass
+        raise NotImplemented
 
     @classmethod
     @gen.coroutine
     def delete(cls, *args, **kwargs):
-        pass
+        raise NotImplemented

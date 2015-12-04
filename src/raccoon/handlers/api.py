@@ -8,8 +8,8 @@ import tornado.web
 import tornado.websocket
 
 from raccoon.urls import Router
+from raccoon.utils.request import Request
 from raccoon.utils.exceptions import ReplyError
-from raccoon.utils.utils import json_serial
 
 log = logging.getLogger(__name__)
 
@@ -56,14 +56,15 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 raise ReplyError(404)
 
             params.update(jdata)
-            response = yield method(**params)
-
-            self.write_message(json.dumps({
-                'requestId': jdata.get('requestId'),
-                'requestVerb': jdata.get('verb'),
-                'requestResource': jdata.get('resource'),
-                'data': response,
-            }, default=json_serial))
+            req = Request(
+                idx=jdata.get('requestId'),
+                verb=jdata.get('verb'),
+                resource=jdata.get('resource'),
+                token=jdata.get('headers', {}).get('cookie'),
+                data=jdata,
+                socket=self
+            )
+            yield method(req, **params)
         except ReplyError as e:
             self.write_message(str(e))
         except Exception:

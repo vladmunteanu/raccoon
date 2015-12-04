@@ -21,3 +21,5 @@ APP = {
     'template_path': TEMPLATE_PATH,
     'debug': DEBUG,
 }
+
+SECRET = 'secret'
