@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, DateTimeField
+from motorengine import StringField, DateTimeField
+from raccoon.models import BaseModel
 
 
-class Right(Document):
+class Right(BaseModel):
     __collection__ = 'rights'
 
     name = StringField(required=True, unique=True)

@@ -2,8 +2,6 @@ from __future__ import absolute_import
 
 import logging
 import json
-from bson import json_util
-import traceback
 from tornado import gen
 
 import tornado.web
@@ -11,7 +9,7 @@ import tornado.websocket
 
 from raccoon.urls import Router
 from raccoon.utils.exceptions import ReplyError
-
+from raccoon.utils.utils import json_serial
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +63,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 'requestVerb': jdata.get('verb'),
                 'requestResource': jdata.get('resource'),
                 'data': response,
-            }, default=json_util.default))
+            }, default=json_serial))
         except ReplyError as e:
             self.write_message(str(e))
         except Exception:

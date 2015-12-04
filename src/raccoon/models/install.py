@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, DateTimeField, ReferenceField
-from raccoon.models import Build, Environment
+from motorengine import DateTimeField, ReferenceField
+from raccoon.models import BaseModel, Build, Environment
 
 
-class Install(Document):
+class Install(BaseModel):
     __collection__ = 'installs'
 
     build = ReferenceField(required=True, reference_document_type=Build)

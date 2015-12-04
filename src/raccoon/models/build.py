@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, ListField, DateTimeField, ReferenceField, JsonField
-from raccoon.models import Project
+from motorengine import StringField, ListField, DateTimeField, ReferenceField, JsonField
+from raccoon.models import Project, BaseModel
 
 
-class Build(Document):
+class Build(BaseModel):
     __collection__ = 'builds'
 
     project = ReferenceField(reference_document_type=Project)
