@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, ListField, DateTimeField, ReferenceField, JsonField
-from raccoon.models import Connector
+from motorengine import StringField, ListField, DateTimeField, ReferenceField, JsonField
+from raccoon.models import BaseModel, Connector
 
 
-class Method(Document):
+class Method(BaseModel):
     __collection__ = 'methods'
 
     name = StringField(required=True)

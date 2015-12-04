@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, DateTimeField
+from motorengine import StringField, DateTimeField
+from raccoon.models import BaseModel
 
 
-class Environment(Document):
+class Environment(BaseModel):
     __collection__ = 'environments'
 
     name = StringField(required=True, unique=True)

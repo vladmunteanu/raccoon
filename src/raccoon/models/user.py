@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, EmailField, ListField, DateTimeField, ReferenceField
-from raccoon.models import Right
+from motorengine import StringField, EmailField, ListField, DateTimeField, ReferenceField
+from raccoon.models import BaseModel, Right
 
 
-class User(Document):
+class User(BaseModel):
     __collection__ = 'users'
 
     name = StringField()

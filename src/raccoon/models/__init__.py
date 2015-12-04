@@ -8,6 +8,7 @@ from __future__ import absolute_import
 
 #!important keep order
 # no dep
+from .base import *
 from .auditlog import *
 from .connector import *
 from .environment import *

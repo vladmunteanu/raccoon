@@ -1,13 +1,14 @@
 from __future__ import absolute_import
 
-from motorengine import Document, StringField, ReferenceField, DateTimeField
+from motorengine import StringField, ReferenceField, DateTimeField
 
 from raccoon.models import Project
 from raccoon.models import Environment
 from raccoon.models import Method
+from raccoon.models import BaseModel
 
 
-class Action(Document):
+class Action(BaseModel):
     __collection__ = 'actions'
 
     name = StringField(required=True)
