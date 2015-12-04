@@ -7,13 +7,14 @@ import assign from 'object-assign';
 import Connector from '../utils/Connector';
 
 
+let environmentStore = null;
 let _environments = [];
 
 let dispatchToken = AppDispatcher.register(function(payload) {
     switch (payload.requestResource) {
         case '/api/v1/environments/':
             _environments = payload.data;
-            EnvironmentStore().emitChange();
+            new EnvironmentStore().emitChange();
             break;
 
         default:
@@ -25,7 +26,12 @@ let dispatchToken = AppDispatcher.register(function(payload) {
 class EnvironmentStore extends EventEmitter {
 
     constructor() {
-        super();
+        if (!environmentStore) {
+            super();
+            environmentStore = this;
+        } else {
+            return environmentStore;
+        }
 
         _environments = [];
         this.dispatchToken = dispatchToken;
@@ -43,18 +49,25 @@ class EnvironmentStore extends EventEmitter {
         super.removeListener('change', callback);
     }
 
-    static fetchAll() {
+    fetchAll() {
         let connector = new Connector();
         connector.send({verb: 'get', resource: '/api/v1/environments/'});
     }
 
-    static getAll() {
+    getAll() {
         // console.log(_environments);
         return _environments;
     }
 
+    toggleVisible(id) {
+        let env = _environments.map(function (env) {
+            if (env.id == id) {
+                env.visible = !env.visible;
+            }
+        });
+        this.emitChange();
+    }
+
 }
 
-//let environmentStore = new EnvironmentStore();
-
-export default EnvironmentStore;
+export default new EnvironmentStore();

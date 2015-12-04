@@ -4,21 +4,27 @@ import React from 'react'
 class MenuItem extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {checked: Math.random() >= 0.5}
+        this.state = {
+            //checked: Math.random() >= 0.5
+            checked: false,
+        }
     }
 
     handleChange(event) {
+        console.log(event.target.checked);
+
         this.setState({checked: event.target.checked});
-        console.log(event.target.checked)
+        this.props.store.toggleVisible(this.props.item.id);
     }
 
     render() {
-        var id = 'onoffswitch-' + this.props.id;
+        console.log([this.props.item.name, this.props]);
+        var id = 'onoffswitch-' + this.props.item.id;
         var checked = this.state.checked;
         return (
             <li>
                 <a href="#">
-                    {this.props.title}
+                    {this.props.item.name}
                     <div className="onoffswitch pull-right">
                         <input type="checkbox" name="onoffswitch"
                                className="onoffswitch-checkbox" id={id} checked={checked}

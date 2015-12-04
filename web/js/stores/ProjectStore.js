@@ -14,7 +14,7 @@ let dispatchToken = AppDispatcher.register(function(payload) {
     switch (payload.requestResource) {
         case '/api/v1/projects/':
             _projects = payload.data;
-            ProjectStore().emitChange();
+            new ProjectStore().emitChange();
             break;
 
         default:
@@ -59,6 +59,15 @@ class ProjectStore extends EventEmitter {
         return _projects;
     }
 
+    toggleVisible(id) {
+        let project = _projects.map(function (project) {
+            if (project.id == id) {
+                localStorage.
+                project.visible = !project.visible;
+            }
+        });
+        this.emitChange();
+    }
 }
 
 export default new ProjectStore();

@@ -2,12 +2,15 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, Link } from 'react-router';
 
+import { GridList, GridTile } from 'material-ui';
+
 import ProjectStore from '../stores/ProjectStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 
 import Sidebar from './Sidebar.react';
 import Topbar from './Topbar.react';
 import Taskbar from './Taskbar.react';
+import GridItem from './GridItem.react';
 
 
 function getRaccoonState() {
@@ -54,7 +57,25 @@ var DashboardApp = React.createClass({
                         <Taskbar />
 
                         <div className="content">
-                            <h3>Hello from the other React!</h3>
+
+                            {
+                                this.state.allProjects.map(project => {
+                                    if (project.visible) {
+                                        return (
+                                            <div className="container-fluid grid-list">
+                                                {
+                                                    this.state.allEnvironments.map(environment => {
+                                                        if (environment.visible) {
+                                                            return <GridItem project={project}
+                                                                             environment={environment}/>
+                                                        }
+                                                    })
+                                                }
+                                            </div>
+                                        );
+                                    }
+                                })
+                            }
 
                         </div>
                     </div>
