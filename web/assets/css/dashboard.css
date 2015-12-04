@@ -65,7 +65,7 @@ body {
 
 /* Sub menu */
 .nav-sidebar .nav-submenu li a {
-  padding: 5px 35px;
+    padding: 5px 35px;
 }
 
 .navbar {
@@ -84,6 +84,12 @@ body {
 
 
 
+/*----------------- REACT -------------------*/
+.sidebar-menu {
+    background-color: #F00 !important;
+    font-size: 14px !important;
+}
+/*-------------------------------------------*/
 
 
 

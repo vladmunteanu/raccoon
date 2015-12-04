@@ -7,19 +7,34 @@ import assign from 'object-assign';
 import Connector from '../utils/Connector';
 
 
+let projectStore = null;
 let _projects = [];
+
+let dispatchToken = AppDispatcher.register(function(payload) {
+    switch (payload.requestResource) {
+        case '/api/v1/projects/':
+            _projects = payload.data;
+            ProjectStore().emitChange();
+            break;
+
+        default:
+        // do nothing
+
+    }
+});
 
 class ProjectStore extends EventEmitter {
 
     constructor() {
-        /*if (!projectStore) {
+        if (!projectStore) {
             super();
             projectStore = this;
         } else {
             return projectStore;
-        }*/
-        super();
+        }
+
         _projects = [];
+        this.dispatchToken = dispatchToken;
     }
 
     emitChange() {
@@ -46,19 +61,4 @@ class ProjectStore extends EventEmitter {
 
 }
 
-let projectStore = new ProjectStore();
-
-ProjectStore.dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.requestResource) {
-        case '/api/v1/projects/':
-            _projects = payload.data;
-            projectStore.emitChange();
-            break;
-
-        default:
-            // do nothing
-
-    }
-});
-
-export default projectStore;
+export default new ProjectStore();
