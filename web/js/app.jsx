@@ -9,5 +9,5 @@ let connector = new Connector();
 // Render RaccoonApp Controller View
 render(
     <RaccoonApp />,
-    document.getElementsByClassName('content')[0]
+    document.getElementById('raccoon-app')
 );

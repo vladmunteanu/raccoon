@@ -8,12 +8,12 @@
 
     <title>Raccoon Dashboard</title>
 
-    <link href="{{ static_url("assets/thirdparty/bootstrap/css/bootstrap.min.css")  }}"  rel="stylesheet">
-    <link href="{{ static_url("assets/thirdparty/font-awesome/css/font-awesome.min.css")  }}" rel="stylesheet">
-    <link href="{{ static_url("assets/thirdparty/gridster/css/jquery.gridster.min.css")  }}" rel="stylesheet">
-    <link href="{{ static_url("assets/css/switch.css")  }}" rel="stylesheet">
-    <link href="{{ static_url("assets/css/dashboard.css")  }}" rel="stylesheet">
-    <link href="{{ static_url("assets/css/slidemenu.css")  }}" rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/bootstrap/css/bootstrap.min.css") }}"  rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/font-awesome/css/font-awesome.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("assets/thirdparty/gridster/css/jquery.gridster.min.css") }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/switch.css") }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/dashboard.css") }}" rel="stylesheet">
+    <link href="{{ static_url("assets/css/slidemenu.css") }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -24,79 +24,8 @@
 
   <body>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="media">
-              <div class="media-left">
-                <a href="#">
-                  <img class="media-object img-circle" src="{{ static_url('assets/img/user.jpg') }}" alt="Alexandru Mihai">
-                </a>
-              </div>
-              <div class="media-body">
-                <h4 class="media-heading">Alexandru Mihai</h4>
-                Software Developer
-              </div>
-            </li>
-            <li class="active">
-              <a href="#" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
-                Projects <i class="fa fa-angle-down pull-right"></i>
-              </a>
-              <div id="collapseProjects" class="collapse in">
-                <!-- projects -->
-              </div>
-            </li>
-            <li>
-              <a href="#" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
-                Environments <i class="fa fa-angle-down pull-right"></i>
-              </a>
-              <div id="collapseEnvironments" class="collapse in">
-                <!-- environments -->
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+    <div id="raccoon-app"></div>
 
-          <nav class="navbar navbar-default">
-            <div class="container-fluid">
-              <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                  <img src="{{ static_url('assets/img/raccoon.png') }}" class="pull-left" style="opacity: .6; margin-top: -10px; width: 50px;">
-                  <span style="margin-left: 10px">Raccoon</span>
-                </a>
-              </div>
-              <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#">Dashboard</a></li>
-                  <li><a href="#">Settings</a></li>
-                  <li><a href="#">Help</a></li>
-                  <li><a href="#" class="btn-tasks"><i class="fa fa-tasks"></i></a></li>
-                </ul>
-              </div>
-            </div>
-          </nav>
-
-          <nav class="slidemenu slidemenu-vertical slidemenu-right" id="slidemenu">
-            <!-- tasks -->
-      		</nav>
-
-          <div class="content">
-
-
-
-          </div>
-
-        </div>
-      </div>
-    </div>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ static_url("assets/thirdparty/jquery/js/jquery.min.js")  }}"></script>

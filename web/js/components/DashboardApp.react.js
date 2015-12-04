@@ -2,42 +2,46 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Router, Route, Link } from 'react-router';
 
-import projectStore from '../stores/ProjectStore';
-//import EnvironmentStore from '../stores/EnvironmentStore';
+import { GridList, GridTile } from 'material-ui';
+
+import ProjectStore from '../stores/ProjectStore';
+import EnvironmentStore from '../stores/EnvironmentStore';
+
+import Sidebar from './Sidebar.react';
+import Topbar from './Topbar.react';
+import Taskbar from './Taskbar.react';
+import GridItem from './GridItem.react';
 
 
 function getRaccoonState() {
     return {
-        allProjects: projectStore.getAll(),
-       // allEnvironments: EnvironmentStore.getAll(),
+        allProjects: ProjectStore.getAll(),
+        allEnvironments: EnvironmentStore.getAll(),
     };
 }
 
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
-        console.log('initial state');
-        projectStore.fetchAll();
+        ProjectStore.fetchAll();
+        EnvironmentStore.fetchAll();
 
         return getRaccoonState();
     },
 
     componentDidMount: function() {
-        projectStore.addListener(this._onChange);
-        // EnvironmentStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
-        projectStore.removeChangeListener(this._onChange);
-        // EnvironmentStore.removeChangeListener(this._onChange);
+        ProjectStore.removeChangeListener(this._onChange);
+        EnvironmentStore.removeChangeListener(this._onChange);
     },
 
     _onChange: function() {
-        let s = getRaccoonState();
-
-        console.log(s);
-        console.log(projectStore.getAll());
-        this.setState(getRaccoonState());
+        let state = getRaccoonState();
+        this.setState(state);
     },
 
     /**
@@ -45,17 +49,41 @@ var DashboardApp = React.createClass({
     */
     render: function() {
         return (
-            <div>
-                <h1>Hello from the other side!</h1>
-                <ul>
-                    {this.state.allProjects.map(function(project) {
-                      return <li key={project.name}>{project.name}</li>;
-                    })}
-                </ul>
+            <div className="container-fluid">
+                <div className="row">
+                    <Sidebar allProjects={this.state.allProjects} allEnvironments={this.state.allEnvironments} />
+                    <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+                        <Topbar />
+                        <Taskbar />
+
+                        <div className="content">
+
+                            {
+                                this.state.allProjects.map(project => {
+                                    if (project.visible) {
+                                        return (
+                                            <div className="container-fluid grid-list">
+                                                {
+                                                    this.state.allEnvironments.map(environment => {
+                                                        if (environment.visible) {
+                                                            return <GridItem project={project}
+                                                                             environment={environment}/>
+                                                        }
+                                                    })
+                                                }
+                                            </div>
+                                        );
+                                    }
+                                })
+                            }
+
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     },
 
 });
 
-module.exports = DashboardApp;
+export default DashboardApp;
