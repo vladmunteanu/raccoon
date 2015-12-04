@@ -12,7 +12,8 @@ log = logging.getLogger(__name__)
 
 ERROR_MESSAGES = {
     200: 'Success',
-    403: 'Not authorized',
+    401: "Not authorized",
+    403: 'Forbidden',
     404: 'Not found',
     500: 'Internal Server Error',
 }
