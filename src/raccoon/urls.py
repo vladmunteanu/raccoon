@@ -19,6 +19,7 @@ class Router(object):
 
     urlpatterns = [
         (r'^/api/v1/projects/(?P<id>[a-zA-Z0-9\-\_\.]*)$', ProjectsController),
+        (r'^/api/v1/users/(?P<id>[a-zA-Z0-9\-\_\.]*)$', UsersController)
     ]
 
     def __init__(self):

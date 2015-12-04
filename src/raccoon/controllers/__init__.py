@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 from .base import *
 from .projects import *
+from .users import *
 
 # Import all submodules
 # import_submodules(globals(), __name__, __path__)
