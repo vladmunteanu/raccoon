@@ -16,10 +16,11 @@ class BaseController(object):
     model = None
 
     @classmethod
+    @authenticated
     @gen.coroutine
     def get(cls, request, id=None, *args, **kwargs):
         if not cls.model:
-            raise NotImplemented
+            raise ReplyError(501)
 
         if id:
             response = yield cls.model.objects.get(id=id)
@@ -83,9 +84,9 @@ class BaseController(object):
     @classmethod
     @gen.coroutine
     def patch(cls, *args, **kwargs):
-        raise NotImplemented
+        raise ReplyError(501)
 
     @classmethod
     @gen.coroutine
     def delete(cls, *args, **kwargs):
-        raise NotImplemented
+        raise ReplyError(501)

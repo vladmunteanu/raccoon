@@ -27,7 +27,8 @@ class Router(object):
         (r'^/api/v1/methods/(?P<id>[a-zA-Z0-9\-\_\.]*)$', MethodsController),
         (r'^/api/v1/projects/(?P<id>[a-zA-Z0-9\-\_\.]*)$', ProjectsController),
         (r'^/api/v1/rights/(?P<id>[a-zA-Z0-9\-\_\.]*)$', RightsController),
-        (r'^/api/v1/users/(?P<id>[a-zA-Z0-9\-\_\.]*)$', UsersController)
+        (r'^/api/v1/users/(?P<id>[a-zA-Z0-9\-\_\.]*)$', UsersController),
+        (r'^/api/v1/auth/$', AuthController)
     ]
 
     def __init__(self):

@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import json
 import logging
 import traceback
+from http.server import BaseHTTPRequestHandler
 
 from settings import DEBUG
 
@@ -10,15 +11,7 @@ from settings import DEBUG
 log = logging.getLogger(__name__)
 
 
-ERROR_MESSAGES = {
-    200: 'Success',
-    400: 'Bad request',
-    401: 'Not authorized',
-    403: 'Forbidden',
-    404: 'Not found',
-    409: 'Conflict',
-    500: 'Internal Server Error',
-}
+ERROR_MESSAGES = BaseHTTPRequestHandler.responses
 
 
 class ReplyError(Exception):
@@ -31,7 +24,7 @@ class ReplyError(Exception):
         self.message = message
 
         if not message:
-            self.message = ERROR_MESSAGES.get(code)
+            self.message, _ = ERROR_MESSAGES.get(code)
 
     def to_json(self):
         response = {

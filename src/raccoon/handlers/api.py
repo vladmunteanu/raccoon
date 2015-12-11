@@ -63,7 +63,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 idx=jdata.get('requestId'),
                 verb=jdata.get('verb'),
                 resource=jdata.get('resource'),
-                token=jdata.get('headers', {}).get('cookie'),
+                token=jdata.get('headers', {}).get('token'),
                 data=jdata,
                 socket=self
             )

@@ -15,7 +15,11 @@ def authenticated(method):
         """
         if not request.token:
             raise ReplyError(401)
-        userData = jwt.decode(request.token, SECRET, algorithms=['HS256'])
+
+        try:
+            userData = jwt.decode(request.token, SECRET, algorithms=['HS256'])
+        except jwt.exceptions.DecodeError:
+            raise ReplyError(400)
 
         if 'id' not in userData:
             raise ReplyError(401)
