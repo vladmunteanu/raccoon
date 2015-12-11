@@ -34,7 +34,7 @@ class AuthController(BaseController):
             raise ReplyError(404)
 
         token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
-        yield request.send({'token': token.decode('utf8')})
+        yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
 
     @classmethod
     @gen.coroutine
