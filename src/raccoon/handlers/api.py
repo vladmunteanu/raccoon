@@ -51,7 +51,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         parts = authHeader.split('Bearer ')
         token = None
         if len(parts) == 2:
-            token = parts[2]
+            token = parts[1]
 
         try:
             if verb not in self.ALLOWED_VERBS:
