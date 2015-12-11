@@ -1,8 +1,10 @@
+'use strict';
+
 import config from '../config/Config';
 import Utils from '../utils/Utils';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
-'use strict';
+import LoginStore from '../stores/LoginStore';
 
 let connector = null;
 
@@ -93,6 +95,12 @@ class Connector {
         }
 
         request.requestId = Utils.uuid();
+
+        // set authorization headers
+        let headers = request.headers || {};
+        headers['Authorization'] = 'Bearer ' + LoginStore.token;
+        request.headers = headers;
+
         this.pendingCallbacks[request.requestId] = callback;
 
         if (!this.connected) {

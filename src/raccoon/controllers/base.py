@@ -16,7 +16,7 @@ class BaseController(object):
     model = None
 
     @classmethod
-    #@authenticated
+    @authenticated
     @gen.coroutine
     def get(cls, request, id=None, *args, **kwargs):
         if not cls.model:

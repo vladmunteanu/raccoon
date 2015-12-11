@@ -5,6 +5,7 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import Connector from '../utils/Connector';
+import LoginStore from './LoginStore';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
@@ -58,7 +59,10 @@ class ProjectStore extends EventEmitter {
 
     fetchAll() {
         let connector = new Connector();
-        connector.send({verb: 'get', resource: '/api/v1/projects/'});
+        connector.send({
+            verb: 'get',
+            resource: '/api/v1/projects/',
+        });
     }
 
     getAll() {
