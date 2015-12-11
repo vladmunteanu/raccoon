@@ -10,47 +10,51 @@ var Sidebar = React.createClass({
     render: function () {
         return (
             <div className="col-sm-3 col-md-2 sidebar">
-                <ul className="nav nav-sidebar">
+                <ul className="nav nav-sidebar" style={{height: 115 + 'px'}}>
                     <UserProfile />
-                    <li className="active">
-                        <a href="#" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
-                            Projects <i className="fa fa-angle-down pull-right" />
-                        </a>
-                        <div id="collapseProjects" className="collapse in">
-                            <ul className="nav nav-submenu">
-                                {
-                                    this.props.allProjects.map(project => {
-                                        return <MenuItem store={ProjectStore} item={project} />;
-                                    })
-                                }
-                                <li>
-                                    <a href="#">
-                                        <i className="fa fa-plus" /> Add new
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
-                            Environments <i className="fa fa-angle-down pull-right" />
-                        </a>
-                        <div id="collapseEnvironments" className="collapse in">
-                            <ul className="nav nav-submenu">
-                                {
-                                    this.props.allEnvironments.map(env => {
-                                        return <MenuItem store={EnvironmentStore} item={env} />;
-                                    })
-                                }
-                                <li>
-                                    <a href="#">
-                                        <i className="fa fa-plus" /> Add new
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
                 </ul>
+                <div style={{ height: 100 + '%' }}>
+                    <ul className="nav nav-sidebar" style={{ height: 100 + '%', overflow: 'auto' }}>
+                        <li className="active">
+                            <a href="#" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
+                                Projects <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseProjects" className="collapse in">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.allProjects.map(project => {
+                                            return <MenuItem store={ProjectStore} item={project} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
+                                Environments <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseEnvironments" className="collapse in">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.allEnvironments.map(env => {
+                                            return <MenuItem store={EnvironmentStore} item={env} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         );
     }

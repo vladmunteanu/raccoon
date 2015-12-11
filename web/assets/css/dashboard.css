@@ -14,8 +14,7 @@ body {
   z-index: 1000;
   display: block;
   padding: 20px;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  padding-bottom: 95px;
   background-color: #273948;
   border-right: 1px solid #eee;
 }
@@ -46,9 +45,6 @@ body {
   background: #243644;
   font-size: 12px;
   border-bottom: 1px solid #273948;
-  position: fixed;
-  z-index: 10;
-  width: 16%; /***************************** XXXXXXXXXXXXXXXXXXXXXXXXXXX TODO: changed this*******/
 }
 .nav-sidebar .media img {
   width: 50px;
