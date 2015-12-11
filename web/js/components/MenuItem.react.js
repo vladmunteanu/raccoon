@@ -13,7 +13,6 @@ class MenuItem extends React.Component {
     }
 
     handleChange(event) {
-        console.log(event.target.checked);
         this.setState({checked: event.target.checked});
         AppDispatcher.dispatch({
             action: this.props.action,
@@ -25,7 +24,6 @@ class MenuItem extends React.Component {
     }
 
     render() {
-        console.log([this.props.item.name, this.props]);
         var id = 'onoffswitch-' + this.props.item.id;
         var checked = this.state.checked;
         return (
