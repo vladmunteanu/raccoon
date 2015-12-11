@@ -47,6 +47,12 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         args = jdata.get('args', {})
         verb = jdata.get('verb').lower()
 
+        authHeader = jdata.get('headers', {}).get('Authorization')
+        parts = authHeader.split('Bearer ')
+        token = None
+        if len(parts) == 2:
+            token = parts[2]
+
         try:
             if verb not in self.ALLOWED_VERBS:
                 raise ReplyError(403)
@@ -63,7 +69,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 idx=jdata.get('requestId'),
                 verb=jdata.get('verb'),
                 resource=jdata.get('resource'),
-                token=jdata.get('headers', {}).get('token'),
+                token=token,
                 data=jdata,
                 socket=self
             )
