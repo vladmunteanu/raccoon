@@ -26,7 +26,7 @@ class ReplyError(Exception):
         if not message:
             self.message, _ = ERROR_MESSAGES.get(code)
 
-    def to_json(self):
+    def toJson(self):
         response = {
             'code': self.code,
             'message': self.message,
@@ -37,7 +37,7 @@ class ReplyError(Exception):
         return json.dumps(response)
 
     def __repr__(self):
-        return self.to_json()
+        return self.toJson()
 
     def __str__(self):
-        return self.to_json()
+        return self.toJson()

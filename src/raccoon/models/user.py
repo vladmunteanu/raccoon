@@ -6,6 +6,7 @@ from raccoon.models import BaseModel, Right
 
 class User(BaseModel):
     __collection__ = 'users'
+    ignore = ['password']
 
     name = StringField()
     email = EmailField(required=True, unique=True)
