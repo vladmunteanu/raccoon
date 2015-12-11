@@ -5,16 +5,23 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import Connector from '../utils/Connector';
+import Constants from '../constants/Constants';
+
+let ActionTypes = Constants.ActionTypes;
 
 
 let environmentStore = null;
 let _environments = [];
 
 let dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.requestResource) {
-        case '/api/v1/environments/':
+    switch (payload.action) {
+        case 'GET /api/v1/environments/':
             _environments = payload.data;
             new EnvironmentStore().emitChange();
+            break;
+
+        case ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE:
+            new EnvironmentStore().toggleVisible(payload.data.id);
             break;
 
         default:
@@ -60,7 +67,7 @@ class EnvironmentStore extends EventEmitter {
     }
 
     toggleVisible(id) {
-        let env = _environments.map(function (env) {
+        _environments.map(function (env) {
             if (env.id == id) {
                 env.visible = !env.visible;
             }

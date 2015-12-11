@@ -1,5 +1,7 @@
 import React from 'react'
 
+import AppDispatcher from '../dispatcher/AppDispatcher';
+
 
 class MenuItem extends React.Component {
     constructor(props) {
@@ -12,9 +14,14 @@ class MenuItem extends React.Component {
 
     handleChange(event) {
         console.log(event.target.checked);
-
         this.setState({checked: event.target.checked});
-        this.props.store.toggleVisible(this.props.item.id);
+        AppDispatcher.dispatch({
+            action: this.props.action,
+            data: {
+                id: this.props.item.id,
+                visible: event.target.checked,
+            }
+        });
     }
 
     render() {
@@ -28,8 +35,8 @@ class MenuItem extends React.Component {
                     <div className="onoffswitch pull-right">
                         <input type="checkbox" name="onoffswitch"
                                className="onoffswitch-checkbox" id={id} checked={checked}
-                               onChange={this.handleChange.bind(this)} />
-                        <label className="onoffswitch-label" htmlFor={id} />
+                               onChange={this.handleChange.bind(this)}/>
+                        <label className="onoffswitch-label" htmlFor={id}/>
                     </div>
                 </a>
             </li>

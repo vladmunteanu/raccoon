@@ -70,6 +70,7 @@ class Connector {
      */
     processMessage(message) {
         // dispatch message
+        message.action = message.requestVerb.toUpperCase() + ' ' + message.requestResource;
         AppDispatcher.dispatch(message);
 
         if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {

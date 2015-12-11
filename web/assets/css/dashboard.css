@@ -1,5 +1,5 @@
 body {
-  background: #f8f8f8; /*ecf1F5;*/
+    background: #f8f8f8; /*ecf1F5;*/
 }
 
 /*
@@ -7,56 +7,58 @@ body {
  */
 
 .sidebar {
-  position: fixed;
-  top: 0px;
-  bottom: 0;
-  left: 0;
-  z-index: 1000;
-  display: block;
-  padding: 20px;
-  padding-bottom: 95px;
-  background-color: #273948;
-  border-right: 1px solid #eee;
+    position: fixed;
+    top: 0px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    padding-bottom: 95px;
+    background-color: #273948;
+    border-right: 1px solid #eee;
 }
 
 /* Sidebar navigation */
 .nav-sidebar {
-  margin: -20px -21px 20px -20px;
+    margin: -20px -21px 20px -20px;
 }
+
 .nav-sidebar li a {
-  color: #a7b1c2;
-  padding-right: 20px;
-  padding-left: 20px;
+    color: #a7b1c2;
+    padding-right: 20px;
+    padding-left: 20px;
 }
+
 .nav-sidebar .active > a,
 .nav-sidebar .active a:hover, .nav-sidebar a:hover,
 .nav-sidebar .active a:focus, .nav-sidebar a:focus {
-  color: #fff;
-  background-color: #243644 !important;
-}
-.nav-sidebar > li:nth-child(2) {
-  margin-top: 115px;
+    color: #fff;
+    background-color: #243644 !important;
 }
 
 /* User profile */
 .nav-sidebar .media {
-  color: #a7b1c2;
-  padding: 15px 10px;
-  background: #243644;
-  font-size: 12px;
-  border-bottom: 1px solid #273948;
+    color: #a7b1c2;
+    padding: 15px 10px;
+    background: #243644;
+    font-size: 12px;
+    border-bottom: 1px solid #273948;
 }
+
 .nav-sidebar .media img {
-  width: 50px;
-  height: 50px;
-  border: 1px solid #6C7B92;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #6C7B92;
 }
+
 .nav-sidebar .media-body {
-  vertical-align: middle;
+    vertical-align: middle;
 }
+
 .nav-sidebar .media-body h4 {
-  font-size: 14px;
-  color: #fff;
+    font-size: 14px;
+    color: #fff;
 }
 
 /* Sub menu */
@@ -65,30 +67,24 @@ body {
 }
 
 .navbar {
-  margin: 0px -20px;
-  border-radius: 0px;
-  border-top: 0px;
-  background: #fff;
-  border-color: #f2f2f2;
+    margin: 0px -20px;
+    border-radius: 0px;
+    border-top: 0px;
+    background: #fff;
+    border-color: #f2f2f2;
 }
 
 .btn-tasks:hover ~ .slidemenu {
-  right: 0px;
+    right: 0px;
 }
-
-
-
-
 
 /*----------------- REACT -------------------*/
 .sidebar-menu {
     background-color: #F00 !important;
     font-size: 14px !important;
 }
+
 /*-------------------------------------------*/
-
-
-
 
 .container-fluid .grid-list {
     padding: 0px;
@@ -105,7 +101,7 @@ body {
     background: #fff;
     position: relative;
     border-radius: 5px;
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1);
     padding: 5px 0px;
 }
 
@@ -189,7 +185,7 @@ body {
 .box .dropdown button:hover {
     border-color: #ccc;
     background-image: linear-gradient(to bottom, #fff 0, #e0e0e0 100%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15),0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .box .dropdown-menu {
@@ -218,6 +214,7 @@ body {
     display: block !important;
     animation: slide-details 0.5s forwards;
 }
+
 @keyframes slide-details {
     0% {
         opacity: 0;

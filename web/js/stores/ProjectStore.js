@@ -5,16 +5,23 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import Connector from '../utils/Connector';
+import Constants from '../constants/Constants';
+
+let ActionTypes = Constants.ActionTypes;
 
 
 let projectStore = null;
 let _projects = [];
 
 let dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.requestResource) {
-        case '/api/v1/projects/':
+    switch (payload.action) {
+        case 'GET /api/v1/projects/':
             _projects = payload.data;
             new ProjectStore().emitChange();
+            break;
+
+        case ActionTypes.PROJECT_TOGGLE_VISIBLE:
+            new ProjectStore().toggleVisible(payload.data.id);
             break;
 
         default:
@@ -55,12 +62,11 @@ class ProjectStore extends EventEmitter {
     }
 
     getAll() {
-        // console.log(_projects);
         return _projects;
     }
 
     toggleVisible(id) {
-        let project = _projects.map(function (project) {
+        _projects.map(function (project) {
             if (project.id == id) {
                 //localStorage.
                 project.visible = !project.visible;

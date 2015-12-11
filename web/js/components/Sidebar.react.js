@@ -5,6 +5,9 @@ import EnvironmentStore from '../stores/EnvironmentStore';
 import UserProfile from './UserProfile.react';
 import MenuItem from './MenuItem.react';
 
+import Constants from '../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
+
 
 var Sidebar = React.createClass({
     render: function () {
@@ -23,7 +26,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allProjects.map(project => {
-                                            return <MenuItem store={ProjectStore} item={project} />;
+                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} />;
                                         })
                                     }
                                     <li>
@@ -42,7 +45,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allEnvironments.map(env => {
-                                            return <MenuItem store={EnvironmentStore} item={env} />;
+                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} />;
                                         })
                                     }
                                     <li>
