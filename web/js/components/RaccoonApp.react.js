@@ -6,6 +6,7 @@ import { Router, Route, Link } from 'react-router';
 //var EnvironmentStore = require('../stores/EnvironmentStore');
 
 import DashboardApp from './DashboardApp.react';
+import Login from './Login.react';
 
 
 
@@ -52,6 +53,7 @@ class RaccoonApp extends React.Component {
     render () {
         return (
             <Router>
+                <Route path="/login" component={Login} />
                 <Route path="/" component={DashboardApp}>
                     //<Route path="settings" component={DashboardApp}/>
                     //<Route path="*" component={DashboardApp}/>
