@@ -43,6 +43,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
         jdata = json.loads(message)
         resource = jdata.get('resource')
+        body = jdata.get('body', {})
+        args = jdata.get('args', {})
         verb = jdata.get('verb').lower()
 
         try:
@@ -55,7 +57,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             if not method:
                 raise ReplyError(404)
 
-            params.update(jdata)
+            params.update(body)
+            params.update(args)
             req = Request(
                 idx=jdata.get('requestId'),
                 verb=jdata.get('verb'),
