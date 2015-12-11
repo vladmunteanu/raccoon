@@ -1,5 +1,7 @@
 'use strict';
 
+import crypto from 'crypto';
+
 
 class Utils {
 
@@ -9,6 +11,12 @@ class Utils {
     */
     static uuid() {
         return (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    }
+
+    static md5(value) {
+        let md5hash = crypto.createHash('md5');
+        md5hash.update(value);
+        return md5hash.digest('hex');
     }
 }
 

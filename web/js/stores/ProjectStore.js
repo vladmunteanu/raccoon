@@ -72,7 +72,6 @@ class ProjectStore extends EventEmitter {
     toggleVisible(id) {
         _projects.map(function (project) {
             if (project.id == id) {
-                //localStorage.
                 project.visible = !project.visible;
             }
         });

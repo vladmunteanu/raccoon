@@ -4,6 +4,7 @@ import config from '../config/Config';
 import Utils from '../utils/Utils';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
+import Constants from '../constants/Constants';
 import LoginStore from '../stores/LoginStore';
 
 let connector = null;
@@ -71,8 +72,14 @@ class Connector {
      * @param message
      */
     processMessage(message) {
+
+
         // dispatch message
-        message.action = message.requestVerb.toUpperCase() + ' ' + message.requestResource;
+        message.action = Constants.ActionTypes.ERROR;
+        if (!message.hasOwnProperty('code')) {
+            message.action = message.requestVerb.toUpperCase() + ' ' + message.requestResource;
+        }
+
         AppDispatcher.dispatch(message);
 
         if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {

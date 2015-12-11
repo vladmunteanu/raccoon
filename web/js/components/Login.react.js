@@ -40,7 +40,6 @@ let Login = React.createClass({
         }
     },
 
-
     _onUsernameChange: function (event) {
         this.state.username = event.target.value;
         this.setState(this.state);

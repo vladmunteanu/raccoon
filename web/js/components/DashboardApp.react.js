@@ -18,10 +18,7 @@ function getRaccoonState() {
     return {
         allProjects: ProjectStore.getAll(),
         allEnvironments: EnvironmentStore.getAll(),
-        user: {
-            id: LoginStore.user,
-            token: LoginStore.token,
-        }
+        user: LoginStore.me,
     };
 }
 
@@ -29,6 +26,7 @@ var DashboardApp = React.createClass({
     mixins: [ History ],
 
     getInitialState: function() {
+        LoginStore.fetchMe();
         ProjectStore.fetchAll();
         EnvironmentStore.fetchAll();
 
@@ -55,8 +53,6 @@ var DashboardApp = React.createClass({
 
     _onChange: function() {
         let state = getRaccoonState();
-
-        console.log(['status changed', state])
 
         this.setState(state);
 

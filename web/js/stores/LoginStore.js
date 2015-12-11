@@ -6,8 +6,12 @@ import assign from 'object-assign';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Connector from '../utils/Connector';
 import LoginAction from '../actions/LoginAction';
+import Utils from '../utils/Utils';
+
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
+
+import jwt_decode from 'jwt-decode';
 
 
 let loginStore = null;
@@ -15,13 +19,19 @@ let _user = null;
 let _token = null;
 
 let dispatchToken = AppDispatcher.register(function(payload) {
+    let loginStore = new LoginStore();
+
     switch (payload.action) {
         case 'POST /api/v1/auth/':
-            new LoginStore().save(payload.data);
+            loginStore.save(payload.data);
+            break;
+
+        case 'GET /api/v1/users/' + loginStore.userId:
+            loginStore.saveMe(payload.data);
             break;
 
         case ActionTypes.LOGIN_USER:
-            new LoginStore().authenticate(payload.data);
+            loginStore.authenticate(payload.data);
             break;
 
         default:
@@ -68,19 +78,39 @@ class LoginStore extends EventEmitter {
         });
     }
 
-    save(data) {
-        console.log('a****************', data);
-        _user = data.userId;
-        _token = data.token;
-
-        localStorage.setItem('token', _token);
-
-        this.emitChange();
-        //LoginAction.login(_token);
+    fetchMe() {
+        let connector = new Connector();
+        connector.send({
+            verb: 'get',
+            resource: '/api/v1/users/' + this.userId,
+        });
     }
 
-    get user() {
+    saveMe(data) {
+        _user = data;
+        _user.avatarUrl = 'https://secure.gravatar.com/avatar/' + Utils.md5(_user.email) + '?d=mm';
+
+        this.emitChange();
+    }
+
+    save(data) {
+        _token = data.token;
+        localStorage.setItem('token', _token);
+        this.emitChange();
+    }
+
+    get me() {
         return _user;
+    }
+
+    get userId() {
+        let id = null;
+        try {
+            id = jwt_decode(this.token).id;
+        } catch (e) {
+
+        }
+        return id
     }
 
     get token() {
