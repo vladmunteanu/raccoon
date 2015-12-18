@@ -48,7 +48,6 @@ class BaseController(object):
 
         try:
             response = yield cls.model.objects.create(**params)
-            print(vars(response))
         except UniqueKeyViolationError:
             raise ReplyError(409)
         except InvalidDocumentError:

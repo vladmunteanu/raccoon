@@ -4,6 +4,7 @@ import { Router, Route } from 'react-router';
 import NotFound from './NotFound.react';
 import DashboardApp from './dashboard/DashboardApp.react.js';
 import Login from './auth/Login.react.js';
+import Register from './auth/Register.react.js';
 
 
 let RaccoonApp = React.createClass({
@@ -21,6 +22,7 @@ let RaccoonApp = React.createClass({
             <Router>
                 <Route path="/" component={DashboardApp} />
                 <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
                 <Route path="*" component={NotFound} />
             </Router>
         );
