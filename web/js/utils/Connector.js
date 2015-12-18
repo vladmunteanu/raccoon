@@ -5,7 +5,7 @@ import Utils from '../utils/Utils';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
 import Constants from '../constants/Constants';
-import LoginStore from '../stores/LoginStore';
+import AuthStore from '../stores/AuthStore';
 
 let connector = null;
 
@@ -105,7 +105,7 @@ class Connector {
 
         // set authorization headers
         let headers = request.headers || {};
-        headers['Authorization'] = 'Bearer ' + LoginStore.token;
+        headers['Authorization'] = 'Bearer ' + AuthStore.token;
         request.headers = headers;
 
         this.pendingCallbacks[request.requestId] = callback;

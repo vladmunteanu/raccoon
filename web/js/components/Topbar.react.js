@@ -1,6 +1,5 @@
 import React from 'react';
-import ProjectStore from '../stores/ProjectStore';
-//import EnvironmentStore from '../stores/EnvironmentStore';
+import { Router, Route, Link } from 'react-router'
 
 
 var Topbar = React.createClass({
@@ -38,8 +37,8 @@ var Topbar = React.createClass({
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">
-                            <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Settings</a></li>
+                            <li><Link to="/">Dashboard</Link></li>
+                            <li><Link to="/settings">Settings</Link></li>
                             <li><a href="#">Help</a></li>
                             <li><a href="#" className="btn-tasks"><i className="fa fa-tasks" /></a></li>
                         </ul>

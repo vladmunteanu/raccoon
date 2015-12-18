@@ -14,24 +14,32 @@ let ActionTypes = Constants.ActionTypes;
 import jwt_decode from 'jwt-decode';
 
 
-let loginStore = null;
+let authStore = null;
 let _user = null;
 let _token = null;
 
 let dispatchToken = AppDispatcher.register(function(payload) {
-    let loginStore = new LoginStore();
+    let authStore = new AuthStore();
 
     switch (payload.action) {
         case 'POST /api/v1/auth/':
-            loginStore.save(payload.data);
+            authStore.save(payload.data);
             break;
 
-        case 'GET /api/v1/users/' + loginStore.userId:
-            loginStore.saveMe(payload.data);
+        case 'POST /api/v1/users/':
+            authStore.save(payload.data);
+            break;
+
+        case 'GET /api/v1/users/' + authStore.userId:
+            authStore.saveMe(payload.data);
             break;
 
         case ActionTypes.LOGIN_USER:
-            loginStore.authenticate(payload.data);
+            authStore.authenticate(payload.data);
+            break;
+
+        case ActionTypes.REGISTER_USER:
+            authStore.register(payload.data);
             break;
 
         default:
@@ -39,14 +47,14 @@ let dispatchToken = AppDispatcher.register(function(payload) {
     }
 });
 
-class LoginStore extends EventEmitter {
+class AuthStore extends EventEmitter {
 
     constructor() {
-        if (!loginStore) {
+        if (!authStore) {
             super();
-            loginStore = this;
+            authStore = this;
         } else {
-            return loginStore;
+            return authStore;
         }
 
         _user = null;
@@ -74,6 +82,20 @@ class LoginStore extends EventEmitter {
             body: {
                 username: data.username,
                 password: data.password,
+            }
+        });
+    }
+
+    register(data) {
+        let connector = new Connector();
+        connector.send({
+            verb: 'post',
+            resource: '/api/v1/users/',
+            body: {
+                name: data.name,
+                username: data.username,
+                email: data.email,
+                password: data.password
             }
         });
     }
@@ -122,4 +144,4 @@ class LoginStore extends EventEmitter {
     }
 }
 
-export default new LoginStore();
+export default new AuthStore();

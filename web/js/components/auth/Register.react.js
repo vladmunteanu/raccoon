@@ -10,21 +10,23 @@ import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 
-let Login = React.createClass({
+let Register = React.createClass({
     mixins: [ History ],
 
     getInitialState: function () {
         return {
+            name: '',
             username: '',
-            password: '',
+            email: '',
+            password: ''
         }
     },
 
-    login: function (event) {
+    register: function (event) {
         event.preventDefault();
         AppDispatcher.dispatch({
-            action: ActionTypes.LOGIN_USER,
-            data: this.state,
+            action: ActionTypes.REGISTER_USER,
+            data: this.state
         });
     },
 
@@ -43,6 +45,16 @@ let Login = React.createClass({
         }
     },
 
+    _onNameChange: function (event) {
+        this.state.name = event.target.value;
+        this.setState(this.state);
+    },
+
+    _onEmailChange: function (event) {
+        this.state.email = event.target.value;
+        this.setState(this.state);
+    },
+
     _onUsernameChange: function (event) {
         this.state.username = event.target.value;
         this.setState(this.state);
@@ -58,13 +70,25 @@ let Login = React.createClass({
             <div className="row">
                 <div className="col-sm-offset-4 col-sm-offset-4 col-md-offset-4 col-md-offset-4">
                     <div className="container">
-                        <h3>Sign In</h3>
-                        <form onSubmit={this.login} className="form-horizontal col-sm-4">
+                        <h3>Register</h3>
+                        <form onSubmit={this.register} className="form-horizontal col-sm-4">
                             <div className="form-group">
-                                <label htmlFor="username" className="control-label">Username or Email</label>
+                                <label htmlFor="username" className="control-label">Full name</label>
+                                <input type="text" value={this.state.name} className="form-control"
+                                       onChange={this._onNameChange}
+                                       id="username" placeholder="Full name"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="username" className="control-label">Username</label>
                                 <input type="text" value={this.state.username} className="form-control"
                                        onChange={this._onUsernameChange}
-                                       id="username" placeholder="Username or Email"/>
+                                       id="username" placeholder="Username"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="username" className="control-label">Email</label>
+                                <input type="text" value={this.state.email} className="form-control"
+                                       onChange={this._onEmailChange}
+                                       id="username" placeholder="Email"/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password" className="control-label">Password</label>
@@ -73,8 +97,7 @@ let Login = React.createClass({
                                        id="password" placeholder="Password"/>
                             </div>
                             <div className="form-group">
-                                <a href="/#/register">Not registered yet?</a>
-                                <input type="submit" value="Sign In" className="btn btn-info pull-right"/>
+                                <input type="submit" value="Register" className="btn btn-info pull-right"/>
                             </div>
                         </form>
                     </div>
@@ -84,4 +107,4 @@ let Login = React.createClass({
     }
 });
 
-export default Login;
+export default Register;

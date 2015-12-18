@@ -38,7 +38,7 @@ class AuthController(BaseController):
 
     @classmethod
     @gen.coroutine
-    def put(cls, request, id, *args, **kwargs):
+    def put(cls, request, *args, **kwargs):
         raise ReplyError(501)
 
     @classmethod

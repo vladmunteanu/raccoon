@@ -4,9 +4,10 @@ import { Router, Route, Link, History } from 'react-router';
 
 import { GridList, GridTile } from 'material-ui';
 
+import RaccoonApp from '../RaccoonApp.react';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
-import LoginStore from '../../stores/LoginStore';
+import AuthStore from '../../stores/AuthStore';
 
 import Sidebar from './Sidebar.react.js';
 import Topbar from './../Topbar.react.js';
@@ -18,47 +19,35 @@ function getRaccoonState() {
     return {
         allProjects: ProjectStore.getAll(),
         allEnvironments: EnvironmentStore.getAll(),
-        user: LoginStore.me,
+        user: AuthStore.me,
     };
 }
 
 var DashboardApp = React.createClass({
-    mixins: [ History ],
 
     getInitialState: function() {
-        LoginStore.fetchMe();
-        ProjectStore.fetchAll();
-        EnvironmentStore.fetchAll();
-
-        return getRaccoonState();
-    },
-
-    componentWillMount: function () {
-        if (!LoginStore.isLoggedIn()) {
-            this.history.pushState(null, '/login');
-        }
+        return RaccoonApp.getState();
     },
 
     componentDidMount: function() {
-        LoginStore.addListener(this._onChange);
+        return getRaccoonState();
+    },
+
+    componentDidMount: function() {
+        AuthStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
-        LoginStore.removeListener(this._onChange);
+        AuthStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
     },
 
     _onChange: function() {
-        let state = getRaccoonState();
-
+        let state = RaccoonApp.getState();
         this.setState(state);
-
-        if (LoginStore.isLoggedIn()) {
-            this.history.pushState(null, '/');
-        }
     },
 
     /**

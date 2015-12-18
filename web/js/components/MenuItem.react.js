@@ -26,16 +26,20 @@ class MenuItem extends React.Component {
     render() {
         var id = 'onoffswitch-' + this.props.item.id;
         var checked = this.state.checked;
+        var rightSwitch = !!this.props.switch ? (
+            <div className="onoffswitch pull-right">
+                <input type="checkbox" name="onoffswitch"
+                       className="onoffswitch-checkbox" id={id} checked={checked}
+                       onChange={this.handleChange.bind(this)}/>
+                <label className="onoffswitch-label" htmlFor={id}/>
+            </div>
+        ) : '';
+
         return (
             <li>
                 <a href="#">
                     {this.props.item.name}
-                    <div className="onoffswitch pull-right">
-                        <input type="checkbox" name="onoffswitch"
-                               className="onoffswitch-checkbox" id={id} checked={checked}
-                               onChange={this.handleChange.bind(this)}/>
-                        <label className="onoffswitch-label" htmlFor={id}/>
-                    </div>
+                    {rightSwitch}
                 </a>
             </li>
         );
