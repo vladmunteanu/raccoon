@@ -1,11 +1,11 @@
 import React from 'react';
 
 import Utils from '../utils/Utils';
-import LoginStore from '../stores/LoginStore';
+import AuthStore from '../stores/AuthStore';
 
 let getCurrentState = function () {
     return {
-        user: LoginStore.me || {},
+        user: AuthStore.me || {},
     };
 }
 
@@ -16,11 +16,11 @@ var UserProfile = React.createClass({
     },
 
     componentDidMount: function () {
-        LoginStore.addListener(this._onChange);
+        AuthStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function () {
-        LoginStore.removeListener(this._onChange);
+        AuthStore.removeListener(this._onChange);
     },
 
     _onChange: function () {

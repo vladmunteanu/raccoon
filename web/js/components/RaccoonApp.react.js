@@ -53,6 +53,7 @@ let RaccoonApp = React.createClass({
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth} />
                 <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
                 <Route path="*" component={NotFound} />
             </Router>
         );

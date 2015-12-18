@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import Connector from '../utils/Connector';
-import LoginStore from './LoginStore';
+import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
