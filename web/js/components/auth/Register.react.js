@@ -1,6 +1,8 @@
 import React from 'react'
 import { History } from 'react-router';
 
+import RaccoonApp from '../RaccoonApp.react';
+
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
 
@@ -38,6 +40,7 @@ let Register = React.createClass({
 
     _onChange: function() {
         if (AuthStore.isLoggedIn()) {
+            RaccoonApp.fetchAll(); // fetch all everything at login
             this.history.pushState(null, '/');
         }
     },

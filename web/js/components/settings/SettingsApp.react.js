@@ -47,24 +47,6 @@ var SettingsApp = React.createClass({
 
                         <div className="content">
 
-                            {
-                                this.state.allProjects.map(project => {
-                                    if (project.visible) {
-                                        return (
-                                            <div className="container-fluid grid-list">
-                                                {
-                                                    this.state.allEnvironments.map(environment => {
-                                                        if (environment.visible) {
-                                                            return <GridItem project={project}
-                                                                             environment={environment}/>
-                                                        }
-                                                    })
-                                                }
-                                            </div>
-                                        );
-                                    }
-                                })
-                            }
 
                         </div>
                     </div>
