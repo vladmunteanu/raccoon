@@ -4,6 +4,7 @@ import { Router, Route } from 'react-router';
 import AuthStore from '../stores/AuthStore';
 import ProjectStore from '../stores/ProjectStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
+import ActionStore from '../stores/ActionStore';
 
 import NotFound from './NotFound.react';
 import DashboardApp from './dashboard/DashboardApp.react';
@@ -16,6 +17,7 @@ function getRaccoonState() {
     return {
         allProjects: ProjectStore.getAll(),
         allEnvironments: EnvironmentStore.getAll(),
+        actions: ActionStore.all,
         user: AuthStore.me,
     };
 }
@@ -87,6 +89,7 @@ RaccoonApp.fetchAll = function () {
     AuthStore.fetchMe();
     ProjectStore.fetchAll();
     EnvironmentStore.fetchAll();
+    ActionStore.fetchAll();
 };
 
 
