@@ -1,24 +1,25 @@
 import React from 'react'
 
+import RaccoonApp from '../RaccoonApp.react';
+
 
 class GridItem extends React.Component {
+    getInitialState() {
+        return RaccoonApp.getState();
+    }
+
+    _onChange {
+        let state = RaccoonApp.getState();
+        this.setState(state);
+    },
+
     render() {
         return (
             <div className="box pull-left">
                 <div className="header">
                     <div className="row">
                         <span className="version pull-left">{this.props.environment.name.toUpperCase()}</span>
-                        <div className="btn-group btn-settings pull-right">
-                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span className="fa fa-edit" />
-                            </a>
-                            <ul className="dropdown-menu">
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#">Install</a></li>
-                                <li role="separator" className="divider" />
-                                <li><a href="#">Delete</a></li>
-                            </ul>
-                        </div>
+                        <CardMenu actions={this.state.actions} />
                     </div>
 
                     <div className="dropdown">
