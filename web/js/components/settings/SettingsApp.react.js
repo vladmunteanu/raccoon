@@ -27,6 +27,10 @@ function getLocalState() {
 var SettingsApp = React.createClass({
 
     getInitialState: function() {
+        ConnectorStore.fetchAll();
+        RightStore.fetchAll();
+        UserStore.fetchAll();
+
         return getLocalState();
     },
 
@@ -35,13 +39,15 @@ var SettingsApp = React.createClass({
         EnvironmentStore.addListener(this._onChange);
         ConnectorStore.addListener(this._onChange);
         RightStore.addListener(this._onChange);
+        UserStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
-        ConnectorStore.addListener(this._onChange);
-        RightStore.addListener(this._onChange);
+        ConnectorStore.removeListener(this._onChange);
+        RightStore.removeListener(this._onChange);
+        UserStore.removeListener(this._onChange);
     },
 
     _onChange: function() {

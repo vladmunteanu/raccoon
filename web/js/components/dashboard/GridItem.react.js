@@ -3,8 +3,6 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
 
-import RaccoonApp from '../RaccoonApp.react';
-
 
 class GridItem extends React.Component {
     getInitialState() {

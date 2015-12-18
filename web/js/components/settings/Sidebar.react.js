@@ -22,7 +22,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
                                 Projects <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseProjects" className="collapse">
+                            <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.projects.map(project => {
@@ -41,7 +41,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
                                 Environments <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseEnvironments" className="collapse">
+                            <div id="collapseEnvironments" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.environments.map(env => {
@@ -60,7 +60,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseActions" aria-expanded="false" aria-controls="collapseActions">
                                 Actions <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseActions" className="collapse">
+                            <div id="collapseActions" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.actions.map(action => {
@@ -79,7 +79,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseConnectors" aria-expanded="false" aria-controls="collapseConnectors">
                                 Connectors <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseConnectors" className="collapse">
+                            <div id="collapseConnectors" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.connectors.map(connector => {
@@ -98,7 +98,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
                                 Users <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseUsers" className="collapse">
+                            <div id="collapseUsers" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.users.map(user => {
@@ -117,7 +117,7 @@ var Sidebar = React.createClass({
                             <a href="" data-toggle="collapse" data-target="#collapseRights" aria-expanded="false" aria-controls="collapseRights">
                                 Rights <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseRights" className="collapse">
+                            <div id="collapseRights" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.rights.map(user => {

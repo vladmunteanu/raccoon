@@ -21,7 +21,7 @@ let dispatchToken = AppDispatcher.register(function(payload) {
             new ActionStore().emitChange();
             break;
 
-        case ActionTypes.PROJECT_TOGGLE_VISIBLE:
+        case ActionTypes.ACTION_TOGGLE_VISIBLE:
             new ActionStore().toggleVisible(payload.data.id);
             break;
 
@@ -65,7 +65,7 @@ class ActionStore extends EventEmitter {
         });
     }
 
-    filter(project=null, environment=null) {
+    filter(project, environment) {
         return _actions;
     }
 
