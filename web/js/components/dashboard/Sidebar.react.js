@@ -1,11 +1,11 @@
 import React from 'react';
-import ProjectStore from '../stores/ProjectStore';
-import EnvironmentStore from '../stores/EnvironmentStore';
+import ProjectStore from '../../stores/ProjectStore';
+import EnvironmentStore from '../../stores/EnvironmentStore';
 
-import UserProfile from './UserProfile.react';
-import MenuItem from './MenuItem.react';
+import UserProfile from './../UserProfile.react.js';
+import MenuItem from './../MenuItem.react.js';
 
-import Constants from '../constants/Constants';
+import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 

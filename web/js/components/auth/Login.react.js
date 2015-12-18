@@ -1,10 +1,10 @@
 import React from 'react'
 import { History } from 'react-router';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-import LoginStore from '../stores/LoginStore';
+import AppDispatcher from '../../dispatcher/AppDispatcher';
+import LoginStore from '../../stores/LoginStore';
 
-import Constants from '../constants/Constants';
+import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 

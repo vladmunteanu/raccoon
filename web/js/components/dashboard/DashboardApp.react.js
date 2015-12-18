@@ -4,14 +4,14 @@ import { Router, Route, Link, History } from 'react-router';
 
 import { GridList, GridTile } from 'material-ui';
 
-import ProjectStore from '../stores/ProjectStore';
-import EnvironmentStore from '../stores/EnvironmentStore';
-import LoginStore from '../stores/LoginStore';
+import ProjectStore from '../../stores/ProjectStore';
+import EnvironmentStore from '../../stores/EnvironmentStore';
+import LoginStore from '../../stores/LoginStore';
 
-import Sidebar from './Sidebar.react';
-import Topbar from './Topbar.react';
-import Taskbar from './Taskbar.react';
-import GridItem from './GridItem.react';
+import Sidebar from './Sidebar.react.js';
+import Topbar from './../Topbar.react.js';
+import Taskbar from './../Taskbar.react.js';
+import GridItem from './GridItem.react.js';
 
 
 function getRaccoonState() {

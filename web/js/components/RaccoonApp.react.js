@@ -2,8 +2,8 @@ import React from 'react';
 import { Router, Route } from 'react-router';
 
 import NotFound from './NotFound.react';
-import DashboardApp from './DashboardApp.react';
-import Login from './Login.react';
+import DashboardApp from './dashboard/DashboardApp.react.js';
+import Login from './auth/Login.react.js';
 
 
 let RaccoonApp = React.createClass({
