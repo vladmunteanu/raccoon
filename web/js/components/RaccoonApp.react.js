@@ -1,21 +1,22 @@
 import React from 'react';
 import { Router, Route } from 'react-router';
 
-import LoginStore from '../stores/LoginStore';
+import AuthStore from '../stores/AuthStore';
 import ProjectStore from '../stores/ProjectStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 
 import NotFound from './NotFound.react';
 import DashboardApp from './dashboard/DashboardApp.react';
-import Login from './auth/Login.react';
 import SettingsApp from './settings/SettingsApp.react';
+import Login from './auth/Login.react';
+import Register from './auth/Register.react';
 
 
 function getRaccoonState() {
     return {
         allProjects: ProjectStore.getAll(),
         allEnvironments: EnvironmentStore.getAll(),
-        user: LoginStore.me,
+        user: AuthStore.me,
     };
 }
 
@@ -32,12 +33,11 @@ let RaccoonApp = React.createClass({
     /**
      * Middleware that checks if user is authenticated; if not redirect to /login
      * @param nextState
-     * @param transition
+     * @param replaceState
      * @param callback
      */
     requireAuth: function (nextState, replaceState, callback) {
-        if (!LoginStore.isLoggedIn()) {
-            console.log(transition);
+        if (!AuthStore.isLoggedIn()) {
             replaceState({nextPathname: nextState.location.pathname}, '/login');
         }
 
@@ -84,7 +84,7 @@ RaccoonApp.getState = function (state) {
  * Fetches the global data
  */
 RaccoonApp.fetchAll = function () {
-    LoginStore.fetchMe();
+    AuthStore.fetchMe();
     ProjectStore.fetchAll();
     EnvironmentStore.fetchAll();
 };

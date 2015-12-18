@@ -1,1 +1,0 @@
-console.error("Error: Cannot find module '../stores/LoginStore' from '/Users/alexm/repos/raccoon/web/js/components'");
