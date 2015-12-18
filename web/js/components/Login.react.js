@@ -52,11 +52,30 @@ let Login = React.createClass({
 
     render: function () {
         return (
-            <form>
-                <input type="text" value={this.state.username} onChange={this._onUsernameChange} placeholder="Username" />
-                <input type="password" value={this.state.password} onChange={this._onPasswordChange} placeholder="Password" />
-                <button type="submit" onClick={this.login}>Submit</button>
-            </form>
+            <div className="row">
+                <div className="col-sm-offset-4 col-sm-offset-4 col-md-offset-4 col-md-offset-4">
+                    <div className="container">
+                        <h3>Sign In</h3>
+                        <form onSubmit={this.login} className="form-horizontal col-sm-4">
+                            <div className="form-group">
+                                <label htmlFor="username" className="control-label">Username or Email</label>
+                                <input type="text" value={this.state.username} className="form-control"
+                                       onChange={this._onUsernameChange}
+                                       id="username" placeholder="Username or Email"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="password" className="control-label">Password</label>
+                                <input type="password" value={this.state.password} className="form-control"
+                                       onChange={this._onPasswordChange}
+                                       id="password" placeholder="Password"/>
+                            </div>
+                            <div className="form-group">
+                                <input type="submit" value="Sign In" className="btn btn-info pull-right"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         );
     }
 });

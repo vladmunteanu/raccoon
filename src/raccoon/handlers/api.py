@@ -63,8 +63,10 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             if not method:
                 raise ReplyError(404)
 
-            params.update(body)
-            params.update(args)
+            if verb in ('put', 'post'):
+                params.update(body)
+            else:
+                params.update(args)
             req = Request(
                 idx=jdata.get('requestId'),
                 verb=jdata.get('verb'),

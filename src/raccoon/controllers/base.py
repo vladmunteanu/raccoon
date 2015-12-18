@@ -35,6 +35,7 @@ class BaseController(object):
         yield request.send(response)
 
     @classmethod
+    @authenticated
     @gen.coroutine
     def post(cls, request, *args, **kwargs):
         if not cls.model:
@@ -56,6 +57,7 @@ class BaseController(object):
         yield request.send(response.getDict())
 
     @classmethod
+    @authenticated
     @gen.coroutine
     def put(cls, request, id, *args, **kwargs):
         if not cls.model:
@@ -82,11 +84,13 @@ class BaseController(object):
         yield request.send(response.getDict())
 
     @classmethod
+    @authenticated
     @gen.coroutine
     def patch(cls, *args, **kwargs):
         raise ReplyError(501)
 
     @classmethod
+    @authenticated
     @gen.coroutine
     def delete(cls, *args, **kwargs):
         raise ReplyError(501)
