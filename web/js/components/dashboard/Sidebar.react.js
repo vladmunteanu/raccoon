@@ -26,7 +26,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allProjects.map(project => {
-                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} />;
+                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} switch={true} />;
                                         })
                                     }
                                     <li>
@@ -45,7 +45,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allEnvironments.map(env => {
-                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} />;
+                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} switch={true} />;
                                         })
                                     }
                                     <li>
