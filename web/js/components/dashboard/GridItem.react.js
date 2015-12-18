@@ -1,6 +1,9 @@
 import React from 'react'
 
 import RaccoonApp from '../RaccoonApp.react';
+import CardMenu from './CardMenu.react';
+
+import RaccoonApp from '../RaccoonApp.react';
 
 
 class GridItem extends React.Component {
@@ -8,10 +11,10 @@ class GridItem extends React.Component {
         return RaccoonApp.getState();
     }
 
-    _onChange {
+    _onChange() {
         let state = RaccoonApp.getState();
         this.setState(state);
-    },
+    }
 
     render() {
         return (
