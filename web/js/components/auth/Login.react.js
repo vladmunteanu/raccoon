@@ -70,6 +70,7 @@ let Login = React.createClass({
                                        id="password" placeholder="Password"/>
                             </div>
                             <div className="form-group">
+                                <a href="/#/register">Not registered yet?</a>
                                 <input type="submit" value="Sign In" className="btn btn-info pull-right"/>
                             </div>
                         </form>
