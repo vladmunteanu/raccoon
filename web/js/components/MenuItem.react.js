@@ -38,7 +38,7 @@ class MenuItem extends React.Component {
         return (
             <li>
                 <a href="#">
-                    {this.props.item.name}
+                    {this.props.item.label || this.props.item.name}
                     {rightSwitch}
                 </a>
             </li>

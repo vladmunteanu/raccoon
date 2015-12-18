@@ -10,26 +10,42 @@ import Taskbar from './../Taskbar.react';
 
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
+import ConnectorStore from '../../stores/ConnectorStore';
+import UserStore from '../../stores/UserStore';
+import RightStore from '../../stores/RightStore';
 
+
+function getLocalState() {
+    let localState = {
+        connectors: ConnectorStore.all,
+        users: UserStore.all,
+        rights: RightStore.all,
+    };
+    return RaccoonApp.getState(localState);
+}
 
 var SettingsApp = React.createClass({
 
     getInitialState: function() {
-        return RaccoonApp.getState();
+        return getLocalState();
     },
 
     componentDidMount: function() {
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
+        RightStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
+        RightStore.addListener(this._onChange);
     },
 
     _onChange: function() {
-        let state = RaccoonApp.getState();
+        let state = getLocalState();
         this.setState(state);
     },
 
@@ -40,13 +56,20 @@ var SettingsApp = React.createClass({
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <Sidebar allProjects={this.state.allProjects} allEnvironments={this.state.allEnvironments} />
+                    <Sidebar
+                        projects={this.state.allProjects}
+                        environments={this.state.allEnvironments}
+                        actions={this.state.actions}
+                        connectors={this.state.connectors}
+                        users={this.state.users}
+                        rights={this.state.rights}
+                    />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
                         <Topbar />
                         <Taskbar />
 
                         <div className="content">
-
+                            <br />
 
                         </div>
                     </div>

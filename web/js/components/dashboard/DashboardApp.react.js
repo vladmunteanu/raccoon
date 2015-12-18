@@ -15,22 +15,10 @@ import Taskbar from './../Taskbar.react.js';
 import GridItem from './GridItem.react.js';
 
 
-function getRaccoonState() {
-    return {
-        allProjects: ProjectStore.getAll(),
-        allEnvironments: EnvironmentStore.getAll(),
-        user: AuthStore.me,
-    };
-}
-
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
         return RaccoonApp.getState();
-    },
-
-    componentDidMount: function() {
-        return getRaccoonState();
     },
 
     componentDidMount: function() {
