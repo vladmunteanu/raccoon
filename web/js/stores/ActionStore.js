@@ -66,9 +66,10 @@ class ActionStore extends EventEmitter {
     }
 
     filter(project=null, environment=null) {
+        return _actions;
     }
 
-    getAll() {
+    get all() {
         return _actions;
     }
 
