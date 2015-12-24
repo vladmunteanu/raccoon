@@ -61,7 +61,8 @@ var DashboardApp = React.createClass({
                                                     this.state.allEnvironments.map(environment => {
                                                         if (environment.visible) {
                                                             return <GridItem project={project}
-                                                                             environment={environment}/>
+                                                                             environment={environment}
+                                                                    />;
                                                         }
                                                     })
                                                 }

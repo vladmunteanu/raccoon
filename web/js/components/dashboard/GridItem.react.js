@@ -3,18 +3,33 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
 
+import ActionStore from '../../stores/ActionStore';
 
-class GridItem extends React.Component {
-    getInitialState() {
-        return RaccoonApp.getState();
-    }
 
-    _onChange() {
-        let state = RaccoonApp.getState();
+function getLocalState() {
+    let localState = {};
+    return RaccoonApp.getState(localState);
+}
+
+let GridItem = React.createClass({
+    getInitialState: function () {
+        return getLocalState();
+    },
+
+    componentDidMount: function() {
+        ActionStore.addListener(this._onChange);
+    },
+
+    componentWillUnmount: function() {
+        ActionStore.removeListener(this._onChange);
+    },
+
+    _onChange: function() {
+        let state = getLocalState();
         this.setState(state);
-    }
+    },
 
-    render() {
+    render: function () {
         return (
             <div className="box pull-left">
                 <div className="header">
@@ -170,6 +185,6 @@ class GridItem extends React.Component {
             </div>
         );
     }
-}
+});
 
 export default GridItem;
