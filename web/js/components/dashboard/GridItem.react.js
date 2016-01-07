@@ -3,8 +3,6 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
 
-import RaccoonApp from '../RaccoonApp.react';
-
 
 class GridItem extends React.Component {
     getInitialState() {
@@ -17,12 +15,13 @@ class GridItem extends React.Component {
     }
 
     render() {
+        //<CardMenu actions={this.state.actions} />
         return (
             <div className="box pull-left">
                 <div className="header">
                     <div className="row">
                         <span className="version pull-left">{this.props.environment.name.toUpperCase()}</span>
-                        <CardMenu actions={this.state.actions} />
+
                     </div>
 
                     <div className="dropdown">

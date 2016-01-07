@@ -4,34 +4,14 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
+import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
 import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
-let ActionTypes = Constants.ActionTypes;
-
-
 let actionStore = null;
-let _actions = [];
 
-let dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.action) {
-        case 'GET /api/v1/actions/':
-            _actions = payload.data;
-            new ActionStore().emitChange();
-            break;
-
-        case ActionTypes.PROJECT_TOGGLE_VISIBLE:
-            new ActionStore().toggleVisible(payload.data.id);
-            break;
-
-        default:
-        // do nothing
-
-    }
-});
-
-class ActionStore extends EventEmitter {
+class ActionStore extends BaseStore {
 
     constructor() {
         if (!actionStore) {
@@ -41,46 +21,29 @@ class ActionStore extends EventEmitter {
             return actionStore;
         }
 
-        _actions = [];
-        this.dispatchToken = dispatchToken;
-    }
-
-    emitChange() {
-        this.emit('change');
-    }
-
-    addListener(callback) {
-        this.on('change', callback);
-    }
-
-    removeListener(callback) {
-        super.removeListener('change', callback);
     }
 
     fetchAll() {
         let connector = new Connector();
+
         connector.send({
             verb: 'get',
-            resource: '/api/v1/actions/',
+            resource: '/api/v1/actions/'
+        }, payload => {
+            this.all = payload.data;
         });
     }
 
-    filter(project=null, environment=null) {
-        return _actions;
-    }
-
-    get all() {
-        return _actions;
-    }
-
-    toggleVisible(id) {
-        _actions.map(function (action) {
-            if (action.id == id) {
-                action.visible = !action.visible;
+    filter(project = null, environment = null) {
+        var result = _actions.for(action => {
+            // project -> project.id, 
+            if (action.project == project && action.environment == environment) {
+                return action.project;
             }
         });
-        this.emitChange();
+        return result;
     }
+
 }
 
 export default new ActionStore();

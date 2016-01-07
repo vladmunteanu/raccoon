@@ -15,8 +15,8 @@ import Register from './auth/Register.react';
 
 function getRaccoonState() {
     return {
-        allProjects: ProjectStore.getAll(),
-        allEnvironments: EnvironmentStore.getAll(),
+        allProjects: ProjectStore.all,
+        allEnvironments: EnvironmentStore.all,
         actions: ActionStore.all,
         user: AuthStore.me,
     };

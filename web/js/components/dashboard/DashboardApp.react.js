@@ -17,7 +17,7 @@ import GridItem from './GridItem.react.js';
 
 function getRaccoonState() {
     return {
-        allProjects: ProjectStore.getAll(),
+        allProjects: ProjectStore.all,
         allEnvironments: EnvironmentStore.getAll(),
         user: AuthStore.me,
     };
@@ -65,6 +65,7 @@ var DashboardApp = React.createClass({
                         <div className="content">
 
                             {
+
                                 this.state.allProjects.map(project => {
                                     if (project.visible) {
                                         return (
