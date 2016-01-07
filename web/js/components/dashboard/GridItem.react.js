@@ -3,11 +3,8 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
 
-<<<<<<< HEAD
-=======
 import ActionStore from '../../stores/ActionStore';
 
->>>>>>> 63fabb44cf692daf526ac4e4ae0cbcbff88df2a9
 
 function getLocalState() {
     let localState = {};
@@ -32,12 +29,7 @@ let GridItem = React.createClass({
         this.setState(state);
     },
 
-<<<<<<< HEAD
-    render() {
-        //<CardMenu actions={this.state.actions} />
-=======
     render: function () {
->>>>>>> 63fabb44cf692daf526ac4e4ae0cbcbff88df2a9
         return (
             <div className="box pull-left">
                 <div className="header">
