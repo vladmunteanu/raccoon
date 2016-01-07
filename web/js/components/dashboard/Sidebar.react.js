@@ -19,7 +19,7 @@ var Sidebar = React.createClass({
                 <div style={{ height: 100 + '%' }}>
                     <ul className="nav nav-sidebar" style={{ height: 100 + '%', overflow: 'auto' }}>
                         <li className="active">
-                            <a href="#" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
                                 Projects <i className="fa fa-angle-down pull-right" />
                             </a>
                             <div id="collapseProjects" className="collapse in">
@@ -38,7 +38,7 @@ var Sidebar = React.createClass({
                             </div>
                         </li>
                         <li>
-                            <a href="#" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
                                 Environments <i className="fa fa-angle-down pull-right" />
                             </a>
                             <div id="collapseEnvironments" className="collapse in">

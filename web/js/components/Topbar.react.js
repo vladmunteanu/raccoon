@@ -4,19 +4,9 @@ import { Router, Route, Link } from 'react-router'
 
 var Topbar = React.createClass({
 
-    getInitialState: function () {
-        return {};
-    },
-
-    componentDidMount: function () {
-    },
-
-    componentWillUnmount: function () {
-
-    },
-
-    _onChange: function () {
-
+    toggleTasks: function () {
+        console.log('aaaaa');
+        //$('.slidemenu').toggleClass('slidemenu-open');
     },
 
     render: function () {
@@ -40,7 +30,7 @@ var Topbar = React.createClass({
                             <li><Link to="/">Dashboard</Link></li>
                             <li><Link to="/settings">Settings</Link></li>
                             <li><a href="#">Help</a></li>
-                            <li><a href="#" className="btn-tasks"><i className="fa fa-tasks" /></a></li>
+                            <li><a href="javascript: void(0);" className="btn-tasks" onclick={this.toggleTasks}><i className="fa fa-tasks" /></a></li>
                         </ul>
                     </div>
                 </div>

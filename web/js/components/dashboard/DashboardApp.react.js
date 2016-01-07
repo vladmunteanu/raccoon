@@ -15,22 +15,10 @@ import Taskbar from './../Taskbar.react.js';
 import GridItem from './GridItem.react.js';
 
 
-function getRaccoonState() {
-    return {
-        allProjects: ProjectStore.all,
-        allEnvironments: EnvironmentStore.getAll(),
-        user: AuthStore.me,
-    };
-}
-
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
         return RaccoonApp.getState();
-    },
-
-    componentDidMount: function() {
-        return getRaccoonState();
     },
 
     componentDidMount: function() {
@@ -74,7 +62,8 @@ var DashboardApp = React.createClass({
                                                     this.state.allEnvironments.map(environment => {
                                                         if (environment.visible) {
                                                             return <GridItem project={project}
-                                                                             environment={environment}/>
+                                                                             environment={environment}
+                                                                    />;
                                                         }
                                                     })
                                                 }
@@ -89,7 +78,7 @@ var DashboardApp = React.createClass({
                 </div>
             </div>
         );
-    },
+    }
 
 });
 

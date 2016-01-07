@@ -19,14 +19,14 @@ var Sidebar = React.createClass({
                 <div style={{ height: 100 + '%' }}>
                     <ul className="nav nav-sidebar" style={{ height: 100 + '%', overflow: 'auto' }}>
                         <li className="active">
-                            <a href="#" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseProjects" aria-expanded="false" aria-controls="collapseProjects">
                                 Projects <i className="fa fa-angle-down pull-right" />
                             </a>
                             <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.allProjects.map(project => {
-                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} />;
+                                        this.props.projects.map(project => {
+                                            return <MenuItem item={project} />;
                                         })
                                     }
                                     <li>
@@ -38,14 +38,90 @@ var Sidebar = React.createClass({
                             </div>
                         </li>
                         <li>
-                            <a href="#" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseEnvironments" aria-expanded="false" aria-controls="collapseEnvironments">
                                 Environments <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseEnvironments" className="collapse in">
+                            <div id="collapseEnvironments" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.allEnvironments.map(env => {
-                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} />;
+                                        this.props.environments.map(env => {
+                                            return <MenuItem item={env} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseActions" aria-expanded="false" aria-controls="collapseActions">
+                                Actions <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseActions" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.actions.map(action => {
+                                            return <MenuItem item={action} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseConnectors" aria-expanded="false" aria-controls="collapseConnectors">
+                                Connectors <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseConnectors" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.connectors.map(connector => {
+                                            return <MenuItem item={connector} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+                                Users <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseUsers" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.users.map(user => {
+                                            return <MenuItem item={user} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseRights" aria-expanded="false" aria-controls="collapseRights">
+                                Rights <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseRights" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.rights.map(user => {
+                                            return <MenuItem item={user} />;
                                         })
                                     }
                                     <li>

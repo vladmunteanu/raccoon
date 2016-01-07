@@ -12,5 +12,17 @@ export default {
 
         // environments
         ENVIRONMENT_TOGGLE_VISIBLE: null,
+
+        // actions
+        ACTION_TOGGLE_VISIBLE: null,
+
+        // connectors
+        CONNECTOR_TOGGLE_VISIBLE: null,
+
+        // users
+        USER_TOGGLE_VISIBLE: null,
+
+        // rights
+        RIGHT_TOGGLE_VISIBLE: null,
     })
 };
