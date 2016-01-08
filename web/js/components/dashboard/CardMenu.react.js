@@ -3,7 +3,6 @@ import ActionStore from '../../stores/ActionStore';
 
 var CardMenu = React.createClass({
     render: function () {
-        console.log('[mihai]', this.props.actions);
         return (
             <div className="btn-group btn-settings pull-right">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
