@@ -30,6 +30,11 @@ var Sidebar = React.createClass({
                                                 item={project}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
+                                                actions={
+                                                    this.props.actions.filter(action => {
+                                                        return action.project == project.id;
+                                                    })
+                                                }
                                             />;
                                         })
                                     }
@@ -49,7 +54,16 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allEnvironments.map(env => {
-                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} switch={true} />;
+                                            return <MenuItem
+                                                item={env}
+                                                action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
+                                                switch={true}
+                                                actions={
+                                                    this.props.actions.filter(action => {
+                                                        return action.environment == env.id;
+                                                    })
+                                                }
+                                            />;
                                         })
                                     }
                                     <li>
