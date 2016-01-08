@@ -10,6 +10,7 @@ import NotFound from './NotFound.react';
 import DashboardApp from './dashboard/DashboardApp.react';
 import SettingsApp from './settings/SettingsApp.react';
 import Login from './auth/Login.react';
+import Logout from './auth/Logout.react';
 import Register from './auth/Register.react';
 
 
@@ -55,6 +56,7 @@ let RaccoonApp = React.createClass({
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth} />
                 <Route path="/login" component={Login} />
+                <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />
                 <Route path="*" component={NotFound} />
             </Router>
