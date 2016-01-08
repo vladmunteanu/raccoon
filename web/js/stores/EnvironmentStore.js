@@ -28,7 +28,7 @@ class EnvironmentStore extends BaseStore {
         });
 
     }
-    
+
     toggleVisible(id) {
         this.all.map(function (env) {
             if (env.id == id) {
