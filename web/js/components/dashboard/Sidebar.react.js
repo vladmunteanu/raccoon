@@ -29,7 +29,7 @@ var Sidebar = React.createClass({
                             <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.allProjects.map(project => {
+                                        this.props.projects.map(project => {
                                             return <MenuItem
                                                 item={project}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
@@ -53,7 +53,7 @@ var Sidebar = React.createClass({
                             <div id="collapseEnvironments" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.allEnvironments.map(env => {
+                                        this.props.environments.map(env => {
                                             return <MenuItem
                                                 item={env}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}

@@ -68,8 +68,8 @@ var SettingsApp = React.createClass({
             <div className="container-fluid">
                 <div className="row">
                     <Sidebar
-                        projects={this.state.allProjects}
-                        environments={this.state.allEnvironments}
+                        projects={this.state.projects}
+                        environments={this.state.environments}
                         actions={this.state.actions}
                         connectors={this.state.connectors}
                         users={this.state.users}

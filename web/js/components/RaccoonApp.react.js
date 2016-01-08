@@ -17,8 +17,8 @@ import Project from './settings/Project.react';
 
 function getRaccoonState() {
     return {
-        allProjects: ProjectStore.all,
-        allEnvironments: EnvironmentStore.all,
+        projects: ProjectStore.all,
+        environments: EnvironmentStore.all,
         actions: ActionStore.all,
         user: AuthStore.me,
     };
