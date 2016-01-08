@@ -81,14 +81,21 @@ body {
 /*----------------- REACT -------------------*/
 
 .nav-sidebar .dropdown-menu {
+    display: none;
     position: fixed;
     top: 0px;
     left: 0px;
+    background: #273948;
+    border-radius: 0px;
+}
+
+.nav-sidebar .dropdown-menu li a:hover {
+    color: #FFF;
 }
 
 .nav-sidebar .dropdown:hover .dropdown-menu {
     display: block;
-    margin-top: 0; // remove the gap so it doesn't close
+    margin-top: 0; /* remove the gap so it doesn't close*/
 }
 
 /*-------------------------------------------*/

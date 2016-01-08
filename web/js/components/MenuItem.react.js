@@ -35,7 +35,7 @@ class MenuItem extends React.Component {
 
         dropdownMenu.css({
             top: top + 'px',
-            left: position.width + 'px'
+            left: (position.width - 2) + 'px'
         });
     }
 
