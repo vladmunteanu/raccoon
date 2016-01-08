@@ -1,0 +1,1 @@
+console.error("TypeError: /home/fnania/repos/raccoon/web/js/components/dashboard/GridItem.react.js: Line 6: Duplicate declaration \"RaccoonApp\" while parsing file: /home/fnania/repos/raccoon/web/js/components/dashboard/GridItem.react.js");
