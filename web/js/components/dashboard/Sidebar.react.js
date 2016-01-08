@@ -26,7 +26,11 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allProjects.map(project => {
-                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} switch={true} />;
+                                            return <MenuItem
+                                                item={project}
+                                                action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
+                                                switch={true}
+                                            />;
                                         })
                                     }
                                     <li>

@@ -10,8 +10,7 @@ class MenuItem extends React.Component {
         this.state = {
             //checked: Math.random() >= 0.5
             checked: false,
-            actions: ActionStore.all
-        }
+        };
     }
 
     handleChange(event) {
@@ -51,6 +50,8 @@ class MenuItem extends React.Component {
             </div>
         ) : '';
 
+        console.log('aaaaaa', this.props.actions);
+
         return (
             <li className="dropdown">
                 <a href="javascript: void(0);"
@@ -64,8 +65,8 @@ class MenuItem extends React.Component {
                 </a>
                 <ul className="dropdown-menu">
                     {
-                        this.state.actions.map(function(item) {
-                            return <li><a href="#">{item}</a></li>
+                        this.props.actions.map(function(item) {
+                            return <li><a href="#">{item.label}</a></li>
                         })
                     }
                 </ul>
@@ -74,5 +75,9 @@ class MenuItem extends React.Component {
         );
     }
 }
+
+MenuItem.defaultProps = {
+    actions: [],
+};
 
 export default MenuItem;

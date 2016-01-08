@@ -1,18 +1,17 @@
 import React from 'react';
 import FluxStore from 'flux';
-import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-
 import Connector from '../utils/Connector';
+import BaseStore from './BaseStore';
 import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 
 let connectorStore = null;
 
-class ConnectorStore extends EventEmitter {
+class ConnectorStore extends BaseStore {
 
     constructor() {
         if (!connectorStore) {
