@@ -80,6 +80,20 @@ body {
 
 /*----------------- REACT -------------------*/
 
+.loader {
+    width: 0px;
+    height: 2px;
+    background: #F00;
+    position: absolute;
+    top: 0;
+    animation: 2s ease-in-out loading;
+}
+
+@keyframes loading {
+    0% { width: 0px; }
+    100% { width: 100%; }
+}
+
 .nav-sidebar .dropdown-menu {
     display: none;
     position: fixed;

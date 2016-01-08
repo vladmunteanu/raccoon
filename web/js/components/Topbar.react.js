@@ -1,5 +1,7 @@
 import React from 'react';
-import { Router, Route, Link } from 'react-router'
+import { Link } from 'react-router'
+
+import Loader from '../components/Loader.react';
 
 
 var Topbar = React.createClass({
@@ -12,6 +14,7 @@ var Topbar = React.createClass({
     render: function () {
         return (
             <nav className="navbar navbar-default">
+                <Loader />
                 <div className="container-fluid">
                     <div className="navbar-header">
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
