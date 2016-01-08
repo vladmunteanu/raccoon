@@ -49,8 +49,8 @@ var DashboardApp = React.createClass({
             <div className="container-fluid">
                 <div className="row">
                     <Sidebar
-                        allProjects={this.state.allProjects}
-                        allEnvironments={this.state.allEnvironments}
+                        projects={this.state.projects}
+                        environments={this.state.environments}
                         actions={this.state.actions}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
@@ -61,12 +61,12 @@ var DashboardApp = React.createClass({
 
                             {
 
-                                this.state.allProjects.map(project => {
+                                this.state.projects.map(project => {
                                     if (project.visible) {
                                         return (
                                             <div className="container-fluid grid-list">
                                                 {
-                                                    this.state.allEnvironments.map(environment => {
+                                                    this.state.environments.map(environment => {
                                                         if (environment.visible) {
                                                             return <GridItem project={project}
                                                                              environment={environment}

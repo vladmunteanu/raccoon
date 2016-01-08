@@ -17,8 +17,8 @@ import Project from './settings/Project.react';
 
 function getRaccoonState() {
     return {
-        allProjects: ProjectStore.all,
-        allEnvironments: EnvironmentStore.all,
+        projects: ProjectStore.all,
+        environments: EnvironmentStore.all,
         actions: ActionStore.all,
         user: AuthStore.me,
     };
@@ -54,14 +54,14 @@ let RaccoonApp = React.createClass({
     render: function () {
         return (
             <Router>
-            <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
-            <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
-                <Route path="project/:id" component={Project} onEnter={this.requireAuth} />
-            </Route>
-            <Route path="/login" component={Login} />
-            <Route path="/logout" component={Logout} />
-            <Route path="/register" component={Register} />
-            <Route path="*" component={NotFound} />
+                <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
+                <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
+                    <Route path="project/:id" component={Project} onEnter={this.requireAuth} />
+                </Route>
+                <Route path="/login" component={Login} />
+                <Route path="/logout" component={Logout} />
+                <Route path="/register" component={Register} />
+                <Route path="*" component={NotFound} />
             </Router>
         );
     },
