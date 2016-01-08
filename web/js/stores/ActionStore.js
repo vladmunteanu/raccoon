@@ -23,7 +23,6 @@ class ActionStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/actions/";
-
     }
 
     filter(project = null, environment = null) {

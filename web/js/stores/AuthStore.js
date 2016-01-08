@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
 import LoginAction from '../actions/LoginAction';
 import Utils from '../utils/Utils';
@@ -16,24 +17,11 @@ import jwt_decode from 'jwt-decode';
 
 let authStore = null;
 let _user = null;
-let _token = null;
 
 let dispatchToken = AppDispatcher.register(function(payload) {
     let authStore = new AuthStore();
 
     switch (payload.action) {
-        case 'POST /api/v1/auth/':
-            authStore.save(payload.data);
-            break;
-
-        case 'POST /api/v1/users/':
-            authStore.save(payload.data);
-            break;
-
-        case 'GET /api/v1/users/' + authStore.userId:
-            authStore.saveMe(payload.data);
-            break;
-
         case ActionTypes.LOGIN_USER:
             authStore.authenticate(payload.data);
             break;
@@ -47,7 +35,7 @@ let dispatchToken = AppDispatcher.register(function(payload) {
     }
 });
 
-class AuthStore extends EventEmitter {
+class AuthStore extends BaseStore {
 
     constructor() {
         if (!authStore) {
@@ -58,20 +46,7 @@ class AuthStore extends EventEmitter {
         }
 
         _user = null;
-        _token = null;
         this.dispatchToken = dispatchToken;
-    }
-
-    emitChange() {
-        this.emit('change');
-    }
-
-    addListener(callback) {
-        this.on('change', callback);
-    }
-
-    removeListener(callback) {
-        super.removeListener('change', callback);
     }
 
     authenticate(data) {
@@ -83,6 +58,8 @@ class AuthStore extends EventEmitter {
                 username: data.username,
                 password: data.password,
             }
+        }, payload => {
+            this.save(payload.data);
         });
     }
 
@@ -97,6 +74,8 @@ class AuthStore extends EventEmitter {
                 email: data.email,
                 password: data.password
             }
+        }, payload => {
+            this.save(payload.data);
         });
     }
 
@@ -105,6 +84,8 @@ class AuthStore extends EventEmitter {
         connector.send({
             verb: 'get',
             resource: '/api/v1/users/' + this.userId,
+        }, payload => {
+            this.saveMe(payload.data);
         });
     }
 
@@ -116,8 +97,7 @@ class AuthStore extends EventEmitter {
     }
 
     save(data) {
-        _token = data.token;
-        localStorage.setItem('token', _token);
+        localStorage.setItem('token', data.token);
         this.emitChange();
     }
 
