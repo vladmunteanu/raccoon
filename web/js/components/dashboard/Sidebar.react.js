@@ -1,4 +1,6 @@
 import React from 'react';
+
+import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 
@@ -30,11 +32,7 @@ var Sidebar = React.createClass({
                                                 item={project}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
-                                                actions={
-                                                    this.props.actions.filter(action => {
-                                                        return action.project == project.id;
-                                                    })
-                                                }
+                                                actions={ActionStore.filter(project)}
                                             />;
                                         })
                                     }
@@ -58,11 +56,7 @@ var Sidebar = React.createClass({
                                                 item={env}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
                                                 switch={true}
-                                                actions={
-                                                    this.props.actions.filter(action => {
-                                                        return action.environment == env.id;
-                                                    })
-                                                }
+                                                actions={ActionStore.filter(null, env)}
                                             />;
                                         })
                                     }
