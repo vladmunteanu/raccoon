@@ -13,6 +13,7 @@ import EnvironmentStore from '../../stores/EnvironmentStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import UserStore from '../../stores/UserStore';
 import RightStore from '../../stores/RightStore';
+import MethodStore from '../../stores/MethodStore';
 
 
 function getLocalState() {
@@ -20,6 +21,7 @@ function getLocalState() {
         connectors: ConnectorStore.all,
         users: UserStore.all,
         rights: RightStore.all,
+        methods: MethodStore.all,
     };
     return RaccoonApp.getState(localState);
 }
@@ -30,6 +32,7 @@ var SettingsApp = React.createClass({
         ConnectorStore.fetchAll();
         RightStore.fetchAll();
         UserStore.fetchAll();
+        MethodStore.fetchAll();
 
         return getLocalState();
     },
@@ -40,6 +43,7 @@ var SettingsApp = React.createClass({
         ConnectorStore.addListener(this._onChange);
         RightStore.addListener(this._onChange);
         UserStore.addListener(this._onChange);
+        MethodStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
@@ -48,6 +52,7 @@ var SettingsApp = React.createClass({
         ConnectorStore.removeListener(this._onChange);
         RightStore.removeListener(this._onChange);
         UserStore.removeListener(this._onChange);
+        MethodStore.removeListener(this._onChange);
     },
 
     _onChange: function() {
@@ -69,6 +74,7 @@ var SettingsApp = React.createClass({
                         connectors={this.state.connectors}
                         users={this.state.users}
                         rights={this.state.rights}
+                        methods={this.state.methods}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
                         <Topbar />

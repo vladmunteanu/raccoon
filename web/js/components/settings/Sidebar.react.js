@@ -132,6 +132,25 @@ var Sidebar = React.createClass({
                                 </ul>
                             </div>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
+                                Methods <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseMethods" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.methods.map(method => {
+                                            return <MenuItem item={method} />;
+                                        })
+                                    }
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-plus" /> Add new
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
