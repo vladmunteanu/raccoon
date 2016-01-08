@@ -21,17 +21,8 @@ class ActionStore extends BaseStore {
             return actionStore;
         }
 
-    }
-
-    fetchAll() {
-        let connector = new Connector();
-
-        connector.send({
-            verb: 'get',
-            resource: '/api/v1/actions/'
-        }, payload => {
-            this.all = payload.data;
-        });
+        // set base URI for resources
+        this.baseuri = "/api/v1/actions/";
     }
 
     filter(project = null, environment = null) {

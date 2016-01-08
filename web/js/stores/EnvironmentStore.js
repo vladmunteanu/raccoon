@@ -19,22 +19,14 @@ class EnvironmentStore extends BaseStore {
             return environmentStore;
         }
 
+        // set base URI for resources
+        this.baseuri = "/api/v1/environments/";
+
         // register actions
         AppDispatcher.registerOnce(ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
 
-    }
-
-    fetchAll() {
-        let connector = new Connector();
-
-        connector.send({
-            verb: 'get',
-            resource: '/api/v1/environments/'
-        }, payload => {
-            this.all = payload.data;
-        });
     }
 
     toggleVisible(id) {

@@ -31,6 +31,7 @@ class UsersController(BaseController):
                 params[key] = value
 
         try:
+            print(params)
             user = yield cls.model.objects.create(**params)
         except UniqueKeyViolationError:
             raise ReplyError(409)

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import ActionStore from '../stores/ActionStore';
 
 
 class MenuItem extends React.Component {
@@ -9,6 +10,7 @@ class MenuItem extends React.Component {
         this.state = {
             //checked: Math.random() >= 0.5
             checked: false,
+            actions: ActionStore.all
         }
     }
 
@@ -61,13 +63,14 @@ class MenuItem extends React.Component {
                     {rightSwitch}
                 </a>
                 <ul className="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" className="divider" />
-                    <li><a href="#">Separated link</a></li>
+                    {
+                        this.state.actions.map(function(item) {
+                            return <li><a href="#">{item}</a></li>
+                        })
+                    }
                 </ul>
             </li>
+
         );
     }
 }

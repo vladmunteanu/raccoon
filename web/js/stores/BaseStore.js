@@ -13,6 +13,7 @@ import Constants from '../constants/Constants';
 class BaseStore extends EventEmitter {
     constructor() {
         super();
+        this.baseuri = null;
         this.instances = null;
     }
 
@@ -36,6 +37,18 @@ class BaseStore extends EventEmitter {
         this.instances = data;
         this.emitChange();
     }
+
+    fetchAll() {
+        let connector = new Connector();
+
+        connector.send({
+            verb: 'get',
+            resource: this.baseuri
+        }, payload => {
+            this.all = payload.data;
+        });
+    }
+
 
 }
 
