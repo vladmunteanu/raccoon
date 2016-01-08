@@ -79,9 +79,16 @@ body {
 }
 
 /*----------------- REACT -------------------*/
-.sidebar-menu {
-    background-color: #F00 !important;
-    font-size: 14px !important;
+
+.nav-sidebar .dropdown-menu {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+
+.nav-sidebar .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; // remove the gap so it doesn't close
 }
 
 /*-------------------------------------------*/
