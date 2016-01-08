@@ -1,6 +1,7 @@
 import React from 'react'
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import Util from '../utils/Utils';
 
 
 class MenuItem extends React.Component {
@@ -52,7 +53,7 @@ class MenuItem extends React.Component {
             <ul className="dropdown-menu">
                 {
                     this.props.actions.map(function(item) {
-                        return <li><a href="#">{item.label}</a></li>
+                        return <li key={Util.uuid()}><a href="#">{item.label}</a></li>
                     })
                 }
             </ul>
