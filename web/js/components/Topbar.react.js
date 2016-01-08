@@ -30,6 +30,7 @@ var Topbar = React.createClass({
                             <li><Link to="/">Dashboard</Link></li>
                             <li><Link to="/settings">Settings</Link></li>
                             <li><a href="#">Help</a></li>
+                            <li><Link to="/logout">Log Out</Link></li>
                             <li><a href="javascript: void(0);" className="btn-tasks" onclick={this.toggleTasks}><i className="fa fa-tasks" /></a></li>
                         </ul>
                     </div>
