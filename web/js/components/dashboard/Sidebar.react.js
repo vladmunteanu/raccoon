@@ -31,7 +31,6 @@ var Sidebar = React.createClass({
                                     {
                                         this.props.allProjects.map(project => {
                                             return <MenuItem
-                                                key={Util.uuid()}
                                                 item={project}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
@@ -56,7 +55,6 @@ var Sidebar = React.createClass({
                                     {
                                         this.props.allEnvironments.map(env => {
                                             return <MenuItem
-                                                key={Util.uuid()}
                                                 item={env}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
                                                 switch={true}
