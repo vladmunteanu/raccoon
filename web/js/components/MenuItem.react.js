@@ -50,8 +50,6 @@ class MenuItem extends React.Component {
             </div>
         ) : '';
 
-        console.log('aaaaaa', this.props.actions);
-
         return (
             <li className="dropdown">
                 <a href="javascript: void(0);"
