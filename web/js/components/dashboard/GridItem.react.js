@@ -35,7 +35,7 @@ let GridItem = React.createClass({
                 <div className="header">
                     <div className="row">
                         <span className="version pull-left">{this.props.environment.name.toUpperCase()}</span>
-
+                        <CardMenu actions={ActionStore.filter(this.props.project,this.props.environment)} />
                     </div>
 
                     <div className="dropdown">

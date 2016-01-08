@@ -25,13 +25,16 @@ class ActionStore extends BaseStore {
         this.baseuri = "/api/v1/actions/";
     }
 
-    filter(project = null, environment = null) {
-        var result = _actions.for(action => {
-            // project -> project.id, 
-            if (action.project == project && action.environment == environment) {
-                return action.project;
+    filter(project = null, env = null) {
+        var result = this.all.filter(action => {
+            let projectId = project ? project.id : null;
+            let envId = env ? env.id : null;
+
+            if (action.project == projectId && action.environment == envId) {
+                return true;
             }
         });
+
         return result;
     }
 

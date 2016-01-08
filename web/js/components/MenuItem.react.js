@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import Util from '../utils/Utils';
 
 
 class MenuItem extends React.Component {
