@@ -75,8 +75,7 @@ var SettingsApp = React.createClass({
                         <Taskbar />
 
                         <div className="content">
-                            <br />
-
+                            {this.props.children}
                         </div>
                     </div>
                 </div>

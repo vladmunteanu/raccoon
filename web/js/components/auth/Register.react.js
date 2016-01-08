@@ -73,10 +73,10 @@ let Register = React.createClass({
                         <h3>Register</h3>
                         <form onSubmit={this.register} className="form-horizontal col-sm-4">
                             <div className="form-group">
-                                <label htmlFor="username" className="control-label">Full name</label>
+                                <label htmlFor="fullname" className="control-label">Full name</label>
                                 <input type="text" value={this.state.name} className="form-control"
                                        onChange={this._onNameChange}
-                                       id="username" placeholder="Full name"/>
+                                       id="fullname" placeholder="Full name"/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="username" className="control-label">Username</label>
@@ -85,10 +85,10 @@ let Register = React.createClass({
                                        id="username" placeholder="Username"/>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="username" className="control-label">Email</label>
+                                <label htmlFor="email" className="control-label">Email</label>
                                 <input type="text" value={this.state.email} className="form-control"
                                        onChange={this._onEmailChange}
-                                       id="username" placeholder="Email"/>
+                                       id="email" placeholder="Email"/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password" className="control-label">Password</label>

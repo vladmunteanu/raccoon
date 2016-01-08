@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
@@ -58,17 +59,17 @@ class MenuItem extends React.Component {
             </ul>
         ): '';
 
+        var link = !!this.props.link ? this.props.link : "#";
         return (
             <li className="dropdown">
-                <a href="javascript: void(0);"
-                   onMouseEnter={this.handleMouseEnter.bind(this)}
+                <Link to={link} onMouseEnter={this.handleMouseEnter.bind(this)}
                    className="dropdown-toggle"
                    aria-haspopup="true"
                    aria-expanded="false"
                 >
                     {this.props.item.label || this.props.item.name}
                     {rightSwitch}
-                </a>
+                </Link>
 
                 {/* Add dropdown menu */}
                 {dropDown}

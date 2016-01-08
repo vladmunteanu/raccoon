@@ -26,7 +26,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.projects.map(project => {
-                                            return <MenuItem item={project} />;
+                                            return <MenuItem item={project} link={"/settings/project/" + project.id} />;
                                         })
                                     }
                                     <li>
