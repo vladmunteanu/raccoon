@@ -1,7 +1,6 @@
 import React from 'react'
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import ActionStore from '../stores/ActionStore';
 
 
 class MenuItem extends React.Component {
@@ -10,8 +9,7 @@ class MenuItem extends React.Component {
         this.state = {
             //checked: Math.random() >= 0.5
             checked: false,
-            actions: ActionStore.all
-        }
+        };
     }
 
     handleChange(event) {
@@ -25,6 +23,20 @@ class MenuItem extends React.Component {
         });
     }
 
+    handleMouseEnter(event) {
+        var position = event.target.getBoundingClientRect();
+        var dropdownMenu = $(event.target).parent().find('.dropdown-menu');
+        var top =
+            position.top + dropdownMenu.height() <= $(document).height() ?
+                position.top :
+                position.top - dropdownMenu.height() + 25;
+
+        dropdownMenu.css({
+            top: top + 'px',
+            left: position.width + 'px'
+        });
+    }
+
     render() {
         var id = 'onoffswitch-' + this.props.item.id;
         var checked = this.state.checked;
@@ -32,26 +44,42 @@ class MenuItem extends React.Component {
             <div className="onoffswitch pull-right">
                 <input type="checkbox" name="onoffswitch"
                        className="onoffswitch-checkbox" id={id} checked={checked}
-                       onChange={this.handleChange.bind(this)}/>
+                       onChange={this.handleChange.bind(this)} />
                 <label className="onoffswitch-label" htmlFor={id}/>
             </div>
         ) : '';
+        var dropDown = this.props.actions.length > 0 ? (
+            <ul className="dropdown-menu">
+                {
+                    this.props.actions.map(function(item) {
+                        return <li><a href="#">{item.label}</a></li>
+                    })
+                }
+            </ul>
+        ): '';
 
         return (
             <li className="dropdown">
-                <a href="#" className="dropdown-toggle" data-toggle="dropdown">
-                    {this.props.item.name}
+                <a href="javascript: void(0);"
+                   onMouseEnter={this.handleMouseEnter.bind(this)}
+                   className="dropdown-toggle"
+                   aria-haspopup="true"
+                   aria-expanded="false"
+                >
+                    {this.props.item.label || this.props.item.name}
                     {rightSwitch}
                 </a>
-                <ul className="dropdown-menu dropdown-menu-right">
-                    {this.state.actions.map(function(item) {
-                        return <li><a href="#">{item}</a></li>
-                    })}
-                </ul>
+
+                {/* Add dropdown menu */}
+                {dropDown}
             </li>
 
         );
     }
 }
+
+MenuItem.defaultProps = {
+    actions: [],
+};
 
 export default MenuItem;

@@ -75,6 +75,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 data=jdata,
                 socket=self
             )
+
             yield method(req, **params)
         except ReplyError as e:
             self.write_message(str(e))

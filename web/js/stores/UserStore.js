@@ -5,34 +5,15 @@ import assign from 'object-assign';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
+import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
 import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
-let ActionTypes = Constants.ActionTypes;
-
 
 let userStore = null;
-let _users = [];
 
-let dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.action) {
-        case 'GET /api/v1/users/':
-            _users = payload.data;
-            new UserStore().emitChange();
-            break;
-
-        case ActionTypes.USER_TOGGLE_VISIBLE:
-            new UserStore().toggleVisible(payload.data.id);
-            break;
-
-        default:
-        // do nothing
-
-    }
-});
-
-class UserStore extends EventEmitter {
+class UserStore extends BaseStore {
 
     constructor() {
         if (!userStore) {
@@ -42,42 +23,11 @@ class UserStore extends EventEmitter {
             return userStore;
         }
 
-        _users = [];
-        this.dispatchToken = dispatchToken;
+        // set base URI for resources
+        this.baseuri = "/api/v1/users/";
+
     }
 
-    emitChange() {
-        this.emit('change');
-    }
-
-    addListener(callback) {
-        this.on('change', callback);
-    }
-
-    removeListener(callback) {
-        super.removeListener('change', callback);
-    }
-
-    fetchAll() {
-        let user = new Connector();
-        user.send({
-            verb: 'get',
-            resource: '/api/v1/users/',
-        });
-    }
-
-    get all() {
-        return _users;
-    }
-
-    toggleVisible(id) {
-        _users.map(function (action) {
-            if (action.id == id) {
-                action.visible = !action.visible;
-            }
-        });
-        this.emitChange();
-    }
 }
 
 export default new UserStore();

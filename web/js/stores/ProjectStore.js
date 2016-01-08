@@ -19,20 +19,12 @@ class ProjectStore extends BaseStore {
             return projectStore;
         }
 
+        // set base URI for resources
+        this.baseuri = "/api/v1/projects/";
+
         // register gui related actions
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
-        });
-    }
-
-    fetchAll() {
-        let connector = new Connector();
-
-        connector.send({
-            verb: 'get',
-            resource: '/api/v1/projects/'
-        }, payload => {
-            this.all = payload.data;
         });
     }
 

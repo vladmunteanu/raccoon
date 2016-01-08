@@ -1,4 +1,6 @@
 import React from 'react';
+
+import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 
@@ -26,7 +28,12 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allProjects.map(project => {
-                                            return <MenuItem item={project} action={ActionTypes.PROJECT_TOGGLE_VISIBLE} switch={true} />;
+                                            return <MenuItem
+                                                item={project}
+                                                action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
+                                                switch={true}
+                                                actions={ActionStore.filter(project)}
+                                            />;
                                         })
                                     }
                                     <li>
@@ -45,7 +52,12 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.allEnvironments.map(env => {
-                                            return <MenuItem item={env} action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE} switch={true} />;
+                                            return <MenuItem
+                                                item={env}
+                                                action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
+                                                switch={true}
+                                                actions={ActionStore.filter(null, env)}
+                                            />;
                                         })
                                     }
                                     <li>

@@ -21,26 +21,20 @@ class ActionStore extends BaseStore {
             return actionStore;
         }
 
+        // set base URI for resources
+        this.baseuri = "/api/v1/actions/";
     }
 
-    fetchAll() {
-        let connector = new Connector();
+    filter(project = null, env = null) {
+        var result = this.all.filter(action => {
+            let projectId = project ? project.id : null;
+            let envId = env ? env.id : null;
 
-        connector.send({
-            verb: 'get',
-            resource: '/api/v1/actions/'
-        }, payload => {
-            this.all = payload.data;
-        });
-    }
-
-    filter(project = null, environment = null) {
-        var result = _actions.for(action => {
-            // project -> project.id, 
-            if (action.project == project && action.environment == environment) {
-                return action.project;
+            if (action.project == projectId && action.environment == envId) {
+                return true;
             }
         });
+
         return result;
     }
 
