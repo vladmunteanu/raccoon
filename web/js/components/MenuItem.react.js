@@ -1,7 +1,6 @@
 import React from 'react'
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import ActionStore from '../stores/ActionStore';
 
 
 class MenuItem extends React.Component {
@@ -49,6 +48,15 @@ class MenuItem extends React.Component {
                 <label className="onoffswitch-label" htmlFor={id}/>
             </div>
         ) : '';
+        var dropDown = this.props.actions.length > 0 ? (
+            <ul className="dropdown-menu">
+                {
+                    this.props.actions.map(function(item) {
+                        return <li><a href="#">{item.label}</a></li>
+                    })
+                }
+            </ul>
+        ): '';
 
         return (
             <li className="dropdown">
@@ -61,13 +69,9 @@ class MenuItem extends React.Component {
                     {this.props.item.label || this.props.item.name}
                     {rightSwitch}
                 </a>
-                <ul className="dropdown-menu">
-                    {
-                        this.props.actions.map(function(item) {
-                            return <li><a href="#">{item.label}</a></li>
-                        })
-                    }
-                </ul>
+
+                {/* Add dropdown menu */}
+                {dropDown}
             </li>
 
         );
