@@ -24,3 +24,5 @@ var CardMenu = React.createClass({
         );
     }
 });
+
+export default CardMenu;

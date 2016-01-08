@@ -1,37 +1,15 @@
 import React from 'react';
 import FluxStore from 'flux';
-import AppDispatcher from '../dispatcher/AppDispatcher';
-import { EventEmitter } from 'events';
-import assign from 'object-assign';
 
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
-import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
-
-
 let projectStore = null;
-let _projects = [];
 
-let dispatchToken = AppDispatcher.register(function(payload) {
-    switch (payload.action) {
-        case 'GET /api/v1/projects/':
-            _projects = payload.data;
-            new ProjectStore().emitChange();
-            break;
-
-        case ActionTypes.PROJECT_TOGGLE_VISIBLE:
-            new ProjectStore().toggleVisible(payload.data.id);
-            break;
-
-        default:
-        // do nothing
-
-    }
-});
-
-class ProjectStore extends EventEmitter {
+class ProjectStore extends BaseStore {
 
     constructor() {
         if (!projectStore) {
@@ -41,36 +19,25 @@ class ProjectStore extends EventEmitter {
             return projectStore;
         }
 
-        _projects = [];
-        this.dispatchToken = dispatchToken;
-    }
-
-    emitChange() {
-        this.emit('change');
-    }
-
-    addListener(callback) {
-        this.on('change', callback);
-    }
-
-    removeListener(callback) {
-        super.removeListener('change', callback);
+        // register gui related actions
+        AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
+            this.toggleVisible(payload.data.id);
+        });
     }
 
     fetchAll() {
         let connector = new Connector();
+
         connector.send({
             verb: 'get',
-            resource: '/api/v1/projects/',
+            resource: '/api/v1/projects/'
+        }, payload => {
+            this.all = payload.data;
         });
     }
 
-    getAll() {
-        return _projects;
-    }
-
     toggleVisible(id) {
-        _projects.map(function (project) {
+        this.all.map(function (project) {
             if (project.id == id) {
                 project.visible = !project.visible;
             }
