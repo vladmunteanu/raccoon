@@ -110,11 +110,11 @@ class Connector {
 
         this.pendingCallbacks[request.requestId] = callback;
 
-        if (callback) {
-            //registering actions
-            let action = request.verb.toUpperCase() + ' ' + request.resource;
-            AppDispatcher.registerOnce(action, callback);
-        }
+        //if (callback) {
+        //    //registering actions
+        //    let action = request.verb.toUpperCase() + ' ' + request.resource;
+        //    AppDispatcher.registerOnce(action, callback);
+        //}
 
         if (!this.connected) {
             this.pendingRequests.push(request);

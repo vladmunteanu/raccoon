@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 
@@ -30,9 +31,9 @@ var Sidebar = React.createClass({
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/project/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -49,9 +50,9 @@ var Sidebar = React.createClass({
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/project/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
