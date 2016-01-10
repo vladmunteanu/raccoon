@@ -28,6 +28,7 @@ class ProjectStore extends BaseStore {
         });
         AppDispatcher.registerOnce(ActionTypes.UPDATE_PROJECT, payload => {
             this.updateById(payload.data.id, payload.data);
+            this.emitChange();
         });
     }
 
