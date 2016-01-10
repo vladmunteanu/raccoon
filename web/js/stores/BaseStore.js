@@ -58,6 +58,21 @@ class BaseStore extends EventEmitter {
         });
     }
 
+    updateById(id, body) {
+        let connector = new Connector();
+
+        connector.send({
+            verb: 'put',
+            resource: this.baseuri + id,
+            body: body
+        }, payload => {
+            let instance = this.instances.find(function(element, index, array) {
+                return element.id === id;
+            });
+            instance = payload.data;
+        });
+    }
+
 }
 
 export default BaseStore;
