@@ -81,6 +81,7 @@ class BaseStore extends EventEmitter {
             resource: this.baseuri,
             body: data
         }, payload => {
+            this.instances.push(payload.data);
             this.emitChange();
         });
     }
