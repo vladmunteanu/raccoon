@@ -30,8 +30,12 @@ class AuthController(BaseController):
             raise ReplyError(400)
 
         user = yield cls.model.objects.get(username=username, password=password)
+
         if not user:
-            raise ReplyError(404)
+            raise ReplyError(404, {
+                'requestVerb': request.verb,
+                'requestResource': request.resource
+            })
 
         token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})

@@ -59,6 +59,7 @@ class AuthStore extends BaseStore {
                 password: data.password,
             }
         }, payload => {
+            console.log('[mihai]', payload);
             this.save(payload.data);
         });
     }
