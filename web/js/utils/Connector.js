@@ -82,7 +82,7 @@ class Connector {
 
         AppDispatcher.dispatch(message);
 
-        /*if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
+       /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
             this.pendingCallbacks[message.requestId](message);
             // freeing some memory
             delete this.pendingCallbacks[message.requestId];
@@ -116,12 +116,12 @@ class Connector {
             AppDispatcher.registerOnce(action, callback);
         }
 
-        /*if (!this.connected) {
+        if (!this.connected) {
             this.pendingRequests.push(request);
         } else {
             this.ws.send(JSON.stringify(request));
         }
-        */
+
         return request.requestId;
     }
 
