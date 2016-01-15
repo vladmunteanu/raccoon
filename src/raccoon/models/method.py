@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
-from motorengine import StringField, ListField, DateTimeField, ReferenceField, JsonField
+from motorengine import StringField, ListField, DateTimeField, ReferenceField
 from raccoon.models import BaseModel, Connector
+from raccoon.utils.dbfields import DictField
 
 
 class Method(BaseModel):
@@ -10,7 +11,7 @@ class Method(BaseModel):
     name = StringField(required=True)
     connector = ReferenceField(reference_document_type=Connector)
     method = StringField(required=True)
-    arguments = ListField(JsonField())
+    arguments = ListField(DictField())
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
 
