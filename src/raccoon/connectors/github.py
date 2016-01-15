@@ -13,11 +13,31 @@ class GitHubConnector(BaseConnector):
 
     @gen.coroutine
     def branches(self, project):
+        token = project.repo_auth.get('token')
         headers = {
-            'Authorization': 'token d070518b2d6189eeda4cba01b76943206f2dbaa5',
+            'Authorization': 'token {}'.format(),
         }
 
         url = '{api_url}/repos/{repo_name}/branches'.format(
+            api_url=project.api_url,
+            repo_name=project.repo_name
+        )
+
+        response = yield self.fetch(
+            url=url,
+            headers=headers,
+        )
+
+        raise gen.Return(response)
+
+    @gen.coroutine
+    def commits(self, project):
+        token = project.repo_auth.get('token')
+        headers = {
+            'Authorization': 'token {}'.format(),
+        }
+
+        url = '{api_url}/repos/{repo_name}/commits'.format(
             api_url=project.api_url,
             repo_name=project.repo_name
         )

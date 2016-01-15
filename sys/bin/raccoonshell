@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import os
+import sys
+from IPython.frontend.terminal.ipapp import TerminalIPythonApp
+from IPython.frontend.terminal.interactiveshell import TerminalInteractiveShell
+
+
+BANNER = """
+Raccoon interactive shell
+"""
+
+PRELOAD = """
+from raccoon.models import Project
+from raccoon.connectors.github import GitHubConnector
+
+from tornado.ioloop import IOLoop
+
+def run(func, *args, **kwargs):
+    return IOLoop.instance().run_sync(lambda :func(*args, **kwargs))
+"""
+
+
+def init_shell(cls):
+        """initialize the InteractiveShell instance"""
+        sys.path.insert(0, '')
+
+        cls.shell = TerminalInteractiveShell.instance(
+            config=cls.config,
+            banner1='\nRaccoon Interactive Shell',
+            banner2='==========================\n'
+                    'Imported objects: Project, GitHubConnector\n\n',
+            display_banner=False,
+            profile_dir=cls.profile_dir,
+            ipython_dir=cls.ipython_dir
+        )
+        cls.shell.configurables.append(cls)
+
+TerminalIPythonApp.init_shell = init_shell
+
+def main():
+    app = TerminalIPythonApp.instance()
+    app.initialize(argv=[])
+    app.shell.run_code(PRELOAD)
+
+    app.start()
+
+
+if __name__ == '__main__':
+    main()
+
