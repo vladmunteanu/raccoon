@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
@@ -39,9 +40,9 @@ var Sidebar = React.createClass({
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/project/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
