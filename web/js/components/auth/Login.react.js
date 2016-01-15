@@ -17,6 +17,7 @@ let Login = React.createClass({
         return {
             username: '',
             password: '',
+            error: null
         }
     },
 
@@ -37,6 +38,12 @@ let Login = React.createClass({
     },
 
     _onChange: function() {
+        if (AuthStore.error) {
+            this.state.error = AuthStore.error;
+            AuthStore.error = null;
+            this.setState(this.state);
+        }
+
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch all everything at login
             this.history.pushState(null, '/');
@@ -54,10 +61,25 @@ let Login = React.createClass({
     },
 
     render: function () {
+        let error_message = '';
+
+        if (!!this.state.error) {
+            error_message = (
+                <div className="alert alert-danger col-sm-4" role="alert">
+                    {this.state.error.message}
+                </div>
+            )
+        }
+
         return (
+
             <div className="row">
-                <div className="col-sm-offset-4 col-sm-offset-4 col-md-offset-4 col-md-offset-4">
+                <div className="col-sm-offset-4">
                     <div className="container">
+                        {error_message}
+                    </div>
+                    <div className="container">
+
                         <h3>Sign In</h3>
                         <form onSubmit={this.login} className="form-horizontal col-sm-4">
                             <div className="form-group">

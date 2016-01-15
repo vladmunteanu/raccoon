@@ -46,6 +46,7 @@ class AuthStore extends BaseStore {
         }
 
         _user = null;
+        this._error = null;
         this.dispatchToken = dispatchToken;
     }
 
@@ -59,8 +60,14 @@ class AuthStore extends BaseStore {
                 password: data.password,
             }
         }, payload => {
-            console.log('[mihai]', payload);
-            this.save(payload.data);
+            if (payload.hasOwnProperty('code')) {
+                this.error = {
+                    code: payload.code,
+                    message: payload.message
+                }
+            } else {
+                this.save(payload.data);
+            }
         });
     }
 
@@ -76,7 +83,14 @@ class AuthStore extends BaseStore {
                 password: data.password
             }
         }, payload => {
-            this.save(payload.data);
+            if (payload.hasOwnProperty('code')) {
+                this.error = {
+                    code: payload.code,
+                    message: payload.message
+                }
+            } else {
+                this.save(payload.data);
+            }
         });
     }
 
@@ -100,6 +114,17 @@ class AuthStore extends BaseStore {
     save(data) {
         localStorage.setItem('token', data.token);
         this.emitChange();
+    }
+
+    set error(error) {
+        this._error = error;
+        if (error) {
+            this.emitChange();
+        }
+    }
+
+    get error() {
+        return this._error;
     }
 
     get me() {

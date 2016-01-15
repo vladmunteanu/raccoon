@@ -34,7 +34,7 @@ class Request(object):
     def send(self, response):
         self.socket.write_message(json.dumps({
             'requestId': self.requestId,
-            'requestVerb': self.verb,
-            'requestResource': self.resource,
+            'verb': self.verb,
+            'resource': self.resource,
             'data': response,
         }, default=json_serial))

@@ -76,10 +76,12 @@ class Connector {
 
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
-        if (!message.hasOwnProperty('code')) {
-            message.action = message.requestVerb.toUpperCase() + ' ' + message.requestResource;
+
+        if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
+            message.action = message.verb.toUpperCase() + ' ' + message.resource;
         }
 
+        console.log(message)
         AppDispatcher.dispatch(message);
 
        /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {

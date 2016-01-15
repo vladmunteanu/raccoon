@@ -49,7 +49,7 @@ class BaseController(object):
         try:
             response = yield cls.model.objects.create(**params)
         except UniqueKeyViolationError:
-            raise ReplyError(409)
+            raise ReplyError(409, request=request)
         except InvalidDocumentError:
             raise ReplyError(400)
 
@@ -76,7 +76,7 @@ class BaseController(object):
         try:
             response = yield instance.save()
         except UniqueKeyViolationError:
-            raise ReplyError(409)
+            raise ReplyError(409, request=request)
         except InvalidDocumentError:
             raise ReplyError(400)
 

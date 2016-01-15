@@ -18,7 +18,8 @@ let Register = React.createClass({
             name: '',
             username: '',
             email: '',
-            password: ''
+            password: '',
+            error: ''
         }
     },
 
@@ -39,6 +40,12 @@ let Register = React.createClass({
     },
 
     _onChange: function() {
+        if (AuthStore.error) {
+            this.state.error = AuthStore.error;
+            AuthStore.error = null;
+            this.setState(this.state);
+        }
+
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch all everything at login
             this.history.pushState(null, '/');
@@ -66,9 +73,24 @@ let Register = React.createClass({
     },
 
     render: function () {
+        let error_message = '';
+
+        console.log(this.state);
+        if (!!this.state.error) {
+            error_message = (
+                <div className="alert alert-danger col-sm-4" role="alert">
+                    {this.state.error.message}
+                </div>
+            )
+        }
+
         return (
             <div className="row">
-                <div className="col-sm-offset-4 col-sm-offset-4 col-md-offset-4 col-md-offset-4">
+                <div className="col-sm-offset-4 col-md-offset-4">
+                    <div className="container">
+                        {error_message}
+                    </div>
+
                     <div className="container">
                         <h3>Register</h3>
                         <form onSubmit={this.register} className="form-horizontal col-sm-4">
