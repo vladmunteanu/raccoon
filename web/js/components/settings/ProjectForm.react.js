@@ -46,6 +46,13 @@ class ProjectForm extends React.Component {
         });
     }
 
+    _onChangeRepoUrl(event) {
+        this.state.project.details.url = event.target.value;
+        this.setState({
+            project: this.state.project
+        });
+    }
+
     _onChangeUsername(event) {
         this.state.project.details.username = event.target.value;
         this.setState({
@@ -88,6 +95,7 @@ class ProjectForm extends React.Component {
         let authType = project.details.authType;
         let username = project.details.username;
         let password = project.details.password;
+        let url = project.details.url;
         let token = project.details.token;
 
         let githubCredentialsForm = (
@@ -123,6 +131,11 @@ class ProjectForm extends React.Component {
                         <label htmlFor="project-name" className="control-label">Project name</label>
                         <input type="text"  className="form-control" onChange={this._onChangeName.bind(this)}
                                id="project-name" value={name} placeholder="Project Name"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="repo-url" className="control-label">Repository url</label>
+                        <input type="text"  className="form-control" onChange={this._onChangeRepoUrl.bind(this)}
+                               id="repo-url" value={url} placeholder="Repository url"/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="git-auth" className="control-label">Git authentication method</label><br/>
