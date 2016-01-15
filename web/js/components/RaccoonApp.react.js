@@ -12,8 +12,8 @@ import SettingsApp from './settings/SettingsApp.react';
 import Login from './auth/Login.react';
 import Logout from './auth/Logout.react';
 import Register from './auth/Register.react';
-import Project from './settings/Project.react';
-import NewProject from './settings/NewProject.react';
+import ProjectUpdateForm from './settings/ProjectUpdateForm.react.js';
+import ProjectForm from './settings/ProjectForm.react';
 
 
 function getRaccoonState() {
@@ -57,8 +57,8 @@ let RaccoonApp = React.createClass({
             <Router>
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
-                    <Route path="project/new" component={NewProject} onEnter={this.requireAuth} />
-                    <Route path="project/:id" component={Project} onEnter={this.requireAuth} />
+                    <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
+                    <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />
