@@ -164,13 +164,13 @@ class ProjectForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="repo-type" className="control-label">Repository type</label><br/>
-                        <select className="form-control" value={repoType} id="repo-type" onChange={this._onChangeRepoType.bind(this)}>
+                        <select className="form-control" defaultValue={repoType} id="repo-type" onChange={this._onChangeRepoType.bind(this)}>
                             <option value="git">GIT</option>
                         </select>
                     </div>
                     <div className="form-group">
                         <label htmlFor="git-auth" className="control-label">Git authentication method</label><br/>
-                        <select className="form-control" value={authType} id="git-auth" onChange={this._onChangeAuthType.bind(this)}>
+                        <select className="form-control" defaultValue={authType} id="git-auth" onChange={this._onChangeAuthType.bind(this)}>
                             <option value="basic">Basic</option>
                             <option value="oauth">OAuth</option>
                         </select>

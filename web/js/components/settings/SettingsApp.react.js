@@ -8,6 +8,7 @@ import Sidebar from './Sidebar.react';
 import Topbar from './../Topbar.react';
 import Taskbar from './../Taskbar.react';
 
+import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import ConnectorStore from '../../stores/ConnectorStore';
@@ -38,6 +39,7 @@ var SettingsApp = React.createClass({
     },
 
     componentDidMount: function() {
+        ActionStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
         ConnectorStore.addListener(this._onChange);
@@ -47,6 +49,7 @@ var SettingsApp = React.createClass({
     },
 
     componentWillUnmount: function() {
+        ActionStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
         ConnectorStore.removeListener(this._onChange);

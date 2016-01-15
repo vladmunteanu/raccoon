@@ -65,13 +65,13 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.actions.map(action => {
-                                            return <MenuItem item={action} />;
+                                            return <MenuItem item={action} link={"/settings/action/" + action.id} />;
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/action/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>

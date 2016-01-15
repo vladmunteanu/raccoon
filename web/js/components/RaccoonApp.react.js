@@ -17,8 +17,8 @@ import EnvironmentForm from './settings/EnvironmentForm.react.js';
 import EnvironmentUpdateForm from './settings/EnvironmentUpdateForm.react';
 import ProjectForm from './settings/ProjectForm.react';
 import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
-
-
+import ActionForm from './settings/ActionForm.react';
+import ActionUpdateForm from './settings/ActionUpdateForm.react';
 
 
 function getRaccoonState() {
@@ -66,6 +66,8 @@ let RaccoonApp = React.createClass({
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                     <Route path="environment/new" component={EnvironmentForm} onEnter={this.requireAuth} />
                     <Route path="environment/:id" component={EnvironmentUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
+                    <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />
