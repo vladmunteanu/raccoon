@@ -11,6 +11,7 @@ let ActionTypes = Constants.ActionTypes;
 class ProjectUpdateForm extends ProjectForm {
     constructor(props) {
         super(props);
+        this.formName = 'Update project';
         this.state = {
             project: ProjectStore.getById(this.props.params.id)
         };
@@ -29,7 +30,10 @@ class ProjectUpdateForm extends ProjectForm {
             data: {
                 id: this.state.project.id,
                 name: this.state.project.name,
-                details: this.state.project.details
+                label: this.state.project.label,
+                repo_url: this.state.project.repo_url,
+                repo_type: this.state.project.repo_type,
+                repo_auth: this.state.project.details
             }
         });
     }
@@ -39,7 +43,10 @@ class ProjectUpdateForm extends ProjectForm {
         if(!!!this.state.project) {
             this.state.project = {
                 name: '',
-                details: {}
+                label: '',
+                repo_url: '',
+                repo_type: 'GIT',
+                repo_auth: {}
             }
         }
         return this.state.project;
