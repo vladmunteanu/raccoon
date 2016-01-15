@@ -1,19 +1,24 @@
 import React from 'react';
 import { Router, Route } from 'react-router';
 
-import AuthStore from '../stores/AuthStore';
-import ProjectStore from '../stores/ProjectStore';
-import EnvironmentStore from '../stores/EnvironmentStore';
 import ActionStore from '../stores/ActionStore';
+import AuthStore from '../stores/AuthStore';
+import EnvironmentStore from '../stores/EnvironmentStore';
+import ProjectStore from '../stores/ProjectStore';
 
-import NotFound from './NotFound.react';
 import DashboardApp from './dashboard/DashboardApp.react';
-import SettingsApp from './settings/SettingsApp.react';
 import Login from './auth/Login.react';
 import Logout from './auth/Logout.react';
+import NotFound from './NotFound.react';
+import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
-import ProjectUpdateForm from './settings/ProjectUpdateForm.react.js';
+
+import EnvironmentForm from './settings/EnvironmentForm.react.js';
+import EnvironmentUpdateForm from './settings/EnvironmentUpdateForm.react';
 import ProjectForm from './settings/ProjectForm.react';
+import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
+
+
 
 
 function getRaccoonState() {
@@ -59,6 +64,8 @@ let RaccoonApp = React.createClass({
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
                     <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="environment/new" component={EnvironmentForm} onEnter={this.requireAuth} />
+                    <Route path="environment/:id" component={EnvironmentUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />

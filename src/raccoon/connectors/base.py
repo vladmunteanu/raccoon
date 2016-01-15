@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+import json
 
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
@@ -21,4 +22,5 @@ class BaseConnector(object):
             use_gzip=True,
         ))
 
+        response = json.loads(response.body.decode('utf-8'))
         raise gen.Return(response)

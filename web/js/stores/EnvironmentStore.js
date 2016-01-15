@@ -26,6 +26,12 @@ class EnvironmentStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
+        AppDispatcher.registerOnce(ActionTypes.UPDATE_ENVIRONMENT, payload => {
+            this.updateById(payload.data.id, payload.data);
+        });
+        AppDispatcher.registerOnce(ActionTypes.CREATE_ENVIRONMENT, payload => {
+            this.create(payload.data);
+        });
 
     }
 

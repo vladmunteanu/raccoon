@@ -14,6 +14,8 @@ export default {
 
         // environments
         ENVIRONMENT_TOGGLE_VISIBLE: null,
+        UPDATE_ENVIRONMENT: null,
+        CREATE_ENVIRONMENT: null,
 
         // actions
         ACTION_TOGGLE_VISIBLE: null,

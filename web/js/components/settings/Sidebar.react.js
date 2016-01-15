@@ -45,12 +45,12 @@ var Sidebar = React.createClass({
                             <div id="collapseEnvironments" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.environments.map(env => {
-                                            return <MenuItem item={env} />;
+                                        this.props.environments.map(environment => {
+                                            return <MenuItem item={environment} link={"/settings/environment/" + environment.id} />;
                                         })
                                     }
                                     <li>
-                                        <Link to="/settings/project/new">
+                                        <Link to="/settings/environment/new">
                                             <i className="fa fa-plus" /> Add new
                                         </Link>
                                     </li>
