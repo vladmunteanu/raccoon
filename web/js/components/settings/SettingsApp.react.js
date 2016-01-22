@@ -15,6 +15,7 @@ import ConnectorStore from '../../stores/ConnectorStore';
 import UserStore from '../../stores/UserStore';
 import RightStore from '../../stores/RightStore';
 import MethodStore from '../../stores/MethodStore';
+import NotificationStore from '../../stores/NotificationStore';
 
 
 function getLocalState() {
@@ -30,6 +31,8 @@ function getLocalState() {
 var SettingsApp = React.createClass({
 
     getInitialState: function() {
+        RaccoonApp.fetchAll();
+
         ConnectorStore.fetchAll();
         RightStore.fetchAll();
         UserStore.fetchAll();
@@ -46,6 +49,7 @@ var SettingsApp = React.createClass({
         RightStore.addListener(this._onChange);
         UserStore.addListener(this._onChange);
         MethodStore.addListener(this._onChange);
+        NotificationStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
@@ -56,6 +60,7 @@ var SettingsApp = React.createClass({
         RightStore.removeListener(this._onChange);
         UserStore.removeListener(this._onChange);
         MethodStore.removeListener(this._onChange);
+        NotificationStore.addListener(this._onChange);
     },
 
     _onChange: function() {
@@ -67,6 +72,17 @@ var SettingsApp = React.createClass({
      * @return {object}
      */
     render: function() {
+        let error_message = '';
+
+        if (!!this.state.notifications && this.state.notifications.length > 0) {
+            let notification = this.state.notifications.pop();
+            error_message = (
+                <div className="alert alert-danger col-sm-4" role="alert">
+                    {notification.message}
+                </div>
+            );
+        }
+
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -80,8 +96,10 @@ var SettingsApp = React.createClass({
                         methods={this.state.methods}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+                        {error_message}
                         <Topbar />
                         <Taskbar />
+
 
                         <div className="content">
                             {this.props.children}
