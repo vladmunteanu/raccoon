@@ -56,10 +56,10 @@ class BaseController(object):
 
         try:
             response = yield cls.model.objects.create(**params)
-        except UniqueKeyViolationError:
-            raise ReplyError(409, request=request)
-        except InvalidDocumentError:
-            raise ReplyError(400)
+        except UniqueKeyViolationError as e:
+            raise ReplyError(409, cls.model.get_message_from_exception(e))
+        except InvalidDocumentError as e:
+            raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         yield request.send(response.getDict())
 
@@ -91,10 +91,10 @@ class BaseController(object):
 
         try:
             response = yield instance.save()
-        except UniqueKeyViolationError:
-            raise ReplyError(409, request=request)
-        except InvalidDocumentError:
-            raise ReplyError(400)
+        except UniqueKeyViolationError as e:
+            raise ReplyError(409, cls.model.get_message_from_exception(e))
+        except InvalidDocumentError as e:
+            raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         yield request.send(response.getDict())
 

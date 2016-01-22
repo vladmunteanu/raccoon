@@ -19,10 +19,9 @@ class ReplyError(Exception):
     API Reply Error Exception
     """
 
-    def __init__(self, code, message=None, request=None):
+    def __init__(self, code, message=None):
         self.code = code
         self.message = message
-        self.request = request
 
         if not message:
             self.message, _ = ERROR_MESSAGES.get(code)
@@ -32,12 +31,6 @@ class ReplyError(Exception):
             'code': self.code,
             'message': self.message,
         }
-
-        if self.request:
-            response.update({
-                'verb': self.request.verb,
-                'resource': self.request.resource
-            })
 
         if DEBUG and self.code == 500:
             response['details'] = traceback.format_exc()
