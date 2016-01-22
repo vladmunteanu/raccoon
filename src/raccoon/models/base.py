@@ -33,7 +33,10 @@ class BaseModel(Document):
 
         for field in fields:
             if field in str(e):
-                message = message.format(class_name=cls.__name__, field=field)
+                message = message.format(
+                    class_name=cls.__name__.lower(),
+                    field=field
+                )
                 break
 
         return message
