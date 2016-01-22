@@ -75,7 +75,6 @@ let Login = React.createClass({
                     {notification.message}
                 </div>
             );
-            console.log('error saasd');
         }
 
         return (
