@@ -2,42 +2,46 @@ import React from 'react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ProjectStore from '../../stores/ProjectStore';
+import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
+
+function getLocalState() {
+    let localState = {
+        connectors: ConnectorStore.all,
+        project: {
+            name: '',
+            label: '',
+            repo_url: '',
+            connector: null
+        }
+    };
+    return localState;
+}
 
 
 class ProjectForm extends React.Component {
     constructor(props) {
         super(props);
         this.formName = 'New project';
-        this.state = {
-            project: {
-                name: '',
-                label: '',
-                repo_url: '',
-                repo_type: 'GIT',
-                repo_auth: {}
-            }
-        };
+        this.state = getLocalState();
     }
 
     componentDidMount() {
         ProjectStore.addListener(this._onChange.bind(this));
+        ConnectorStore.addListener(this._onChange.bind(this));
     }
 
     componentWillUnmount() {
         ProjectStore.removeListener(this._onChange.bind(this));
+        ConnectorStore.removeListener(this._onChange.bind(this));
     }
 
     _onChange() {
-    }
-
-    _onChangeAuthType(event) {
-        this.state.project.repo_auth.auth_type = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
+        let state = getLocalState();
+        state.project = this.state.project;
+        this.setState(state);
     }
 
     _onChangeName(event) {
@@ -61,29 +65,8 @@ class ProjectForm extends React.Component {
         });
     }
 
-    _onChangeRepoType(event) {
-        this.state.project.repo_type = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangeUsername(event) {
-        this.state.project.repo_auth.username = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangePassword(event) {
-        this.state.project.repo_auth.password = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangeToken(event) {
-        this.state.project.repo_auth.token = event.target.value;
+    _onChangeConnector(event) {
+        this.state.project.connector = event.target.value;
         this.setState({
             project: this.state.project
         });
@@ -101,8 +84,7 @@ class ProjectForm extends React.Component {
                 name: this.state.project.name,
                 label: this.state.project.label,
                 repo_url: this.state.project.repo_url,
-                repo_type: this.state.project.repo_type,
-                repo_auth: this.state.project.details
+                connector: this.state.project.connector
             }
         });
     }
@@ -142,6 +124,7 @@ class ProjectForm extends React.Component {
                 </div>
             );
 
+        let connectorId = project.connector;
 
         return (
             <div className="container">
@@ -163,19 +146,16 @@ class ProjectForm extends React.Component {
                                id="repo-url" value={url} placeholder="Repository url"/>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="repo-type" className="control-label">Repository type</label><br/>
-                        <select className="form-control" defaultValue={repoType} id="repo-type" onChange={this._onChangeRepoType.bind(this)}>
-                            <option value="git">GIT</option>
+                        <label htmlFor="connector-project" className="control-label">Connector</label>
+                        <select className="form-control" id="connector-project" value={connectorId} onChange={this._onChangeConnector.bind(this)}>
+                            <option disabled>-- select an option --</option>
+                            {
+                                this.state.connectors.map(connector => {
+                                    return <option key={connector.id} value={connector.id}>{connector.name}</option>
+                                })
+                            }
                         </select>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="git-auth" className="control-label">Git authentication method</label><br/>
-                        <select className="form-control" defaultValue={authType} id="git-auth" onChange={this._onChangeAuthType.bind(this)}>
-                            <option value="basic">Basic</option>
-                            <option value="oauth">OAuth</option>
-                        </select>
-                    </div>
-                    {githubCredentialsForm}
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>

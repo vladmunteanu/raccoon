@@ -14,7 +14,9 @@ import NotFound from './NotFound.react';
 import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
 
-import EnvironmentForm from './settings/EnvironmentForm.react.js';
+import ConnectorForm from './settings/ConnectorForm.react';
+import ConnectorUpdateForm from './settings/ConnectorUpdateForm.react';
+import EnvironmentForm from './settings/EnvironmentForm.react';
 import EnvironmentUpdateForm from './settings/EnvironmentUpdateForm.react';
 import ProjectForm from './settings/ProjectForm.react';
 import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
@@ -36,8 +38,6 @@ let RaccoonApp = React.createClass({
 
     getInitialState: function () {
         console.log('Raccoon app, initial state');
-
-//        RaccoonApp.fetchAll();
 
         return {};
     },
@@ -64,10 +64,12 @@ let RaccoonApp = React.createClass({
             <Router>
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth} />
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
-                    <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
-                    <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="connector/new" component={ConnectorForm} onEnter={this.requireAuth} />
+                    <Route path="connector/:id" component={ConnectorUpdateForm} onEnter={this.requireAuth} />
                     <Route path="environment/new" component={EnvironmentForm} onEnter={this.requireAuth} />
                     <Route path="environment/:id" component={EnvironmentUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
+                    <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                     <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />
                 </Route>

@@ -84,13 +84,13 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.connectors.map(connector => {
-                                            return <MenuItem item={connector} />;
+                                            return <MenuItem item={connector} link={"/settings/connector/" + connector.id} />;
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/connector/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
