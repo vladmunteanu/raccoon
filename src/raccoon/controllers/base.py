@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
 import logging
+
 from tornado import gen
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
+from bson.objectid import ObjectId
 
 from raccoon.utils.decorators import authenticated
 from raccoon.utils.exceptions import ReplyError
@@ -44,6 +46,12 @@ class BaseController(object):
         params = {}
         for key, value in kwargs.items():
             if hasattr(cls.model, key):
+                # !important
+                # Make value = ObjectId(value) if field is a reference field
+                field = cls.model.get_field_by_db_name(key)
+                if hasattr(field, 'reference_type'):
+                    value = ObjectId(value)
+
                 params[key] = value
 
         try:
@@ -69,8 +77,16 @@ class BaseController(object):
         if not instance:
             raise ReplyError(404)
 
+        yield instance.load_references()
+
         for key, value in kwargs.items():
-            if hasattr(instance, key):
+            if value and hasattr(instance, key):
+                # !important
+                # Make value = ObjectId(value) if field is a reference field
+                field = instance.get_field_by_db_name(key)
+                if hasattr(field, 'reference_type'):
+                    value = ObjectId(value)
+
                 setattr(instance, key, value)
 
         try:

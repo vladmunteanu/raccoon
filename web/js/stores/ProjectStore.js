@@ -4,9 +4,10 @@ import FluxStore from 'flux';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
-import Constants from '../constants/Constants';
 
+import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
+
 let projectStore = null;
 
 class ProjectStore extends BaseStore {

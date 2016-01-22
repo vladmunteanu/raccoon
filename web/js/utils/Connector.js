@@ -81,7 +81,6 @@ class Connector {
             message.action = message.verb.toUpperCase() + ' ' + message.resource;
         }
 
-        console.log(message)
         AppDispatcher.dispatch(message);
 
        /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {

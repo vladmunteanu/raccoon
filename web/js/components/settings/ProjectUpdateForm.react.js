@@ -40,7 +40,7 @@ class ProjectUpdateForm extends ProjectForm {
 
     _getDataForRender() {
         this.state.project = ProjectStore.getById(this.props.params.id);
-        if(!!!this.state.project) {
+        if(!this.state.project) {
             this.state.project = {
                 name: '',
                 label: '',

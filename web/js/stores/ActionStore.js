@@ -1,13 +1,12 @@
 import React from 'react';
-import FluxStore from 'flux';
+
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import { EventEmitter } from 'events';
-import assign from 'object-assign';
 
 import BaseStore from './BaseStore';
-import Connector from '../utils/Connector';
 import AuthStore from './AuthStore';
+
 import Constants from '../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
 
 let actionStore = null;
 
@@ -23,6 +22,13 @@ class ActionStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/actions/";
+
+        AppDispatcher.registerOnce(ActionTypes.UPDATE_ACTION, payload => {
+            this.updateById(payload.data.id, payload.data);
+        });
+        AppDispatcher.registerOnce(ActionTypes.CREATE_ACTION, payload => {
+            this.create(payload.data);
+        });
     }
 
     filter(project = null, env = null) {

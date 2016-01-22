@@ -36,7 +36,7 @@ class EnvironmentUpdateForm extends EnvironmentForm {
 
     _getDataForRender() {
         this.state.environment = EnvironmentStore.getById(this.props.params.id);
-        if(!!!this.state.environment) {
+        if(!this.state.environment) {
             this.state.environment = {
                 name: ''
             }

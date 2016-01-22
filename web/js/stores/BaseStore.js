@@ -50,7 +50,7 @@ class BaseStore extends EventEmitter {
     }
 
     getById(id) {
-        if(!!!this.instances)
+        if(!this.instances)
             return undefined;
 
         return this.instances.find(function(element, index, array) {
