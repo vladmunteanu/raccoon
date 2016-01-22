@@ -4,12 +4,12 @@ import logging
 
 from tornado import gen
 
-from .base import BaseConnector
+from .base import BaseInterface
 
 
 log = logging.getLogger(__name__)
 
-class GitHubConnector(BaseConnector):
+class GitHubInterface(BaseInterface):
 
     @gen.coroutine
     def branches(self, project):
