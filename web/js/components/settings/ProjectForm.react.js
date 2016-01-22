@@ -94,6 +94,36 @@ class ProjectForm extends React.Component {
         let name = project.name;
         let label = project.label;
         let url = project.repo_url;
+        let repoType = project.repo_type || '';
+        let authType = project.repo_auth.auth_type || '';
+        let username = project.repo_auth.username || '';
+        let password = project.repo_auth.password || '';
+        let token = project.repo_auth.token || '';
+
+        let githubCredentialsForm = (
+            <div>
+                <div className="form-group">
+                    <label htmlFor="username" className="control-label">Github username</label>
+                    <input type="text" className="form-control" onChange={this._onChangeUsername.bind(this)}
+                           id="username" value={username} placeholder="Username"/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password" className="control-label">Github password</label>
+                    <input type="password" className="form-control" onChange={this._onChangePassword.bind(this)}
+                           id="password" value={password} placeholder="Password"/>
+                </div>
+            </div>
+        );
+
+        if(authType === "oauth")
+            githubCredentialsForm = (
+                <div className="form-group">
+                    <label htmlFor="token" className="control-label">Github token</label>
+                    <input type="text" className="form-control" onChange={this._onChangeToken.bind(this)}
+                           id="token" value={token} placeholder="Token"/>
+                </div>
+            );
+
         let connectorId = project.connector;
 
         return (
