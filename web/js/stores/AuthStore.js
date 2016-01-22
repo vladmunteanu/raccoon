@@ -60,12 +60,7 @@ class AuthStore extends BaseStore {
                 password: data.password,
             }
         }, payload => {
-            if (payload.hasOwnProperty('code')) {
-                this.error = {
-                    code: payload.code,
-                    message: payload.message
-                }
-            } else {
+            if (! payload.hasOwnProperty('code')) {
                 this.save(payload.data);
             }
         });
@@ -83,12 +78,7 @@ class AuthStore extends BaseStore {
                 password: data.password
             }
         }, payload => {
-            if (payload.hasOwnProperty('code')) {
-                this.error = {
-                    code: payload.code,
-                    message: payload.message
-                }
-            } else {
+            if (! payload.hasOwnProperty('code')) {
                 this.save(payload.data);
             }
         });

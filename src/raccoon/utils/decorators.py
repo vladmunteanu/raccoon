@@ -28,7 +28,8 @@ def authenticated(method):
         if not request.user:
             raise ReplyError(401)
 
-        raise gen.Return(method(cls, request, *args, **kwargs))
+        result = yield method(cls, request, *args, **kwargs)
+        raise gen.Return(result)
     return wrapper
 
 

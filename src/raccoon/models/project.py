@@ -2,9 +2,8 @@ from __future__ import absolute_import
 
 from urllib.parse import urlparse
 
-from motorengine import StringField, DateTimeField, URLField
-from raccoon.utils.dbfields import DictField
-from raccoon.models import BaseModel
+from motorengine import StringField, DateTimeField, URLField, ReferenceField
+from raccoon.models import BaseModel, Connector
 
 class Project(BaseModel):
     __collection__ = 'projects'
@@ -12,8 +11,7 @@ class Project(BaseModel):
     name = StringField(required=True, unique=True)
     label = StringField(required=True, unique=True)
     repo_url = URLField(required=True)
-    repo_type = StringField(required=True, default='GIT')
-    repo_auth = DictField(default={})
+    connector = ReferenceField(reference_document_type=Connector, required=True)
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
     @property

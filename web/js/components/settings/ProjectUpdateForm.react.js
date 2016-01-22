@@ -2,25 +2,30 @@ import React from 'react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ProjectStore from '../../stores/ProjectStore';
+import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
 import ProjectForm from './ProjectForm.react';
 let ActionTypes = Constants.ActionTypes;
 
+function getLocalState(projectId) {
+    let localState = {
+        connectors: ConnectorStore.all,
+        project: ProjectStore.getById(projectId)
+    };
+    return localState;
+}
 
 class ProjectUpdateForm extends ProjectForm {
     constructor(props) {
         super(props);
         this.formName = 'Update project';
-        this.state = {
-            project: ProjectStore.getById(this.props.params.id)
-        };
+        this.state = getLocalState(this.props.params.id);
     }
 
     _onChange() {
-        this.setState({
-            project: ProjectStore.getById(this.props.params.id)
-        });
+        let state = getLocalState(this.props.params.id);
+        this.setState(state);
     }
 
     onSubmit(event) {
@@ -32,8 +37,7 @@ class ProjectUpdateForm extends ProjectForm {
                 name: this.state.project.name,
                 label: this.state.project.label,
                 repo_url: this.state.project.repo_url,
-                repo_type: this.state.project.repo_type,
-                repo_auth: this.state.project.details
+                connector: this.state.project.connector
             }
         });
     }
@@ -45,8 +49,7 @@ class ProjectUpdateForm extends ProjectForm {
                 name: '',
                 label: '',
                 repo_url: '',
-                repo_type: 'GIT',
-                repo_auth: {}
+                connector: null
             }
         }
         return this.state.project;

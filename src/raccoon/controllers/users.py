@@ -33,10 +33,10 @@ class UsersController(BaseController):
         try:
             print(params)
             user = yield cls.model.objects.create(**params)
-        except UniqueKeyViolationError:
-            raise ReplyError(409)
-        except InvalidDocumentError:
-            raise ReplyError(400)
+        except UniqueKeyViolationError as e:
+            raise ReplyError(409, cls.model.get_message_from_exception(e))
+        except InvalidDocumentError as e:
+            raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
