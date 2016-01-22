@@ -5,6 +5,7 @@ import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
+import NotificationStore from '../stores/NotificationStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
 import Login from './auth/Login.react';
@@ -27,6 +28,7 @@ function getRaccoonState() {
         environments: EnvironmentStore.all,
         actions: ActionStore.all,
         user: AuthStore.me,
+        notifications: NotificationStore.all
     };
 }
 
@@ -35,7 +37,7 @@ let RaccoonApp = React.createClass({
     getInitialState: function () {
         console.log('Raccoon app, initial state');
 
-        RaccoonApp.fetchAll();
+//        RaccoonApp.fetchAll();
 
         return {};
     },
@@ -75,7 +77,7 @@ let RaccoonApp = React.createClass({
                 <Route path="*" component={NotFound} />
             </Router>
         );
-    },
+    }
 
 });
 

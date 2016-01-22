@@ -112,11 +112,11 @@ class ProjectForm extends React.Component {
         let name = project.name;
         let label = project.label;
         let url = project.repo_url;
-        let repoType = project.repo_type;
-        let authType = project.repo_auth.auth_type;
-        let username = project.repo_auth.username;
-        let password = project.repo_auth.password;
-        let token = project.repo_auth.token;
+        let repoType = project.repo_type || '';
+        let authType = project.repo_auth.auth_type || '';
+        let username = project.repo_auth.username || '';
+        let password = project.repo_auth.password || '';
+        let token = project.repo_auth.token || '';
 
         let githubCredentialsForm = (
             <div>

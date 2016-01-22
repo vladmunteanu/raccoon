@@ -5,22 +5,28 @@ import RaccoonApp from '../RaccoonApp.react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
+import NotificationStore from '../../stores/NotificationStore';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
+function getLocalState() {
+    let localState = {
+        name: '',
+        username: '',
+        email: '',
+        password: '',
+        error: ''
+    };
+
+    return RaccoonApp.getState(localState);
+}
 
 let Register = React.createClass({
     mixins: [ History ],
 
     getInitialState: function () {
-        return {
-            name: '',
-            username: '',
-            email: '',
-            password: '',
-            error: ''
-        }
+        return getLocalState();
     },
 
     register: function (event) {
@@ -33,18 +39,22 @@ let Register = React.createClass({
 
     componentDidMount: function() {
         AuthStore.addListener(this._onChange);
+        NotificationStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
         AuthStore.removeListener(this._onChange);
+        NotificationStore.removeListener(this._onChange);
     },
 
     _onChange: function() {
-        if (AuthStore.error) {
+        this.setState(getLocalState());
+
+ /*       if (AuthStore.error) {
             this.state.error = AuthStore.error;
             AuthStore.error = null;
             this.setState(this.state);
-        }
+        }*/
 
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch all everything at login
@@ -76,12 +86,23 @@ let Register = React.createClass({
         let error_message = '';
 
         console.log(this.state);
-        if (!!this.state.error) {
+ /*       if (!!this.state.error) {
             error_message = (
                 <div className="alert alert-danger col-sm-4" role="alert">
                     {this.state.error.message}
                 </div>
             )
+        }
+*/
+
+        if (!!this.state.notifications && this.state.notifications.length > 0) {
+            let notification = this.state.notifications.pop();
+            error_message = (
+                <div className="alert alert-danger col-sm-4" role="alert">
+                    {notification.message}
+                </div>
+            );
+            console.log('error saasd');
         }
 
         return (

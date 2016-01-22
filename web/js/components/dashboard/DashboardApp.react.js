@@ -19,6 +19,7 @@ import GridItem from './GridItem.react.js';
 var DashboardApp = React.createClass({
 
     getInitialState: function() {
+        RaccoonApp.fetchAll();
         return RaccoonApp.getState();
     },
 
