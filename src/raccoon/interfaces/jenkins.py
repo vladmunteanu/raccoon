@@ -17,6 +17,7 @@ URLS = {
     'build_with_params':'job/{job_name}/buildWithParameters' + URL_END,
     'build_stop': 'job/{job_name}/{build_number}/stop' + URL_END,
     'build_info': 'job/{job_name}/{build_number}' + URL_END,
+    'build_last': 'job/{job_name}/lastBuild' + URL_END,
     'job_output': 'job/{job_name}/consoleText' + URL_END,
 }
 
@@ -47,11 +48,12 @@ class JenkinsInterface(BaseInterface):
         if kwargs:
             path = URLS.get('build_with_params')
 
-        query = urlencode(kwargs)
+        job_name = 'Webserver-Unit-Tests'
 
         # create url with params
+        query = urlencode(kwargs)
         url = urljoin(self.api_url, path).format(
-            job_name='Webserver-Unit-Tests'
+            job_name=job_name,
         )
         url = '{}?{}'.format(url, query)
 
@@ -73,5 +75,22 @@ class JenkinsInterface(BaseInterface):
 
         print ('==========> response', response)
         print ('==========> headers', headers)
+
+        raise gen.Return(response)
+
+    @gen.coroutine
+    def build_last(self):
+        job_name = 'Webserver-Unit-Tests'
+
+        # last build url
+        path_last_build = URLS.get('build_last')
+        url = urljoin(self.api_url, path_last_build).format(
+            job_name=job_name,
+        )
+
+        response, headers = yield self.fetch(
+            method='GET',
+            url=url,
+        )
 
         raise gen.Return(response)
