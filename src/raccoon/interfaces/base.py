@@ -16,9 +16,9 @@ class BaseInterface(object):
 
     @gen.coroutine
     def fetch(self, url, method='GET', body=None, headers=None):
-
         print ('******', url)
 
+        body = body or 'no body' if method.upper() == 'POST' else None
         response = yield self.HTTPClient.fetch(HTTPRequest(
             url=url,
             method=method,
@@ -28,7 +28,9 @@ class BaseInterface(object):
             validate_cert=False,
         ))
 
+        body = None
         if response.body:
-            response = json.loads(response.body.decode('utf-8'))
+            body = json.loads(response.body.decode('utf-8'))
 
-        raise gen.Return(response)
+        headers = response.headers
+        raise gen.Return((body, headers))

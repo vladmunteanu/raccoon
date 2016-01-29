@@ -12,7 +12,7 @@ Raccoon interactive shell
 
 PRELOAD = """
 from raccoon.models import Project
-from raccoon.connectors.github import GitHubInterface
+from raccoon.interfaces.github import GitHubInterface
 
 from tornado.ioloop import IOLoop
 from motorengine.connection import connect

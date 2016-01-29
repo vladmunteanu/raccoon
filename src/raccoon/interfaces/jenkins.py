@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+import re
 from urllib.parse import urlencode, urlparse, urljoin
 
 from tornado import gen
@@ -54,10 +55,23 @@ class JenkinsInterface(BaseInterface):
         )
         url = '{}?{}'.format(url, query)
 
-        response = yield self.fetch(
+        body, headers = yield self.fetch(
             method='POST',
-            body='no body',
             url=url,
         )
+
+        # get build info
+        url = headers.get('Location')
+        parsed_url = urlparse(url)
+        path = '{}/api/json'.format(parsed_url.path.strip('/'))
+        url = urljoin(self.api_url, path)
+
+        response, headers = yield self.fetch(
+            method='GET',
+            url=url,
+        )
+
+        print ('==========> response', response)
+        print ('==========> headers', headers)
 
         raise gen.Return(response)
