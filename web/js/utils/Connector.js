@@ -7,6 +7,9 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
 import AuthStore from '../stores/AuthStore';
 
+let ActionTypes = Constants.ActionTypes;
+
+
 let connector = null;
 
 class Connector {
@@ -79,9 +82,14 @@ class Connector {
 
         if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
             message.action = message.verb.toUpperCase() + ' ' + message.resource;
+            AppDispatcher.dispatch(message);
         }
 
-        AppDispatcher.dispatch(message);
+        // display notifications
+        if (message.hasOwnProperty('code')) {
+            message.action = ActionTypes.NOTIFICATION;
+            AppDispatcher.dispatch(message);
+        }
 
        /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
             this.pendingCallbacks[message.requestId](message);

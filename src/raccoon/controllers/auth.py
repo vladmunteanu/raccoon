@@ -27,12 +27,12 @@ class AuthController(BaseController):
     @gen.coroutine
     def post(cls, request, username, password, **kwargs):
         if not username or not password:
-            raise ReplyError(400)
+            raise ReplyError(400, 'Invalid username or password')
 
         user = yield cls.model.objects.get(username=username, password=password)
 
         if not user:
-            raise ReplyError(404, request=request)
+            raise ReplyError(404, 'Invalid username or password')
 
         token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})

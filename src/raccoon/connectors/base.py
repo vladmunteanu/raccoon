@@ -8,19 +8,27 @@ from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 log = logging.getLogger(__name__)
 
-class BaseConnector(object):
+class BaseInterface(object):
 
-    def __init__(self):
+    def __init__(self, connector):
+        self.connector = connector
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', headers=None):
+    def fetch(self, url, method='GET', body=None, headers=None):
+
+        print ('******', url)
+
         response = yield self.HTTPClient.fetch(HTTPRequest(
             url=url,
             method=method,
+            body=body,
             headers=headers,
             use_gzip=True,
+            validate_cert=False,
         ))
 
-        response = json.loads(response.body.decode('utf-8'))
+        if response.body:
+            response = json.loads(response.body.decode('utf-8'))
+
         raise gen.Return(response)

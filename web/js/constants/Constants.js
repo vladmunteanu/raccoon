@@ -32,5 +32,8 @@ export default {
 
         // rights
         RIGHT_TOGGLE_VISIBLE: null,
+
+        //notifications
+        NOTIFICATION: null
     })
 };
