@@ -2,10 +2,11 @@ import React from 'react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ConnectorStore from '../../stores/ConnectorStore';
-import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
+import localConf from '../../config/Config'
+import RaccoonApp from '../RaccoonApp.react';
 let ActionTypes = Constants.ActionTypes;
-
+let data = localConf.CONNECTOR_TYPE;
 
 class ConnectorForm extends React.Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class ConnectorForm extends React.Component {
         this.state = {
             connector: {
                 name: '',
-                config: {}
+                config: JSON.stringify(data[Object.keys(data)[0]], undefined, 4)
             }
         };
     }
@@ -37,10 +38,17 @@ class ConnectorForm extends React.Component {
         });
     }
 
-    _onChangeConfig() {
+    _onChangeConfig(event) {
         this.state.connector.config = event.target.value;
         this.setState({
-            connector: JSON.parse(this.state.connector)
+            connector: this.state.connector
+        });
+    }
+
+    _onChangeConnectorType(event) {
+        this.state.connector.config = JSON.stringify(data[event.target.value], undefined, 4);
+        this.setState({
+            connector: this.state.connector
         });
     }
 
@@ -54,7 +62,7 @@ class ConnectorForm extends React.Component {
             action: ActionTypes.CREATE_CONNECTOR,
             data: {
                 name: this.state.connector.name,
-                config: this.state.connector.config
+                config: JSON.parse(this.state.connector.config)
             }
         });
     }
@@ -62,8 +70,21 @@ class ConnectorForm extends React.Component {
     render() {
         let connector = this._getDataForRender();
         let name = connector.name;
-        let config = JSON.stringify(connector.config, undefined, 4);
-        console.log("render", JSON.stringify(connector.config));
+        let config = connector.config;
+        let rows = [];
+        for(let key in data) {
+            if(data.hasOwnProperty(key)) {
+                rows.push(<option value={key}>{key}</option>);
+            }
+        }
+
+        let configPrefiledForm = (
+             <div className="form-group">
+                <label htmlFor="connector-config" className="control-label">Config</label>
+                <textarea type="text" rows="10" className="form-control" onChange={this._onChangeConfig.bind(this)}
+                                  id="connector-config" value={config} />
+             </div>
+        );
 
         return (
             <div className="container">
@@ -75,10 +96,13 @@ class ConnectorForm extends React.Component {
                                id="connector-name" value={name} placeholder="Connector Name"/>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="connector-config" className="control-label">Config</label>
-                        <textarea type="text" rows="10" className="form-control" onChange={this._onChangeConfig.bind(this)}
-                               id="connector-config" value={config} />
+                        <label htmlFor="connector-type" className="control-label">Connector Type</label><br/>
+                        <select className="form-control" defaultValue={Object.keys(data)[0]}
+                                id="connector-type" onChange={this._onChangeConnectorType.bind(this)}>
+                            {rows}
+                        </select>
                     </div>
+                    {configPrefiledForm}
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>
