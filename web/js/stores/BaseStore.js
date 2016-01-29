@@ -54,6 +54,10 @@ class BaseStore extends EventEmitter {
             return undefined;
 
         return this.instances.find(function(element, index, array) {
+            // TODO: remove this shit
+            if (element.hasOwnProperty('config') && typeof element.config !== 'string') {
+                element.config = JSON.stringify(element.config, undefined, 4);
+            }
             return element.id === id;
         });
     }
