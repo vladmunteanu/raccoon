@@ -29,10 +29,10 @@ class BaseController(object):
             if not response:
                 raise ReplyError(404)
 
-            response = response.getDict()
+            response = response.get_dict()
         else:
             response = yield cls.model.objects.find_all()
-            response = [r.getDict() for r in response]
+            response = [r.get_dict() for r in response]
 
         yield request.send(response)
 
@@ -61,7 +61,7 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        yield request.send(response.getDict())
+        yield request.send(response.get_dict())
 
     @classmethod
     @authenticated
@@ -96,7 +96,7 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        yield request.send(response.getDict())
+        yield request.send(response.get_dict())
 
     @classmethod
     @authenticated

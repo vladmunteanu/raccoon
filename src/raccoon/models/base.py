@@ -6,7 +6,7 @@ from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 class BaseModel(Document):
     ignore = []
 
-    def getDict(self):
+    def get_dict(self):
         result = deepcopy(super(Document, self).to_son())
         result['id'] = self._id
         for key in self.ignore:
@@ -21,7 +21,7 @@ class BaseModel(Document):
 
     @classmethod
     def get_message_from_exception(cls, e):
-        message = 'Unknown error on saving project!'
+        message = 'Unknown error on saving instance!!!'
         fields = cls.get_field_names()
 
         if isinstance(e, UniqueKeyViolationError):
