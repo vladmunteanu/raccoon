@@ -28,9 +28,10 @@ class BaseInterface(object):
             validate_cert=False,
         ))
 
-        body = None
-        if response.body:
+        body = response.body
+        headers = response.headers
+
+        if 'application/json' in headers.get('Content-Type'):
             body = json.loads(response.body.decode('utf-8'))
 
-        headers = response.headers
         raise gen.Return((body, headers))
