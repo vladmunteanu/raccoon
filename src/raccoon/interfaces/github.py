@@ -4,18 +4,18 @@ import logging
 
 from tornado import gen
 
-from .base import BaseConnector
+from .base import BaseInterface
 
 
 log = logging.getLogger(__name__)
 
-class GitHubConnector(BaseConnector):
+class GitHubInterface(BaseInterface):
 
     @gen.coroutine
     def branches(self, project):
         token = project.repo_auth.get('token')
         headers = {
-            'Authorization': 'token {}'.format(),
+            'Authorization': 'token {}'.format(token),
         }
 
         url = '{api_url}/repos/{repo_name}/branches'.format(
@@ -23,7 +23,7 @@ class GitHubConnector(BaseConnector):
             repo_name=project.repo_name
         )
 
-        response = yield self.fetch(
+        response, _ = yield self.fetch(
             url=url,
             headers=headers,
         )
@@ -34,7 +34,7 @@ class GitHubConnector(BaseConnector):
     def commits(self, project):
         token = project.repo_auth.get('token')
         headers = {
-            'Authorization': 'token {}'.format(),
+            'Authorization': 'token {}'.format(token),
         }
 
         url = '{api_url}/repos/{repo_name}/commits'.format(
@@ -42,7 +42,7 @@ class GitHubConnector(BaseConnector):
             repo_name=project.repo_name
         )
 
-        response = yield self.fetch(
+        response, _ = yield self.fetch(
             url=url,
             headers=headers,
         )

@@ -6,7 +6,16 @@ class Config {
 
     constructor () {
         this.WS_URL = 'ws://localhost:8888/websocket';
-
+        this.CONNECTOR_TYPE = {
+            "git": {
+                "url": "insert git url",
+                "token": "insert git token"
+            },
+            "jenkins": {
+                "url": "insert jenkins url",
+                "token": "insert jenkins token"
+            }
+        }
     }
     // connection
     //public const WS_URL = 'ws://localhost:8888/websocket';
