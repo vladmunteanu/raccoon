@@ -9,6 +9,7 @@ class Connector(BaseModel):
     __collection__ = 'connectors'
 
     name = StringField(required=True)
+    type = StringField(required=True)
     config = DictField()
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
