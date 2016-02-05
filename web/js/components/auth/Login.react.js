@@ -1,6 +1,5 @@
 import React from 'react'
 import { History } from 'react-router';
-import classnames from 'classnames';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
@@ -33,7 +32,7 @@ let Login = React.createClass({
     },
 
     validatorTypes: {
-        username: Joi.string().required().label('Username'),
+        username: Joi.string().alphanum().min(3).max(50).required().label('Username'),
         password: Joi.string().alphanum().min(8).max(30).required().label('Password')
     },
 
@@ -55,12 +54,14 @@ let Login = React.createClass({
 
     login: function (event) {
         event.preventDefault();
-        if(this.props.isValid()) {
-            AppDispatcher.dispatch({
-                action: ActionTypes.LOGIN_USER,
-                data: this.state,
-            });
-        }
+        this.props.validate((error) => {
+            if (!error) {
+                AppDispatcher.dispatch({
+                    action: ActionTypes.LOGIN_USER,
+                    data: this.state,
+                });
+            }
+        });
     },
 
     componentDidMount: function() {
