@@ -53,8 +53,14 @@ class MenuItem extends React.Component {
         var dropDown = this.props.actions.length > 0 ? (
             <ul className="dropdown-menu">
                 {
-                    this.props.actions.map(function(item) {
-                        return <li><a href="#">{item.label}</a></li>
+                    this.props.actions.map((item) => {
+                        return (
+                            <li>
+                                <Link to={this.props.item.id + '/action/' + item.id}>
+                                    {item.label}
+                                </Link>
+                            </li>
+                        );
                     })
                 }
             </ul>

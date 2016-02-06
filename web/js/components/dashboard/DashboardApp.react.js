@@ -59,6 +59,7 @@ var DashboardApp = React.createClass({
                         <Taskbar />
 
                         <div className="content">
+                            {this.props.children}
 
                             {
 

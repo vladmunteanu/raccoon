@@ -10,8 +10,11 @@
     "url": "https://github.dtc.avira.com/racoon/raccoon"
   },
   "dependencies": {
+    "classnames": "^2.2.3",
     "events": "^1.1.0",
     "flux": "^2.1.1",
+    "joi": "^7.2.3",
+    "joi-validation-strategy": "^0.3.3",
     "jwt-decode": "^1.4.0",
     "keymirror": "^0.1.1",
     "material-ui": "^0.13.4",
@@ -19,7 +22,8 @@
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-router": "^1.0.0",
-    "react-tap-event-plugin": "^0.2.1"
+    "react-tap-event-plugin": "^0.2.1",
+    "react-validation-mixin": "^5.3.4"
   },
   "devDependencies": {
     "browserify": "^11.0.1",

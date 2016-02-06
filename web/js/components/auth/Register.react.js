@@ -1,5 +1,8 @@
 import React from 'react'
 import { History } from 'react-router';
+import Joi from 'joi';
+import strategy from 'joi-validation-strategy';
+import validation from 'react-validation-mixin';
 
 import RaccoonApp from '../RaccoonApp.react';
 
@@ -16,7 +19,7 @@ function getLocalState() {
         username: '',
         email: '',
         password: '',
-        error: ''
+        error: null
     };
 
     return RaccoonApp.getState(localState);
@@ -29,11 +32,38 @@ let Register = React.createClass({
         return getLocalState();
     },
 
+    validatorTypes: {
+        name: Joi.string().min(3).max(50).required().label('Full name'),
+        username: Joi.string().alphanum().min(3).max(50).required().label('Username'),
+        password: Joi.string().alphanum().min(8).max(30).required().label('Password'),
+        email: Joi.string().email().required().label('Email')
+    },
+
+    getValidatorData: function () {
+        return this.state;
+    },
+
+    renderHelpText: function (messages) {
+        return (
+            <div className="text-danger">
+                {
+                    messages.map(message => {
+                        return <div>{message}</div>
+                    })
+                }
+            </div>
+        );
+    },
+
     register: function (event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.REGISTER_USER,
-            data: this.state
+        this.props.validate((error) => {
+            if (!error) {
+                AppDispatcher.dispatch({
+                    action: ActionTypes.REGISTER_USER,
+                    data: this.state
+                });
+            }
         });
     },
 
@@ -85,16 +115,6 @@ let Register = React.createClass({
     render: function () {
         let error_message = '';
 
-        console.log(this.state);
- /*       if (!!this.state.error) {
-            error_message = (
-                <div className="alert alert-danger col-sm-4" role="alert">
-                    {this.state.error.message}
-                </div>
-            )
-        }
-*/
-
         if (!!this.state.notifications && this.state.notifications.length > 0) {
             let notification = this.state.notifications.pop();
             error_message = (
@@ -102,7 +122,6 @@ let Register = React.createClass({
                     {notification.message}
                 </div>
             );
-            console.log('error saasd');
         }
 
         return (
@@ -117,27 +136,39 @@ let Register = React.createClass({
                         <form onSubmit={this.register} className="form-horizontal col-sm-4">
                             <div className="form-group">
                                 <label htmlFor="fullname" className="control-label">Full name</label>
-                                <input type="text" value={this.state.name} className="form-control"
-                                       onChange={this._onNameChange}
-                                       id="fullname" placeholder="Full name"/>
+                                <input type="text" className="form-control"
+                                    id="fullname" placeholder="Full name"
+                                    value={this.state.name}
+                                    onChange={this._onNameChange}
+                                    onBlur={this.props.handleValidation('name')}/>
+                                {this.renderHelpText(this.props.getValidationMessages('name'))}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="username" className="control-label">Username</label>
-                                <input type="text" value={this.state.username} className="form-control"
-                                       onChange={this._onUsernameChange}
-                                       id="username" placeholder="Username"/>
+                                <input type="text" className="form-control"
+                                    id="username" placeholder="Username"
+                                    value={this.state.username}
+                                    onChange={this._onUsernameChange}
+                                    onBlur={this.props.handleValidation('username')}/>
+                                {this.renderHelpText(this.props.getValidationMessages('username'))}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="email" className="control-label">Email</label>
-                                <input type="text" value={this.state.email} className="form-control"
-                                       onChange={this._onEmailChange}
-                                       id="email" placeholder="Email"/>
+                                <input type="text" className="form-control"
+                                    id="email" placeholder="Email"
+                                    value={this.state.email}
+                                    onChange={this._onEmailChange}
+                                    onBlur={this.props.handleValidation('email')}/>
+                                {this.renderHelpText(this.props.getValidationMessages('email'))}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password" className="control-label">Password</label>
-                                <input type="password" value={this.state.password} className="form-control"
-                                       onChange={this._onPasswordChange}
-                                       id="password" placeholder="Password"/>
+                                <input type="password" className="form-control"
+                                    id="password" placeholder="Password"
+                                    value={this.state.password}
+                                    onChange={this._onPasswordChange}
+                                    onBlur={this.props.handleValidation('password')}/>
+                                {this.renderHelpText(this.props.getValidationMessages('password'))}
                             </div>
                             <div className="form-group">
                                 <input type="submit" value="Register" className="btn btn-info pull-right"/>
@@ -150,4 +181,4 @@ let Register = React.createClass({
     }
 });
 
-export default Register;
+export default validation(strategy)(Register);
