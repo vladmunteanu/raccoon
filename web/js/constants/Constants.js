@@ -34,6 +34,12 @@ export default {
         RIGHT_TOGGLE_VISIBLE: null,
 
         //notifications
-        NOTIFICATION: null
+        NOTIFICATION: null,
+
+        // Actions
+        BUILD_START: null,
+        BUILD_STOP: null,
+        BUILD_INFO: null,
+        BUILD_OUTPUT: null,
     })
 };

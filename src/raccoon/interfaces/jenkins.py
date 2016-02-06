@@ -7,7 +7,8 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 
 from .base import BaseInterface
-
+from src.raccoon.utils.exceptions import ReplyError
+from src.raccoon.utils.utils import sleep
 
 log = logging.getLogger(__name__)
 
@@ -17,8 +18,9 @@ URLS = {
     'build_with_params':'job/{job_name}/buildWithParameters' + URL_END,
     'build_stop': 'job/{job_name}/{build_number}/stop' + URL_END,
     'build_info': 'job/{job_name}/{build_number}' + URL_END,
+    'build_output': 'job/{job_name}/{build_number}/consoleText' + URL_END,
     'build_last': 'job/{job_name}/lastBuild' + URL_END,
-    'job_output': 'job/{job_name}/consoleText' + URL_END,
+    'queue_info': 'queue/item/{queue_number}' + URL_END,
 }
 
 class JenkinsInterface(BaseInterface):
@@ -43,7 +45,11 @@ class JenkinsInterface(BaseInterface):
         )
 
     @gen.coroutine
-    def build(self, *args, **kwargs):
+    def build(self, action, *args, **kwargs):
+        """
+        :param kwargs: parameter for jenkins job
+        :return: Build information
+        """
         path = URLS.get('build')
         if kwargs:
             path = URLS.get('build_with_params')
@@ -62,8 +68,30 @@ class JenkinsInterface(BaseInterface):
             url=url,
         )
 
+        # get queue info
+        queue_url = headers.get('Location')
+        response = None
+        while True:
+            response = yield self.queue_info(url=queue_url)
+            executable = response.get('executable')
+            if executable:
+                # stop polling if build stated
+                break
+
+            yield sleep(50)
+
         # get build info
-        url = headers.get('Location')
+        build_number = response.get('executable', {}).get('number')
+        response = yield self.build_info(build_number=build_number)
+
+        raise gen.Return(response)
+
+    @gen.coroutine
+    def queue_info(self, url, *args, **kwargs):
+        """
+        :param url: URL for the queued task
+        :return: information about the task that will be executed
+        """
         parsed_url = urlparse(url)
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(self.api_url, path)
@@ -73,19 +101,20 @@ class JenkinsInterface(BaseInterface):
             url=url,
         )
 
-        print ('==========> response', response)
-        print ('==========> headers', headers)
-
         raise gen.Return(response)
 
     @gen.coroutine
-    def build_last(self):
+    def call(self, method, *args, **kwargs):
+        if method not in URLS:
+            raise ReplyError(404)
+
         job_name = 'Webserver-Unit-Tests'
 
-        # last build url
-        path_last_build = URLS.get('build_last')
-        url = urljoin(self.api_url, path_last_build).format(
+        # select path
+        path = URLS.get(method)
+        url = urljoin(self.api_url, path).format(
             job_name=job_name,
+            **kwargs,
         )
 
         response, headers = yield self.fetch(
@@ -94,3 +123,6 @@ class JenkinsInterface(BaseInterface):
         )
 
         raise gen.Return(response)
+
+    def __getattr__(self, method):
+        return lambda *args, **kwargs: self.call(method, *args, **kwargs)

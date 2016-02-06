@@ -45,7 +45,7 @@ class BaseController(object):
 
         params = {}
         for key, value in kwargs.items():
-            if hasattr(cls.model, key):
+            if value and hasattr(cls.model, key):
                 # !important
                 # Make value = ObjectId(value) if field is a reference field
                 field = cls.model.get_field_by_db_name(key)
