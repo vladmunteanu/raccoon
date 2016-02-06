@@ -33,6 +33,11 @@ export default {
         // rights
         RIGHT_TOGGLE_VISIBLE: null,
 
+        //methods
+        METHOD_TOGGLE_VISIBLE: null,
+        UPDATE_METHOD: null,
+        CREATE_METHOD: null,
+
         //notifications
         NOTIFICATION: null
     })

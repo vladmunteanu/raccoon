@@ -6,19 +6,24 @@ import Constants from '../../constants/Constants';
 import localConf from '../../config/Config'
 import RaccoonApp from '../RaccoonApp.react';
 let ActionTypes = Constants.ActionTypes;
-let data = localConf.CONNECTOR_TYPE;
+let ConnectorType = localConf.CONNECTOR_TYPE;
+
+function getLocalState() {
+    let localState = {
+        connector: {
+            name: '',
+            type: '',
+            config: JSON.stringify(ConnectorType[Object.keys(ConnectorType)[0]], undefined, 4)
+        }
+    };
+    return localState;
+}
 
 class ConnectorForm extends React.Component {
     constructor(props) {
         super(props);
         this.formName = 'New connector';
-        this.state = {
-            connector: {
-                name: '',
-                type: '',
-                config: JSON.stringify(data[Object.keys(data)[0]], undefined, 4)
-            }
-        };
+        this.state = getLocalState();
     }
 
     componentDidMount() {
@@ -41,7 +46,7 @@ class ConnectorForm extends React.Component {
 
     _onChangeConnectorType(event) {
         this.state.connector.type = event.target.value;
-        this.state.connector.config = JSON.stringify(data[event.target.value], undefined, 4);
+        this.state.connector.config = JSON.stringify(ConnectorType[event.target.value], undefined, 4);
         this.setState({
             connector: this.state.connector
         });
@@ -77,19 +82,11 @@ class ConnectorForm extends React.Component {
         let type = connector.type;
         let config = connector.config;
         let rows = [];
-        for(let key in data) {
-            if(data.hasOwnProperty(key)) {
+        for(let key in ConnectorType) {
+            if(ConnectorType.hasOwnProperty(key)) {
                 rows.push(<option value={key}>{key}</option>);
             }
         }
-
-        let configPrefiledForm = (
-             <div className="form-group">
-                <label htmlFor="connector-config" className="control-label">Config</label>
-                <textarea type="text" rows="10" className="form-control" onChange={this._onChangeConfig.bind(this)}
-                                  id="connector-config" value={config} />
-             </div>
-        );
 
         return (
             <div className="container">
@@ -107,7 +104,11 @@ class ConnectorForm extends React.Component {
                             {rows}
                         </select>
                     </div>
-                    {configPrefiledForm}
+                    <div className="form-group">
+                        <label htmlFor="connector-config" className="control-label">Config</label>
+                        <textarea type="text" rows="10" className="form-control" onChange={this._onChangeConfig.bind(this)}
+                          id="connector-config" value={config} />
+                    </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>

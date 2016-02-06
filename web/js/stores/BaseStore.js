@@ -58,6 +58,9 @@ class BaseStore extends EventEmitter {
             if (element.hasOwnProperty('config') && typeof element.config !== 'string') {
                 element.config = JSON.stringify(element.config, undefined, 4);
             }
+            if (element.hasOwnProperty('arguments') && typeof element.arguments !== 'string') {
+                element.arguments = JSON.stringify(element.arguments, undefined, 4);
+            }
             return element.id === id;
         });
     }

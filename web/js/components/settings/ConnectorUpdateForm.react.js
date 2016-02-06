@@ -7,21 +7,25 @@ import ConnectorForm from './ConnectorForm.react';
 import localConf from '../../config/Config'
 import RaccoonApp from '../RaccoonApp.react';
 let ActionTypes = Constants.ActionTypes;
-let data = localConf.CONNECTOR_TYPE;
+let ConnectorType = localConf.CONNECTOR_TYPE;
+
+function getLocalState(connectorId) {
+    let localState = {
+        connector: ConnectorStore.getById(connectorId)
+    };
+    return localState;
+}
 
 class ConnectorUpdateForm extends ConnectorForm {
     constructor(props) {
         super(props);
         this.formName = 'Update connector';
-        this.state = {
-            connector: ConnectorStore.getById(this.props.params.id)
-        };
+        this.state = getLocalState(this.props.params.id);
     }
 
     _onChange() {
-        this.setState({
-            connector: ConnectorStore.getById(this.props.params.id)
-        });
+        let state = getLocalState(this.props.params.id);
+        this.setState(state);
     }
 
     onSubmit(event) {
@@ -43,7 +47,7 @@ class ConnectorUpdateForm extends ConnectorForm {
             this.state.connector = {
                 name: '',
                 type: 'git',
-                config: JSON.stringify(data[Object.keys(data)[0]], undefined, 4)
+                config: JSON.stringify(ConnectorType[Object.keys(ConnectorType)[0]], undefined, 4)
             }
         }
         return this.state.connector;
