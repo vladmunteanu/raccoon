@@ -114,7 +114,7 @@ class JenkinsInterface(BaseInterface):
         path = URLS.get(method)
         url = urljoin(self.api_url, path).format(
             job_name=job_name,
-            **kwargs,
+            **kwargs
         )
 
         response, headers = yield self.fetch(
