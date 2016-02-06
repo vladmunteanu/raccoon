@@ -1,11 +1,13 @@
 import React from 'react';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
-import ProjectForm from './ProjectForm.react';
+import { ProjectForm } from './ProjectForm.react';
 let ActionTypes = Constants.ActionTypes;
 
 function getLocalState(projectId) {
@@ -21,6 +23,7 @@ class ProjectUpdateForm extends ProjectForm {
         super(props);
         this.formName = 'Update project';
         this.state = getLocalState(this.props.params.id);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     _onChange() {
@@ -30,14 +33,18 @@ class ProjectUpdateForm extends ProjectForm {
 
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.UPDATE_PROJECT,
-            data: {
-                id: this.state.project.id,
-                name: this.state.project.name,
-                label: this.state.project.label,
-                repo_url: this.state.project.repo_url,
-                connector: this.state.project.connector
+        this.props.validate((error) => {
+            if (!error) {
+                AppDispatcher.dispatch({
+                    action: ActionTypes.UPDATE_PROJECT,
+                    data: {
+                        id: this.state.project.id,
+                        name: this.state.project.name,
+                        label: this.state.project.label,
+                        repo_url: this.state.project.repo_url,
+                        connector: this.state.project.connector
+                    }
+                });
             }
         });
     }
@@ -56,4 +63,5 @@ class ProjectUpdateForm extends ProjectForm {
     }
 }
 
-export default ProjectUpdateForm;
+export { ProjectUpdateForm };
+export default validation(strategy)(ProjectUpdateForm);

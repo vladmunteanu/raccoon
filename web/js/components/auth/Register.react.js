@@ -65,7 +65,6 @@ let Register = React.createClass({
                 });
             }
         });
-
     },
 
     componentDidMount: function() {
