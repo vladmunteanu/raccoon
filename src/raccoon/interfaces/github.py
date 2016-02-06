@@ -13,7 +13,7 @@ class GitHubInterface(BaseInterface):
 
     @gen.coroutine
     def branches(self, project):
-        token = project.repo_auth.get('token')
+        token = self.connector.config.get('token')
         headers = {
             'Authorization': 'token {}'.format(token),
         }
@@ -32,7 +32,7 @@ class GitHubInterface(BaseInterface):
 
     @gen.coroutine
     def commits(self, project):
-        token = project.repo_auth.get('token')
+        token = self.connector.config.get('token')
         headers = {
             'Authorization': 'token {}'.format(token),
         }
