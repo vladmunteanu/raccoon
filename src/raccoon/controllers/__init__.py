@@ -15,5 +15,7 @@ from .rights import *
 from .users import *
 from .auth import *
 
+from .github import *
+
 # Import all submodules
 # import_submodules(globals(), __name__, __path__)
