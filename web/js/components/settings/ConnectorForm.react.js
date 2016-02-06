@@ -15,6 +15,7 @@ class ConnectorForm extends React.Component {
         this.state = {
             connector: {
                 name: '',
+                type: '',
                 config: JSON.stringify(data[Object.keys(data)[0]], undefined, 4)
             }
         };
@@ -38,6 +39,14 @@ class ConnectorForm extends React.Component {
         });
     }
 
+    _onChangeConnectorType(event) {
+        this.state.connector.type = event.target.value;
+        this.state.connector.config = JSON.stringify(data[event.target.value], undefined, 4);
+        this.setState({
+            connector: this.state.connector
+        });
+    }
+
     _onChangeConfig(event) {
         this.state.connector.config = event.target.value;
         this.setState({
@@ -45,12 +54,6 @@ class ConnectorForm extends React.Component {
         });
     }
 
-    _onChangeConnectorType(event) {
-        this.state.connector.config = JSON.stringify(data[event.target.value], undefined, 4);
-        this.setState({
-            connector: this.state.connector
-        });
-    }
 
     _getDataForRender() {
         return this.state.connector;
@@ -62,6 +65,7 @@ class ConnectorForm extends React.Component {
             action: ActionTypes.CREATE_CONNECTOR,
             data: {
                 name: this.state.connector.name,
+                type: this.state.connector.type,
                 config: JSON.parse(this.state.connector.config)
             }
         });
@@ -70,6 +74,7 @@ class ConnectorForm extends React.Component {
     render() {
         let connector = this._getDataForRender();
         let name = connector.name;
+        let type = connector.type;
         let config = connector.config;
         let rows = [];
         for(let key in data) {
@@ -97,7 +102,7 @@ class ConnectorForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-type" className="control-label">Connector Type</label><br/>
-                        <select className="form-control" defaultValue={Object.keys(data)[0]}
+                        <select className="form-control" value={type}
                                 id="connector-type" onChange={this._onChangeConnectorType.bind(this)}>
                             {rows}
                         </select>

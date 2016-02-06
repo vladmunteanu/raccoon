@@ -31,6 +31,7 @@ class ConnectorUpdateForm extends ConnectorForm {
             data: {
                 id: this.state.connector.id,
                 name: this.state.connector.name,
+                type: this.state.connector.type,
                 config: JSON.parse(this.state.connector.config)
             }
         });
@@ -41,6 +42,7 @@ class ConnectorUpdateForm extends ConnectorForm {
         if(!this.state.connector) {
             this.state.connector = {
                 name: '',
+                type: 'git',
                 config: JSON.stringify(data[Object.keys(data)[0]], undefined, 4)
             }
         }
