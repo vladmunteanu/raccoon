@@ -114,7 +114,6 @@ class ProjectForm extends React.Component {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                console.log(this.state.project);
                 AppDispatcher.dispatch({
                     action: ActionTypes.CREATE_PROJECT,
                     data: {
