@@ -141,13 +141,13 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.methods.map(method => {
-                                            return <MenuItem item={method} />;
+                                            return <MenuItem item={method} link={"/settings/method/" + method.id} />;
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="/settings/method/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
