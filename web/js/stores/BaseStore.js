@@ -1,4 +1,5 @@
 import React from 'react';
+import update from 'react-addons-update';
 import FluxStore from 'flux';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
@@ -53,7 +54,7 @@ class BaseStore extends EventEmitter {
         if(!this.instances)
             return undefined;
 
-        return this.instances.find(function(element, index, array) {
+        let instance = this.instances.find(function(element, index, array) {
             // TODO: remove this shit
             if (element.hasOwnProperty('config') && typeof element.config !== 'string') {
                 element.config = JSON.stringify(element.config, undefined, 4);
@@ -63,6 +64,7 @@ class BaseStore extends EventEmitter {
             }
             return element.id === id;
         });
+        return update(instance, {});
     }
 
     updateById(id, data) {

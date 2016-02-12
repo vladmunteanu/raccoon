@@ -19,8 +19,9 @@
     "keymirror": "^0.1.1",
     "material-ui": "^0.13.4",
     "object-assign": "^4.0.1",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3",
+    "react": "^0.14.7",
+    "react-addons-update": "^0.14.7",
+    "react-dom": "^0.14.7",
     "react-router": "^1.0.0",
     "react-tap-event-plugin": "^0.2.1",
     "react-validation-mixin": "^5.3.4"
