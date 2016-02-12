@@ -26,6 +26,14 @@ class ProjectUpdateForm extends ProjectForm {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            this.props.clearValidations();
+            let state = getLocalState(nextProps.params.id);
+            this.setState(state);
+        }
+    }
+
     _onChange() {
         let state = getLocalState(this.props.params.id);
         this.setState(state);
@@ -50,7 +58,6 @@ class ProjectUpdateForm extends ProjectForm {
     }
 
     _getDataForRender() {
-        this.state.project = ProjectStore.getById(this.props.params.id);
         if(!this.state.project) {
             this.state.project = {
                 name: '',
