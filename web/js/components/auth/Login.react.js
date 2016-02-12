@@ -10,13 +10,12 @@ import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
 import NotificationStore from '../../stores/NotificationStore';
 
-
 import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
+
 
 function getLocalState() {
     let localState = {
-        username: '',
+        email: '',
         password: '',
         error: null
     };
@@ -32,8 +31,8 @@ let Login = React.createClass({
     },
 
     validatorTypes: {
-        username: Joi.string().alphanum().min(3).max(50).required().label('Username'),
-        password: Joi.string().alphanum().min(8).max(30).required().label('Password')
+        email: Joi.string().email().required().label('Email'),
+        password: Joi.string().min(8).max(30).required().label('Password')
     },
 
     getValidatorData: function () {
@@ -56,10 +55,7 @@ let Login = React.createClass({
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                AppDispatcher.dispatch({
-                    action: ActionTypes.LOGIN_USER,
-                    data: this.state,
-                });
+                AuthStore.authenticate(this.state);
             }
         });
     },
@@ -78,18 +74,13 @@ let Login = React.createClass({
         this.setState(getLocalState());
 
         if (AuthStore.isLoggedIn()) {
-            RaccoonApp.fetchAll(); // fetch all everything at login
+            RaccoonApp.fetchAll(); // fetch everything at login
             this.history.pushState(null, '/');
         }
     },
 
-    _onUsernameChange: function (event) {
-        this.state.username = event.target.value;
-        this.setState(this.state);
-    },
-
-    _onPasswordChange: function (event) {
-        this.state.password = event.target.value;
+    onFormChange(name, event) {
+        this.state[name] = event.target.value;
         this.setState(this.state);
     },
 
@@ -116,20 +107,20 @@ let Login = React.createClass({
                         <h3>Sign In</h3>
                         <form onSubmit={this.login} className="form-horizontal col-sm-4">
                             <div className="form-group">
-                                <label htmlFor="username" className="control-label">Username</label>
+                                <label htmlFor="username" className="control-label">Email</label>
                                 <input type="text" ref="username" id="username"
                                     className="form-control" placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this._onUsernameChange}
-                                    onBlur={this.props.handleValidation('username')}/>
-                                {this.renderHelpText(this.props.getValidationMessages('username'))}
+                                    value={this.state.email}
+                                    onChange={this.onFormChange.bind(this, 'email')}
+                                    onBlur={this.props.handleValidation('email')}/>
+                                {this.renderHelpText(this.props.getValidationMessages('email'))}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="password" className="control-label">Password</label>
                                 <input type="password" ref="password" id="password"
                                     className="form-control" placeholder="Password"
                                     value={this.state.password}
-                                    onChange={this._onPasswordChange}
+                                    onChange={this.onFormChange.bind(this, 'password')}
                                     onBlur={this.props.handleValidation('password')}/>
                                 {this.renderHelpText(this.props.getValidationMessages('password'))}
                             </div>

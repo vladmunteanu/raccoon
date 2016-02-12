@@ -8,7 +8,6 @@ import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 function getLocalState() {
     let localState = {
