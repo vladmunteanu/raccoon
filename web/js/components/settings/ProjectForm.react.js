@@ -87,14 +87,11 @@ class ProjectForm extends React.Component {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                AppDispatcher.dispatch({
-                    action: ActionTypes.CREATE_PROJECT,
-                    data: {
-                        name: this.state.project.name,
-                        label: this.state.project.label,
-                        repo_url: this.state.project.repo_url,
-                        connector: this.state.project.connector
-                    }
+                ProjectStore.create({
+                    name: this.state.project.name,
+                    label: this.state.project.label,
+                    repo_url: this.state.project.repo_url,
+                    connector: this.state.project.connector
                 });
             }
         });

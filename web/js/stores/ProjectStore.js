@@ -27,12 +27,6 @@ class ProjectStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
-        AppDispatcher.registerOnce(ActionTypes.UPDATE_PROJECT, payload => {
-            this.updateById(payload.data.id, payload.data);
-        });
-        AppDispatcher.registerOnce(ActionTypes.CREATE_PROJECT, payload => {
-            this.create(payload.data);
-        });
     }
 
     toggleVisible(id) {

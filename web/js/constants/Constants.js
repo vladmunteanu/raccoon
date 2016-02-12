@@ -9,8 +9,6 @@ export default {
 
         // projects
         PROJECT_TOGGLE_VISIBLE: null,
-        UPDATE_PROJECT: null,
-        CREATE_PROJECT: null,
 
         // environments
         ENVIRONMENT_TOGGLE_VISIBLE: null,
