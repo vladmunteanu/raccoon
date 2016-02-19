@@ -1,11 +1,11 @@
 import React from 'react';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import RaccoonApp from '../RaccoonApp.react';
-import Constants from '../../constants/Constants';
-import EnvironmentForm from './EnvironmentForm.react';
-let ActionTypes = Constants.ActionTypes;
+import { EnvironmentForm } from './EnvironmentForm.react';
 
 
 class EnvironmentUpdateForm extends EnvironmentForm {
@@ -15,6 +15,7 @@ class EnvironmentUpdateForm extends EnvironmentForm {
         this.state = {
             environment: EnvironmentStore.getById(this.props.params.id)
         };
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     _onChange() {
@@ -23,19 +24,28 @@ class EnvironmentUpdateForm extends EnvironmentForm {
         });
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            this.props.clearValidations();
+            this.setState({
+                environment: EnvironmentStore.getById(nextProps.params.id)
+            });
+        }
+    }
+
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.UPDATE_ENVIRONMENT,
-            data: {
-                id: this.state.environment.id,
-                name: this.state.environment.name
+        this.props.clearValidations();
+        this.props.validate((error) => {
+            if (!error) {
+                EnvironmentStore.updateById(this.state.environment.id, {
+                    name: this.state.environment.name
+                });
             }
         });
     }
 
     _getDataForRender() {
-        this.state.environment = EnvironmentStore.getById(this.props.params.id);
         if(!this.state.environment) {
             this.state.environment = {
                 name: ''
@@ -45,4 +55,5 @@ class EnvironmentUpdateForm extends EnvironmentForm {
     }
 }
 
-export default EnvironmentUpdateForm;
+export { EnvironmentUpdateForm };
+export default validation(strategy)(EnvironmentUpdateForm);

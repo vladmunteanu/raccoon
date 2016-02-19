@@ -1,5 +1,4 @@
 import React from 'react';
-import update from 'react-addons-update';
 import FluxStore from 'flux';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';

@@ -64,6 +64,7 @@ class ProjectForm extends React.Component {
     onFormChange(name, event) {
         this.state.project[name] = event.target.value;
         this.setState(this.state);
+        this.props.validate(name);
     }
 
     getValidatorData() {
