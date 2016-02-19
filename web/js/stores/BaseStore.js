@@ -1,5 +1,4 @@
 import React from 'react';
-import update from 'react-addons-update';
 import FluxStore from 'flux';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
@@ -64,7 +63,7 @@ class BaseStore extends EventEmitter {
             }
             return element.id === id;
         });
-        return update(instance, {});
+        return instance;
     }
 
     updateById(id, data) {

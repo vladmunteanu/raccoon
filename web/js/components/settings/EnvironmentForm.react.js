@@ -1,11 +1,11 @@
 import React from 'react';
+import Joi from 'joi';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import RaccoonApp from '../RaccoonApp.react';
-import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
-
 
 class EnvironmentForm extends React.Component {
     constructor(props) {
@@ -16,6 +16,12 @@ class EnvironmentForm extends React.Component {
                 name: ''
             }
         };
+        this.validatorTypes = {
+            name: Joi.string().min(3).max(50).required().label('Environment name')
+        };
+        this.getValidatorData = this.getValidatorData.bind(this);
+        this.renderHelpText = this.renderHelpText.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -29,23 +35,41 @@ class EnvironmentForm extends React.Component {
     _onChange() {
     }
 
-    _onChangeName(event) {
-        this.state.environment.name = event.target.value;
+    onFormChange(name, event) {
+        this.state.environment[name] = event.target.value;
         this.setState({
             environment: this.state.environment
         });
+        this.props.validate(name);
     }
 
     _getDataForRender() {
         return this.state.environment;
     }
 
+    getValidatorData() {
+        return this.state.environment;
+    }
+
+    renderHelpText(messages) {
+        return (
+            <div className="text-danger">
+                {
+                    messages.map(message => {
+                        return <div>{message}</div>
+                    })
+                }
+            </div>
+        );
+    }
+
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.CREATE_ENVIRONMENT,
-            data: {
-                name: this.state.environment.name
+        this.props.validate((error) => {
+            if (!error) {
+                EnvironmentStore.create({
+                    name: this.state.environment.name
+                });
             }
         });
     }
@@ -57,11 +81,15 @@ class EnvironmentForm extends React.Component {
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
-                <form onSubmit={this.onSubmit.bind(this)} className="form-horizontal col-sm-4">
+                <form onSubmit={this.onSubmit} className="form-horizontal col-sm-4">
                     <div className="form-group">
                         <label htmlFor="environment-name" className="control-label">Environment name</label>
-                        <input type="text" autoComplete="off" className="form-control" onChange={this._onChangeName.bind(this)}
-                               id="environment-name" value={name} placeholder="Environment Name"/>
+                        <input type="text" autoComplete="off" className="form-control"
+                               id="environment-name" value={name}
+                               placeholder="Environment Name"
+                               onChange={this.onFormChange.bind(this, 'name')}
+                               onBlur={this.props.handleValidation('name')}/>
+                        {this.renderHelpText(this.props.getValidationMessages('name'))}
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
@@ -72,4 +100,5 @@ class EnvironmentForm extends React.Component {
     }
 }
 
-export default EnvironmentForm;
+export { EnvironmentForm };
+export default validation(strategy)(EnvironmentForm);
