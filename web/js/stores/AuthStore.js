@@ -56,7 +56,7 @@ class AuthStore extends BaseStore {
             verb: 'post',
             resource: '/api/v1/auth/',
             body: {
-                username: data.username,
+                email: data.email,
                 password: data.password,
             }
         }, payload => {
@@ -73,7 +73,6 @@ class AuthStore extends BaseStore {
             resource: '/api/v1/users/',
             body: {
                 name: data.name,
-                username: data.username,
                 email: data.email,
                 password: data.password
             }

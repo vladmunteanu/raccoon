@@ -22,13 +22,6 @@ class ActionStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/actions/";
-
-        AppDispatcher.registerOnce(ActionTypes.UPDATE_ACTION, payload => {
-            this.updateById(payload.data.id, payload.data);
-        });
-        AppDispatcher.registerOnce(ActionTypes.CREATE_ACTION, payload => {
-            this.create(payload.data);
-        });
     }
 
     filter(project = null, env = null) {

@@ -34,7 +34,7 @@ class BaseStore extends EventEmitter {
     }
 
     set all(data) {
-        this.instances = data;
+        this.instances = data || [];
         this.emitChange();
     }
 
@@ -53,7 +53,7 @@ class BaseStore extends EventEmitter {
         if(!this.instances)
             return undefined;
 
-        return this.instances.find(function(element, index, array) {
+        let instance = this.instances.find(function(element, index, array) {
             // TODO: remove this shit
             if (element.hasOwnProperty('config') && typeof element.config !== 'string') {
                 element.config = JSON.stringify(element.config, undefined, 4);
@@ -63,6 +63,8 @@ class BaseStore extends EventEmitter {
             }
             return element.id === id;
         });
+
+        return instance;
     }
 
     updateById(id, data) {

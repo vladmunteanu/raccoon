@@ -8,7 +8,6 @@ import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 function getLocalState() {
     let localState = {
@@ -39,10 +38,6 @@ class ProjectForm extends React.Component {
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
-        this._onChangeName =  this._onChangeName.bind(this);
-        this._onChangeLabel =  this._onChangeLabel.bind(this);
-        this._onChangeRepoUrl =  this._onChangeRepoUrl.bind(this);
-        this._onChangeConnector =  this._onChangeConnector.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -62,36 +57,14 @@ class ProjectForm extends React.Component {
         this.setState(state);
     }
 
-    _onChangeName(event) {
-        this.state.project.name = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangeLabel(event) {
-        this.state.project.label = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangeRepoUrl(event) {
-        this.state.project.repo_url = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
-    _onChangeConnector(event) {
-        this.state.project.connector = event.target.value;
-        this.setState({
-            project: this.state.project
-        });
-    }
-
     _getDataForRender() {
         return this.state.project;
+    }
+
+    onFormChange(name, event) {
+        this.state.project[name] = event.target.value;
+        this.setState(this.state);
+        this.props.validate(name);
     }
 
     getValidatorData() {
@@ -114,14 +87,11 @@ class ProjectForm extends React.Component {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                AppDispatcher.dispatch({
-                    action: ActionTypes.CREATE_PROJECT,
-                    data: {
-                        name: this.state.project.name,
-                        label: this.state.project.label,
-                        repo_url: this.state.project.repo_url,
-                        connector: this.state.project.connector
-                    }
+                ProjectStore.create({
+                    name: this.state.project.name,
+                    label: this.state.project.label,
+                    repo_url: this.state.project.repo_url,
+                    connector: this.state.project.connector
                 });
             }
         });
@@ -143,7 +113,7 @@ class ProjectForm extends React.Component {
                         <input type="text" className="form-control"
                                id="project-name" value={name}
                                placeholder="Project Name"
-                               onChange={this._onChangeName}
+                               onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')}/>
                         {this.renderHelpText(this.props.getValidationMessages('name'))}
                     </div>
@@ -152,7 +122,7 @@ class ProjectForm extends React.Component {
                         <input type="text"  className="form-control"
                                id="project-label" value={label}
                                placeholder="Project label"
-                               onChange={this._onChangeLabel}
+                               onChange={this.onFormChange.bind(this, 'label')}
                                onBlur={this.props.handleValidation('label')}/>
                         {this.renderHelpText(this.props.getValidationMessages('label'))}
                     </div>
@@ -161,7 +131,7 @@ class ProjectForm extends React.Component {
                         <input type="text"  className="form-control"
                                id="repo-url" value={url}
                                placeholder="Repository url"
-                               onChange={this._onChangeRepoUrl}
+                               onChange={this.onFormChange.bind(this, 'repo_url')}
                                onBlur={this.props.handleValidation('repo_url')}/>
                         {this.renderHelpText(this.props.getValidationMessages('repo_url'))}
                     </div>
@@ -169,7 +139,7 @@ class ProjectForm extends React.Component {
                         <label htmlFor="connector-project" className="control-label">Connector</label>
                         <select className="form-control" id="connector-project"
                                 value={connectorId}
-                                onChange={this._onChangeConnector}
+                                onChange={this.onFormChange.bind(this, 'connector')}
                                 onBlur={this.props.handleValidation('connector')}>
                             <option disabled>-- select an option --</option>
                             {

@@ -1,14 +1,13 @@
 import React from 'react';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import RaccoonApp from '../RaccoonApp.react';
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import ActionStore from '../../stores/ActionStore';
 import MethodStore from '../../stores/MethodStore';
-import ActionForm from './ActionForm.react';
-
-import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
+import { ActionForm } from './ActionForm.react';
 
 
 function getLocalState() {
@@ -30,6 +29,15 @@ class ActionUpdateForm extends ActionForm {
         super(props);
         this.formName = 'Update action';
         this.state = getLocalState();
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            this.props.clearValidations();
+            let state = getLocalState(nextProps.params.id);
+            this.setState(state);
+        }
     }
 
     _onChange() {
@@ -40,15 +48,15 @@ class ActionUpdateForm extends ActionForm {
 
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.UPDATE_ACTION,
-            data: {
-                id: this.state.action.id,
-                name: this.state.action.name,
-                label: this.state.action.label,
-                project: this.state.action.project,
-                environment: this.state.action.environment,
-                method: this.state.action.method,
+        this.props.validate((error) => {
+            if (!error) {
+                ActionStore.updateById(this.state.action.id, {
+                    name: this.state.action.name,
+                    label: this.state.action.label,
+                    project: this.state.action.project,
+                    environment: this.state.action.environment,
+                    method: this.state.action.method
+                });
             }
         });
     }
@@ -70,4 +78,5 @@ class ActionUpdateForm extends ActionForm {
     }
 }
 
-export default ActionUpdateForm;
+export { ActionUpdateForm };
+export default validation(strategy)(ActionUpdateForm);

@@ -16,7 +16,6 @@ let ActionTypes = Constants.ActionTypes;
 function getLocalState() {
     let localState = {
         name: '',
-        username: '',
         email: '',
         password: '',
         error: null
@@ -34,7 +33,6 @@ let Register = React.createClass({
 
     validatorTypes: {
         name: Joi.string().min(3).max(50).required().label('Full name'),
-        username: Joi.string().alphanum().min(3).max(50).required().label('Username'),
         password: Joi.string().alphanum().min(8).max(30).required().label('Password'),
         email: Joi.string().email().required().label('Email')
     },
@@ -79,37 +77,16 @@ let Register = React.createClass({
 
     _onChange: function() {
         this.setState(getLocalState());
-
- /*       if (AuthStore.error) {
-            this.state.error = AuthStore.error;
-            AuthStore.error = null;
-            this.setState(this.state);
-        }*/
-
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch all everything at login
             this.history.pushState(null, '/');
         }
     },
 
-    _onNameChange: function (event) {
-        this.state.name = event.target.value;
+    onFormChange: function(name, event) {
+        this.state[name] = event.target.value;
         this.setState(this.state);
-    },
-
-    _onEmailChange: function (event) {
-        this.state.email = event.target.value;
-        this.setState(this.state);
-    },
-
-    _onUsernameChange: function (event) {
-        this.state.username = event.target.value;
-        this.setState(this.state);
-    },
-
-    _onPasswordChange: function (event) {
-        this.state.password = event.target.value;
-        this.setState(this.state);
+        this.props.validate(name);
     },
 
     render: function () {
@@ -139,25 +116,16 @@ let Register = React.createClass({
                                 <input type="text" className="form-control"
                                     id="fullname" placeholder="Full name"
                                     value={this.state.name}
-                                    onChange={this._onNameChange}
+                                    onChange={this.onFormChange.bind(this, 'name')}
                                     onBlur={this.props.handleValidation('name')}/>
                                 {this.renderHelpText(this.props.getValidationMessages('name'))}
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="username" className="control-label">Username</label>
-                                <input type="text" className="form-control"
-                                    id="username" placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this._onUsernameChange}
-                                    onBlur={this.props.handleValidation('username')}/>
-                                {this.renderHelpText(this.props.getValidationMessages('username'))}
                             </div>
                             <div className="form-group">
                                 <label htmlFor="email" className="control-label">Email</label>
                                 <input type="text" className="form-control"
                                     id="email" placeholder="Email"
                                     value={this.state.email}
-                                    onChange={this._onEmailChange}
+                                    onChange={this.onFormChange.bind(this, 'email')}
                                     onBlur={this.props.handleValidation('email')}/>
                                 {this.renderHelpText(this.props.getValidationMessages('email'))}
                             </div>
@@ -166,7 +134,7 @@ let Register = React.createClass({
                                 <input type="password" className="form-control"
                                     id="password" placeholder="Password"
                                     value={this.state.password}
-                                    onChange={this._onPasswordChange}
+                                    onChange={this.onFormChange.bind(this, 'password')}
                                     onBlur={this.props.handleValidation('password')}/>
                                 {this.renderHelpText(this.props.getValidationMessages('password'))}
                             </div>
