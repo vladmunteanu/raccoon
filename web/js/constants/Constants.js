@@ -14,8 +14,6 @@ export default {
 
         // actions
         ACTION_TOGGLE_VISIBLE: null,
-        CREATE_ACTION: null,
-        UPDATE_ACTION: null,
 
         // connectors
         CONNECTOR_TOGGLE_VISIBLE: null,
