@@ -37,7 +37,7 @@ class MethodUpdateForm extends MethodForm {
                 name: this.state.method.name,
                 connector: this.state.method.connector,
                 method: this.state.method.method,
-                arguments: this.state.method.arguments
+                arguments: JSON.parse(this.state.method.arguments)
             }
         });
     }
@@ -49,7 +49,10 @@ class MethodUpdateForm extends MethodForm {
                 name: '',
                 connector: null,
                 method: '',
-                arguments: '[]'
+                arguments: [{
+                  'name': '',
+                  'value': ''
+                }]
             }
         }
         return this.state.method;

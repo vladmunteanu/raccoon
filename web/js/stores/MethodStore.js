@@ -7,7 +7,7 @@ import Connector from '../utils/Connector';
 import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
-
+let ActionTypes = Constants.ActionTypes;
 let methodStore = null;
 
 class MethodStore extends BaseStore {
@@ -22,6 +22,13 @@ class MethodStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/methods/";
+
+        AppDispatcher.registerOnce(ActionTypes.UPDATE_METHOD, payload => {
+            this.updateById(payload.data.id, payload.data);
+        });
+        AppDispatcher.registerOnce(ActionTypes.CREATE_METHOD, payload => {
+            this.create(payload.data);
+        });
 
     }
 

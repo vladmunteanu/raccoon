@@ -6,6 +6,7 @@ import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
+let argRows = [];
 
 function getLocalState() {
     let localState = {
@@ -14,7 +15,10 @@ function getLocalState() {
             name: '',
             connector: null,
             method: '',
-            arguments: '[]'
+            arguments: [{
+              'name': '',
+              'value': ''
+            }]
         }
     };
     return localState;
@@ -65,8 +69,21 @@ class MethodForm extends React.Component {
         });
     }
 
-    _onChangeArguments(event) {
-        this.state.method.arguments = JSON.stringify(event.target.value, undefined, 4);;
+    _onChangeArgumentName(event) {
+        if (typeof(this.state.method.arguments) == 'string'){
+          this.state.method.arguments = JSON.parse(this.state.method.arguments)
+        }
+        this.state.method.arguments[event.target.getAttribute('data-id')]['name'] = event.target.value;
+        this.setState({
+            method: this.state.method
+        });
+    }
+
+    _onChangeArgumentValue(event) {
+        if (typeof(this.state.method.arguments) == 'string'){
+          this.state.method.arguments = JSON.parse(this.state.method.arguments)
+        }
+        this.state.method.arguments[event.target.getAttribute('data-id')]['value'] = event.target.value;
         this.setState({
             method: this.state.method
         });
@@ -84,10 +101,21 @@ class MethodForm extends React.Component {
                 name: this.state.method.name,
                 connector: this.state.method.connector,
                 method: this.state.method.method,
-                arguments: JSON.parse(this.state.method.arguments)
+                arguments: this.state.method.arguments
             }
         });
     }
+
+    addInput(dataId){
+      argRows.push(
+        <div className="form-group">
+          <input type="text" className="form-control" data-id={dataId} onChange={this._onChangeArgumentName.bind(this)} id="method-arguments-name"
+            placeholder="name"/>
+          <input type="text" className="form-control" data-id={dataId} onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
+            placeholder="value"/>
+        </div>);
+     }
+
 
     render() {
         let method = this._getDataForRender();
@@ -95,6 +123,29 @@ class MethodForm extends React.Component {
         let connectorId = method.connector;
         let meth = method.method;
         let args = method.arguments;
+        if (typeof(args) == "string") {
+            args = JSON.parse(args);
+        }
+        console.log("1111111111111111", args.length);
+        if (args.length == 0) {
+          argRows.push(
+            <div className="form-group">
+              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentName.bind(this)} onClick={this.addInput(1)}
+                id="method-arguments-name" placeholder="name"/>
+              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
+                placeholder="value"/>
+            </div>);
+        }else{
+          for (var i = 0; i < args.length; i++) {
+            argRows.push(
+              <div className="form-group">
+                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentName.bind(this)} onClick={this.addInput(i+1)}
+                  id="method-arguments-name" value={args[i]["name"]} placeholder="name"/>
+                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
+                    value={args[i]["value"]} placeholder="value"/>
+              </div>);
+          }
+        }
 
         return (
             <div className="container">
@@ -123,10 +174,8 @@ class MethodForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
-                        <textarea type="text" rows="10" className="form-control" onChange={this._onChangeArguments.bind(this)}
-                                  id="connector-config" value={args} />
                     </div>
-
+                    {argRows}
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>
