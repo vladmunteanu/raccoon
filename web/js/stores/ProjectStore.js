@@ -1,6 +1,7 @@
 import React from 'react';
 import FluxStore from 'flux';
 
+import RaccoonApp from './../components/RaccoonApp.react.js';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
@@ -30,13 +31,40 @@ class ProjectStore extends BaseStore {
     }
 
     toggleVisible(id) {
-        this.all.map(function (project) {
-            if (project.id == id) {
-                project.visible = !project.visible;
-            }
-        });
+        let project = this.getById(id);
+        let state = RaccoonApp.getBrowserState();
+
+        project.visible = !project.visible;
+        state.toggle.project[project.id] = project.visible;
+        RaccoonApp.saveBrowserState(state);
+
         this.emitChange();
     }
+
+    getToggle(id) {
+        let project = this.getById(id);
+        let state = RaccoonApp.getBrowserState();
+
+        if (!project.hasOwnProperty("visible")) {
+            project.visible = !!state.toggle.project[project.id];
+        }
+
+        return project.visible;
+    }
+
+    set all(data) {
+        this.instances = data || [];
+        this.instances.map(item => {
+            item.visible = this.getToggle(item.id)
+        });
+
+        this.emitChange();
+    }
+
+    get all() {
+        return this.instances || [];
+    }
+
 }
 
 export default new ProjectStore();

@@ -34,7 +34,7 @@ class BaseStore extends EventEmitter {
     }
 
     set all(data) {
-        this.instances = data;
+        this.instances = data || [];
         this.emitChange();
     }
 
@@ -63,6 +63,7 @@ class BaseStore extends EventEmitter {
             }
             return element.id === id;
         });
+
         return instance;
     }
 
