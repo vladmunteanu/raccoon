@@ -79,7 +79,7 @@ let Login = React.createClass({
         }
     },
 
-    onFormChange(name, event) {
+    onFormChange: function(name, event) {
         this.state[name] = event.target.value;
         this.setState(this.state);
     },

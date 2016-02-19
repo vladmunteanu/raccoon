@@ -73,7 +73,6 @@ class AuthStore extends BaseStore {
             resource: '/api/v1/users/',
             body: {
                 name: data.name,
-                username: data.username,
                 email: data.email,
                 password: data.password
             }
