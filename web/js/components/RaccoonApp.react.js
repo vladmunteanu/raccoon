@@ -38,6 +38,7 @@ function getRaccoonState() {
     };
 }
 
+
 let RaccoonApp = React.createClass({
 
     getInitialState: function () {
@@ -109,6 +110,28 @@ RaccoonApp.getState = function (state) {
 
     return globalState;
 };
+
+
+RaccoonApp.getBrowserState = function () {
+    var state = JSON.parse(localStorage.getItem('state'));
+
+    if (!state) {
+        state = {
+            toggle: {
+                project: {},
+                environment: {}
+            }
+        };
+        localStorage.setItem('state', JSON.stringify(state));
+    }
+
+    return state;
+};
+
+RaccoonApp.saveBrowserState = function (state) {
+    localStorage.setItem('state', JSON.stringify(state));
+};
+
 
 /**
  * Fetches the global data

@@ -2,25 +2,35 @@ import React from 'react'
 import { Link } from 'react-router';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import RaccoonApp from './RaccoonApp.react.js';
 import Util from '../utils/Utils';
+
+import ProjectStore from '../stores/ProjectStore';
 
 
 class MenuItem extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            //checked: Math.random() >= 0.5
-            checked: false,
-        };
+
+        if (this.props.hasOwnProperty("store")) {
+            this.state = {
+                checked: this.props.store.getToggle(this.props.item.id)
+            }
+        } else {
+            this.state = {
+                checked: false
+            };
+        }
     }
 
     handleChange(event) {
         this.setState({checked: event.target.checked});
+
         AppDispatcher.dispatch({
             action: this.props.action,
             data: {
                 id: this.props.item.id,
-                visible: event.target.checked,
+                visible: event.target.checked
             }
         });
     }
@@ -102,7 +112,7 @@ class MenuItem extends React.Component {
 }
 
 MenuItem.defaultProps = {
-    actions: [],
+    actions: []
 };
 
 export default MenuItem;

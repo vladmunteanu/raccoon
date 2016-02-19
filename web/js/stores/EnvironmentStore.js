@@ -1,6 +1,7 @@
 import React from 'react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
+import RaccoonApp from './../components/RaccoonApp.react.js';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
 import Constants from '../constants/Constants';
@@ -36,12 +37,38 @@ class EnvironmentStore extends BaseStore {
     }
 
     toggleVisible(id) {
-        this.all.map(function (env) {
-            if (env.id == id) {
-                env.visible = !env.visible;
-            }
-        });
+        let environment = this.getById(id);
+        let state = RaccoonApp.getBrowserState();
+
+        environment.visible = !environment.visible;
+        state.toggle.environment[environment.id] = environment.visible;
+        RaccoonApp.saveBrowserState(state);
+
         this.emitChange();
+    }
+
+    getToggle(id) {
+        let environment = this.getById(id);
+        let state = RaccoonApp.getBrowserState();
+
+        if (!environment.hasOwnProperty("visible")) {
+            environment.visible = !!state.toggle.environment[environment.id];
+        }
+
+        return environment.visible;
+    }
+
+    set all(data) {
+        this.instances = data || [];
+        this.instances.map(item => {
+            item.visible = this.getToggle(item.id)
+        });
+
+        this.emitChange();
+    }
+
+    get all() {
+        return this.instances || [];
     }
 
 }

@@ -33,6 +33,7 @@ var Sidebar = React.createClass({
                                         this.props.projects.map(project => {
                                             return <MenuItem
                                                 item={project}
+                                                store = {ProjectStore}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
                                                 actions={ActionStore.filter(project)}
@@ -57,6 +58,7 @@ var Sidebar = React.createClass({
                                         this.props.environments.map(env => {
                                             return <MenuItem
                                                 item={env}
+                                                store = {EnvironmentStore}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
                                                 switch={true}
                                                 actions={ActionStore.filter(null, env)}
