@@ -16,7 +16,7 @@ function getLocalState() {
             name: '',
             label: '',
             repo_url: '',
-            connector: null
+            connector: ''
         }
     };
     return localState;
@@ -141,7 +141,7 @@ class ProjectForm extends React.Component {
                                 value={connectorId}
                                 onChange={this.onFormChange.bind(this, 'connector')}
                                 onBlur={this.props.handleValidation('connector')}>
-                            <option disabled>-- select an option --</option>
+                            <option key='default' value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.connectors.map(connector => {
                                     return <option key={connector.id} value={connector.id}>{connector.name}</option>

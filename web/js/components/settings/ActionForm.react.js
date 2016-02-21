@@ -18,9 +18,9 @@ function getLocalState() {
         action: {
             name: '',
             label: '',
-            project: null,
-            environment: null,
-            method: null,
+            project: '',
+            environment: '',
+            method: "",
         }
     };
     return RaccoonApp.getState(localState);
@@ -134,7 +134,7 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-project" className="control-label">Project</label><br/>
                         <select className="form-control" id="action-project" value={projectId}
                                 onChange={this.onFormChange.bind(this, 'project')}>
-                            <option disabled>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.projects.map(project => {
                                     return <option value={project.id}>{project.label || project.name}</option>
@@ -146,7 +146,7 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-env" className="control-label">Environment</label><br/>
                         <select className="form-control" id="action-env" value={envId}
                                 onChange={this.onFormChange.bind(this, 'environment')}>
-                            <option disabled>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.environments.map(env => {
                                     return <option value={env.id}>{env.label || env.name}</option>
@@ -158,7 +158,7 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-method" className="control-label">Method</label><br/>
                         <select className="form-control" id="action-method" value={methodId}
                                 onChange={this.onFormChange.bind(this, 'method')}>
-                            <option disabled>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.methods.map(method => {
                                     return <option value={method.id}>{method.label || method.name}</option>

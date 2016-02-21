@@ -52,11 +52,10 @@ class ConnectorUpdateForm extends ConnectorForm {
     _getDataForRender() {
         this.state.connector = ConnectorStore.getById(this.props.params.id);
         if(!this.state.connector) {
-            let defaultKey = Object.keys(ConnectorType)[0];
             this.state.connector = {
                 name: '',
-                type: defaultKey,
-                config: JSON.stringify(ConnectorType[defaultKey], undefined, 4)
+                type: '',
+                config: ''
             }
         }
         return this.state.connector;

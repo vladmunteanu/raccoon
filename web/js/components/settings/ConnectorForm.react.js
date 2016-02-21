@@ -13,7 +13,7 @@ function getLocalState() {
         connector: {
             name: '',
             type: '',
-            config: JSON.stringify(ConnectorType[Object.keys(ConnectorType)[0]], undefined, 4)
+            config: ''
         }
     };
     return localState;
@@ -114,7 +114,7 @@ class ConnectorForm extends React.Component {
                         <select className="form-control" value={type} id="connector-type"
                                 onChange={this.onFormChange.bind(this, 'type')}
                                 onBlur={this.props.handleValidation('type')}>
-                            <option disabled>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 Object.keys(ConnectorType).map(key => {
                                     return <option value={key}>{key}</option>

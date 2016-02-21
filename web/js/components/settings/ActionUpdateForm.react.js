@@ -16,9 +16,9 @@ function getLocalState() {
         action: {
             name: '',
             label: '',
-            project: null,
-            environment: null,
-            method: null,
+            project: '',
+            environment: '',
+            method: '',
         }
     };
     return RaccoonApp.getState(localState);
@@ -67,9 +67,9 @@ class ActionUpdateForm extends ActionForm {
             this.state.action = {
                 name: '',
                 label: '',
-                project: null,
-                environment: null,
-                method: null,
+                project: '',
+                environment: '',
+                method: '',
 
             }
         }
