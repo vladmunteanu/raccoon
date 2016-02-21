@@ -29,12 +29,6 @@ class ConnectorStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.CONNECTOR_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
-        AppDispatcher.registerOnce(ActionTypes.UPDATE_CONNECTOR, payload => {
-            this.updateById(payload.data.id, payload.data);
-        });
-        AppDispatcher.registerOnce(ActionTypes.CREATE_CONNECTOR, payload => {
-            this.create(payload.data);
-        });
     }
 
 }

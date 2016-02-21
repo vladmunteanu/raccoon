@@ -17,8 +17,6 @@ export default {
 
         // connectors
         CONNECTOR_TOGGLE_VISIBLE: null,
-        CREATE_CONNECTOR: null,
-        UPDATE_CONNECTOR: null,
 
         // users
         USER_TOGGLE_VISIBLE: null,

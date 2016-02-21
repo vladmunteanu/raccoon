@@ -58,7 +58,7 @@ class ProjectUpdateForm extends ProjectForm {
                 name: '',
                 label: '',
                 repo_url: '',
-                connector: null
+                connector: ''
             }
         }
         return this.state.project;
