@@ -6,7 +6,6 @@ import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
-let argRows = [];
 
 function getLocalState() {
     let localState = {
@@ -106,17 +105,6 @@ class MethodForm extends React.Component {
         });
     }
 
-    addInput(dataId){
-      argRows.push(
-        <div className="form-group">
-          <input type="text" className="form-control" data-id={dataId} onChange={this._onChangeArgumentName.bind(this)} id="method-arguments-name"
-            placeholder="name"/>
-          <input type="text" className="form-control" data-id={dataId} onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
-            placeholder="value"/>
-        </div>);
-     }
-
-
     render() {
         let method = this._getDataForRender();
         let name = method.name;
@@ -126,11 +114,11 @@ class MethodForm extends React.Component {
         if (typeof(args) == "string") {
             args = JSON.parse(args);
         }
-        console.log("1111111111111111", args.length);
+        let argRows = [];
         if (args.length == 0) {
           argRows.push(
             <div className="form-group">
-              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentName.bind(this)} onClick={this.addInput(1)}
+              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentName.bind(this)}
                 id="method-arguments-name" placeholder="name"/>
               <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
                 placeholder="value"/>
@@ -139,7 +127,7 @@ class MethodForm extends React.Component {
           for (var i = 0; i < args.length; i++) {
             argRows.push(
               <div className="form-group">
-                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentName.bind(this)} onClick={this.addInput(i+1)}
+                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentName.bind(this)}
                   id="method-arguments-name" value={args[i]["name"]} placeholder="name"/>
                 <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
                     value={args[i]["value"]} placeholder="value"/>
