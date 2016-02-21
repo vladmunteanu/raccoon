@@ -33,10 +33,7 @@ class ActionForm extends React.Component {
         this.state = getLocalState();
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Action name'),
-            label: Joi.string().min(3).max(50).required().label('Action label'),
-            project: Joi.any().disallow(null, '').required().label('Project'),
-            environment: Joi.any().disallow(null, '').required().label('Environment'),
-            method: Joi.any().disallow(null, '').required().label('Method')
+            label: Joi.string().min(3).max(50).required().label('Action label')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -116,7 +113,7 @@ class ActionForm extends React.Component {
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
-                <form onSubmit={this.onSubmit.bind(this)} className="form-horizontal col-sm-4">
+                <form onSubmit={this.onSubmit} className="form-horizontal col-sm-4">
                     <div className="form-group">
                         <label htmlFor="action-name" className="control-label">Action name</label>
                         <input type="text"  className="form-control"
@@ -136,8 +133,7 @@ class ActionForm extends React.Component {
                     <div className="form-group">
                         <label htmlFor="action-project" className="control-label">Project</label><br/>
                         <select className="form-control" id="action-project" value={projectId}
-                                onChange={this.onFormChange.bind(this, 'project')}
-                                onBlur={this.props.handleValidation('project')}>
+                                onChange={this.onFormChange.bind(this, 'project')}>
                             <option disabled>-- select an option --</option>
                             {
                                 this.state.projects.map(project => {
@@ -145,13 +141,11 @@ class ActionForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('project'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-env" className="control-label">Environment</label><br/>
                         <select className="form-control" id="action-env" value={envId}
-                                onChange={this.onFormChange.bind(this, 'environment')}
-                                onBlur={this.props.handleValidation('environment')}>
+                                onChange={this.onFormChange.bind(this, 'environment')}>
                             <option disabled>-- select an option --</option>
                             {
                                 this.state.environments.map(env => {
@@ -159,13 +153,11 @@ class ActionForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('environment'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-method" className="control-label">Method</label><br/>
                         <select className="form-control" id="action-method" value={methodId}
-                                onChange={this.onFormChange.bind(this, 'method')}
-                                onBlur={this.props.handleValidation('method')}>
+                                onChange={this.onFormChange.bind(this, 'method')}>
                             <option disabled>-- select an option --</option>
                             {
                                 this.state.methods.map(method => {
@@ -173,7 +165,6 @@ class ActionForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('method'))}
                     </div>
 
                     <div className="form-group">

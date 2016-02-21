@@ -1,12 +1,11 @@
 import React from 'react';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ConnectorStore from '../../stores/ConnectorStore';
-import Constants from '../../constants/Constants';
-import ConnectorForm from './ConnectorForm.react';
+import { ConnectorForm } from './ConnectorForm.react';
 import localConf from '../../config/Config'
 import RaccoonApp from '../RaccoonApp.react';
-let ActionTypes = Constants.ActionTypes;
 let ConnectorType = localConf.CONNECTOR_TYPE;
 
 function getLocalState(connectorId) {
@@ -21,6 +20,15 @@ class ConnectorUpdateForm extends ConnectorForm {
         super(props);
         this.formName = 'Update connector';
         this.state = getLocalState(this.props.params.id);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            this.props.clearValidations();
+            let state = getLocalState(nextProps.params.id);
+            this.setState(state);
+        }
     }
 
     _onChange() {
@@ -30,13 +38,13 @@ class ConnectorUpdateForm extends ConnectorForm {
 
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.UPDATE_CONNECTOR,
-            data: {
-                id: this.state.connector.id,
-                name: this.state.connector.name,
-                type: this.state.connector.type,
-                config: JSON.parse(this.state.connector.config)
+        this.props.validate((error) => {
+            if (!error) {
+                ConnectorStore.updateById(this.state.connector.id, {
+                    name: this.state.connector.name,
+                    type: this.state.connector.type,
+                    config: JSON.parse(this.state.connector.config)
+                });
             }
         });
     }
@@ -44,14 +52,16 @@ class ConnectorUpdateForm extends ConnectorForm {
     _getDataForRender() {
         this.state.connector = ConnectorStore.getById(this.props.params.id);
         if(!this.state.connector) {
+            let defaultKey = Object.keys(ConnectorType)[0];
             this.state.connector = {
                 name: '',
-                type: 'git',
-                config: JSON.stringify(ConnectorType[Object.keys(ConnectorType)[0]], undefined, 4)
+                type: defaultKey,
+                config: JSON.stringify(ConnectorType[defaultKey], undefined, 4)
             }
         }
         return this.state.connector;
     }
 }
 
-export default ConnectorUpdateForm;
+export { ConnectorUpdateForm };
+export default validation(strategy)(ConnectorUpdateForm);
