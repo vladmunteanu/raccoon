@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import MethodStore from '../../stores/MethodStore';
@@ -105,11 +106,18 @@ class MethodForm extends React.Component {
         });
     }
 
-    addFields(index) {
-        document.getElementById('arguments').innerHTML += '<div className="form-group"><input type="text" className="form-control" ' +
-                ' data-id="{index}" onChange={this._onChangeArgumentName.bind(this)} onClick={this.addFields(index+1)} id="method-arguments-name" ' +
-                'placeholder="name"/> <input type="text" className="form-control" data-id="{index}" onChange={this._onChangeArgumentValue.bind(this)}' +
-                'id="method-arguments-value" placeholder="value"/></div>';
+    addFields(event) {
+        let container = ReactDOM.findDOMNode(this.refs.arguments);
+        console.log(this.refs.arguments);
+        container.appendChild(
+            (<div className="form-group">
+                <input type="text" className="form-control"
+                       id="method-arguments-name" placeholder="name"/>
+                <input type="text" className="form-control"
+                       id="method-arguments-value"
+                       placeholder="value"/>
+            </div>)
+        );
     }
 
     render() {
@@ -121,25 +129,27 @@ class MethodForm extends React.Component {
         if (typeof(args) == "string") {
             args = JSON.parse(args);
         }
-        let argRows = [];
+
+        let argRows = args.map(arg => {
+            return <div className="form-group">
+                <input type="text" className="form-control"
+                       id="method-arguments-name" value={arg["name"]}
+                       placeholder="name"/>
+                <input type="text" className="form-control"
+                       id="method-arguments-value"
+                       value={arg["value"]} placeholder="value"/>
+            </div>;
+        });
+
         if (args.length == 0) {
-          argRows.push(
-            <div className="form-group">
-              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentName.bind(this)} onClick={this.addFields(1)}
-                id="method-arguments-name" placeholder="name"/>
-              <input type="text" className="form-control" data-id='0' onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
-                placeholder="value"/>
-            </div>);
-        }else{
-          for (var i = 0; i < args.length; i++) {
             argRows.push(
-              <div className="form-group">
-                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentName.bind(this)} onClick={this.addFields(i+1)}
-                  id="method-arguments-name" value={args[i]["name"]} placeholder="name"/>
-                <input type="text" className="form-control" data-id={i} onChange={this._onChangeArgumentValue.bind(this)} id="method-arguments-value"
-                    value={args[i]["value"]} placeholder="value"/>
-              </div>);
-          }
+                <div className="form-group">
+                    <input type="text" className="form-control" data-id='0'
+                           id="method-arguments-name" placeholder="name"/>
+                    <input type="text" className="form-control" data-id='0'
+                           id="method-arguments-value"
+                           placeholder="value"/>
+                </div>);
         }
 
         return (
@@ -167,9 +177,12 @@ class MethodForm extends React.Component {
                         <input type="text"  className="form-control" onChange={this._onChangeMethod.bind(this)}
                                id="method-method" value={meth} placeholder="api url"/>
                     </div>
-                    <div className="form-group" id="arguments">
+                    <div className="form-group" id="arguments" ref="arguments">
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
                         {argRows}
+                    </div>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-primary pull-right" onClick={this.addFields.bind(this)}>Primary</button>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
