@@ -32,7 +32,7 @@ let Login = React.createClass({
 
     validatorTypes: {
         email: Joi.string().email().required().label('Email'),
-        password: Joi.string().min(8).max(30).required().label('Password')
+        password: Joi.string().required().label('Password')
     },
 
     getValidatorData: function () {
