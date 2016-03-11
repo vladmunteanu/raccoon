@@ -1,12 +1,13 @@
 import React from 'react';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import MethodStore from '../../stores/MethodStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
-import Constants from '../../constants/Constants';
-import MethodForm from './MethodForm.react';
-let ActionTypes = Constants.ActionTypes;
+import { MethodForm } from './MethodForm.react';
+
 
 function getLocalState(methodId) {
     let localState = {
@@ -25,10 +26,12 @@ class MethodUpdateForm extends MethodForm {
         super(props);
         this.formName = 'Update method';
         this.state = getLocalState(this.props.params.id);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.params.id != this.props.params.id) {
+            this.props.clearValidations();
             let state = getLocalState(nextProps.params.id);
             this.setState(state);
         }
@@ -41,14 +44,14 @@ class MethodUpdateForm extends MethodForm {
 
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.UPDATE_METHOD,
-            data: {
-                id: this.state.method.id,
-                name: this.state.method.name,
-                connector: this.state.method.connector,
-                method: this.state.method.method,
-                arguments: this.state.method.arguments
+        this.props.validate((error) => {
+            if (!error) {
+                MethodStore.updateById(this.state.method.id, {
+                    name: this.state.method.name,
+                    connector: this.state.method.connector,
+                    method: this.state.method.method,
+                    arguments: this.state.method.arguments
+                });
             }
         });
     }
@@ -67,4 +70,5 @@ class MethodUpdateForm extends MethodForm {
     }
 }
 
-export default MethodUpdateForm;
+export { MethodUpdateForm };
+export default validation(strategy)(MethodUpdateForm);

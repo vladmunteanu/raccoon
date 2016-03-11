@@ -26,8 +26,6 @@ export default {
 
         //methods
         METHOD_TOGGLE_VISIBLE: null,
-        UPDATE_METHOD: null,
-        CREATE_METHOD: null,
 
         //notifications
         NOTIFICATION: null,

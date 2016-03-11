@@ -1,18 +1,20 @@
 import React from 'react';
+import Joi from 'joi';
+import validation from 'react-validation-mixin';
+import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import MethodStore from '../../stores/MethodStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
-import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
+
 
 function getLocalState() {
     let localState = {
         connectors: ConnectorStore.all,
         method: {
             name: '',
-            connector: null,
+            connector: '',
             method: '',
             arguments: []
         },
@@ -27,6 +29,14 @@ class MethodForm extends React.Component {
         super(props);
         this.formName = 'New method';
         this.state = getLocalState();
+        this.validatorTypes = {
+            name: Joi.string().min(3).max(50).required().label('Method name'),
+            connector: Joi.any().disallow(null, '').required().label('Connector'),
+            method: Joi.string().required().label('Method method')
+        };
+        this.getValidatorData = this.getValidatorData.bind(this);
+        this.renderHelpText = this.renderHelpText.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -48,29 +58,23 @@ class MethodForm extends React.Component {
     onFormChange(name, event) {
         this.state.method[name] = event.target.value;
         this.setState(this.state);
-        //this.props.validate(name);
+        this.props.validate(name);
     }
 
-    _onChangeArgumentName(event) {
-        if (this.state.method.arguments[event.target.getAttribute('data-id')]){
-            this.state.method.arguments[event.target.getAttribute('data-id')]["name"] = event.target.value;
-        }else{
-            this.state.method.arguments.push({"name": event.target.value, "value": ""})
-        }
-        this.setState({
-            method: this.state.method
-        });
+    getValidatorData() {
+        return this.state.method;
     }
 
-    _onChangeArgumentValue(event) {
-        if (this.state.method.arguments[event.target.getAttribute('data-id')]){
-            this.state.method.arguments[event.target.getAttribute('data-id')]["value"] = event.target.value;
-        }else{
-            this.state.method.arguments.push({"name": "", "value": event.target.value})
-        }
-        this.setState({
-            method: this.state.method
-        });
+    renderHelpText(messages) {
+        return (
+            <div className="text-danger">
+                {
+                    messages.map(message => {
+                        return <div>{message}</div>
+                    })
+                }
+            </div>
+        );
     }
 
     onChangeArgument(idxRow, key, event) {
@@ -87,13 +91,14 @@ class MethodForm extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        AppDispatcher.dispatch({
-            action: ActionTypes.CREATE_METHOD,
-            data: {
-                name: this.state.method.name,
-                connector: this.state.method.connector,
-                method: this.state.method.method,
-                arguments: this.state.method.arguments
+        this.props.validate((error) => {
+            if (!error) {
+                MethodStore.create({
+                    name: this.state.method.name,
+                    connector: this.state.method.connector,
+                    method: this.state.method.method,
+                    arguments: this.state.method.arguments
+                });
             }
         });
     }
@@ -112,31 +117,34 @@ class MethodForm extends React.Component {
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
-                <form onSubmit={this.onSubmit.bind(this)} className="form-horizontal col-sm-4">
+                <form onSubmit={this.onSubmit} className="form-horizontal col-sm-4">
                     <div className="form-group">
                         <label htmlFor="method-name" className="control-label">Method name</label>
                         <input type="text"  className="form-control"
                                id="method-name" value={name} placeholder="Method Name"
                                onChange={this.onFormChange.bind(this, 'name')}/>
+                        {this.renderHelpText(this.props.getValidationMessages('name'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-method" className="control-label">Connector</label>
                         <select className="form-control" id="connector-method"
                                 value={connectorId}
                                 onChange={this.onFormChange.bind(this, 'connector')}>
-                            <option disabled>-- select an option --</option>
+                            <option key='default' value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.connectors.map(connector => {
                                     return <option key={connector.id} value={connector.id}>{connector.name}</option>
                                 })
                             }
                         </select>
+                        {this.renderHelpText(this.props.getValidationMessages('connector'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="method-method" className="control-label">Method method</label>
                         <input type="text"  className="form-control"
                                id="method-method" value={meth} placeholder="api url"
                                onChange={this.onFormChange.bind(this, 'method')}/>
+                        {this.renderHelpText(this.props.getValidationMessages('method'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
@@ -182,4 +190,5 @@ class MethodForm extends React.Component {
     }
 }
 
-export default MethodForm;
+export { MethodForm };
+export default validation(strategy)(MethodForm);
