@@ -11,8 +11,12 @@ let ActionTypes = Constants.ActionTypes;
 function getLocalState(methodId) {
     let localState = {
         connectors: ConnectorStore.all,
-        method: MethodStore.getById(methodId)
+        method: MethodStore.getById(methodId),
+        rowCount: 0
     };
+    if (localState.method){
+        localState.rowCount = localState.method.arguments.length;
+    }
     return localState;
 }
 
@@ -21,6 +25,13 @@ class MethodUpdateForm extends MethodForm {
         super(props);
         this.formName = 'Update method';
         this.state = getLocalState(this.props.params.id);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.params.id != this.props.params.id) {
+            let state = getLocalState(nextProps.params.id);
+            this.setState(state);
+        }
     }
 
     _onChange() {
@@ -37,7 +48,7 @@ class MethodUpdateForm extends MethodForm {
                 name: this.state.method.name,
                 connector: this.state.method.connector,
                 method: this.state.method.method,
-                arguments: JSON.parse(this.state.method.arguments)
+                arguments: this.state.method.arguments
             }
         });
     }
@@ -49,10 +60,7 @@ class MethodUpdateForm extends MethodForm {
                 name: '',
                 connector: null,
                 method: '',
-                arguments: [{
-                  'name': '',
-                  'value': ''
-                }]
+                arguments: []
             }
         }
         return this.state.method;
