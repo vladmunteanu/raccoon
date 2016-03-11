@@ -45,25 +45,10 @@ class MethodForm extends React.Component {
         this.setState(state);
     }
 
-    _onChangeName(event) {
-        this.state.method.name = event.target.value;
-        this.setState({
-            method: this.state.method
-        });
-    }
-
-    _onChangeConnector(event) {
-        this.state.method.connector = event.target.value;
-        this.setState({
-            method: this.state.method
-        });
-    }
-
-    _onChangeMethod(event) {
-        this.state.method.method = event.target.value;
-        this.setState({
-            method: this.state.method
-        });
+    onFormChange(name, event) {
+        this.state.method[name] = event.target.value;
+        this.setState(this.state);
+        //this.props.validate(name);
     }
 
     _onChangeArgumentName(event) {
@@ -88,6 +73,14 @@ class MethodForm extends React.Component {
         });
     }
 
+    onChangeArgument(idxRow, key, event) {
+        if (!this.state.method.arguments[idxRow]) {
+            this.state.method.arguments.push({"name": "", "value": ""})
+        }
+        this.state.method.arguments[idxRow][key] = event.target.value;
+        this.setState(this.state);
+    }
+
     _getDataForRender() {
         return this.state.method;
     }
@@ -107,7 +100,6 @@ class MethodForm extends React.Component {
 
     addRow() {
         this.setState({rowCount: this.state.rowCount + 1});
-
     }
 
     render() {
@@ -116,10 +108,6 @@ class MethodForm extends React.Component {
         let connectorId = method.connector;
         let meth = method.method;
         let args = method.arguments;
-        let inputs = [];
-        for (let i=0; i<this.state.rowCount; i++) {
-            inputs.push(i);
-        }
 
         return (
             <div className="container">
@@ -127,12 +115,15 @@ class MethodForm extends React.Component {
                 <form onSubmit={this.onSubmit.bind(this)} className="form-horizontal col-sm-4">
                     <div className="form-group">
                         <label htmlFor="method-name" className="control-label">Method name</label>
-                        <input type="text"  className="form-control" onChange={this._onChangeName.bind(this)}
-                               id="method-name" value={name} placeholder="Method Name"/>
+                        <input type="text"  className="form-control"
+                               id="method-name" value={name} placeholder="Method Name"
+                               onChange={this.onFormChange.bind(this, 'name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-method" className="control-label">Connector</label>
-                        <select className="form-control" id="connector-method" value={connectorId} onChange={this._onChangeConnector.bind(this)}>
+                        <select className="form-control" id="connector-method"
+                                value={connectorId}
+                                onChange={this.onFormChange.bind(this, 'connector')}>
                             <option disabled>-- select an option --</option>
                             {
                                 this.state.connectors.map(connector => {
@@ -143,28 +134,43 @@ class MethodForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="method-method" className="control-label">Method method</label>
-                        <input type="text"  className="form-control" onChange={this._onChangeMethod.bind(this)}
-                               id="method-method" value={meth} placeholder="api url"/>
+                        <input type="text"  className="form-control"
+                               id="method-method" value={meth} placeholder="api url"
+                               onChange={this.onFormChange.bind(this, 'method')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
-                        {inputs.map(arg => {
-                            if (args[arg]) {
-                                return <div className="form-inline" key={arg}>
-                                    <input type="text" className="form-control" id="method-arguments-name" value={args[arg]["name"]}
-                                           placeholder="name" data-id={arg} onChange={this._onChangeArgumentName.bind(this)}/>
-                                    <input type="text" className="form-control" id="method-arguments-value" value={args[arg]["value"]}
-                                           placeholder="value" data-id={arg} onChange={this._onChangeArgumentValue.bind(this)}/>
-                                </div>;
-                            } else {
-                                return <div className="form-inline" key={arg}>
-                                    <input type="text" className="form-control" id="method-arguments-name"
-                                           placeholder="name" data-id={arg} onChange={this._onChangeArgumentName.bind(this)}/>
-                                    <input type="text" className="form-control" id="method-arguments-value"
-                                           placeholder="value" data-id={arg} onChange={this._onChangeArgumentValue.bind(this)}/>
-                                </div>;
-                            }
-                        })}
+                        {
+                            Array(this.state.rowCount).fill(null).map((_, i) => {
+                                if (args[i]) {
+                                    return <div className="form-inline" key={i}>
+                                            <input type="text" className="form-control"
+                                                   id="method-arguments-name"
+                                                   value={args[i]["name"]}
+                                                   placeholder="name"
+                                                   onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                            <input type="text" className="form-control"
+                                                   id="method-arguments-value"
+                                                   value={args[i]["value"]}
+                                                   placeholder="value"
+                                                   onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                        </div>;
+                                } else {
+                                    return <div className="form-inline">
+                                        <input type="text"
+                                               className="form-control"
+                                               id="method-arguments-name"
+                                               placeholder="name"
+                                               onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                        <input type="text"
+                                               className="form-control"
+                                               id="method-arguments-value"
+                                               placeholder="value"
+                                               onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                    </div>;
+                                }
+                            })
+                        }
                     </div>
                     <div className="form-group">
                         <button type="button" className="btn btn-primary pull-left" onClick={this.addRow.bind(this)}>Add arguments</button>
