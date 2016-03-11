@@ -117,7 +117,7 @@ class MethodForm extends React.Component {
         let meth = method.method;
         let args = method.arguments;
         let inputs = [];
-        for (let i=0;i<this.state.rowCount; i++) {
+        for (let i=0; i<this.state.rowCount; i++) {
             inputs.push(i);
         }
 
@@ -149,28 +149,25 @@ class MethodForm extends React.Component {
                     <div className="form-group">
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
                         {inputs.map(arg => {
-                            if (args[arg]){
-                                return <div key={arg}>
+                            if (args[arg]) {
+                                return <div className="form-inline" key={arg}>
                                     <input type="text" className="form-control" id="method-arguments-name" value={args[arg]["name"]}
                                            placeholder="name" data-id={arg} onChange={this._onChangeArgumentName.bind(this)}/>
                                     <input type="text" className="form-control" id="method-arguments-value" value={args[arg]["value"]}
                                            placeholder="value" data-id={arg} onChange={this._onChangeArgumentValue.bind(this)}/>
                                 </div>;
-                            }else{
-                                return <div key={arg}>
+                            } else {
+                                return <div className="form-inline" key={arg}>
                                     <input type="text" className="form-control" id="method-arguments-name"
                                            placeholder="name" data-id={arg} onChange={this._onChangeArgumentName.bind(this)}/>
                                     <input type="text" className="form-control" id="method-arguments-value"
                                            placeholder="value" data-id={arg} onChange={this._onChangeArgumentValue.bind(this)}/>
                                 </div>;
                             }
-
                         })}
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-info pull-right" onClick={this.addRow.bind(this)}>Add more</button>
-                    </div>
-                    <div className="form-group">
+                        <button type="button" className="btn btn-primary pull-left" onClick={this.addRow.bind(this)}>Add arguments</button>
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>
                 </form>
