@@ -104,9 +104,7 @@ let RaccoonApp = React.createClass({
  */
 RaccoonApp.getState = function (state) {
     var globalState = getRaccoonState();
-
-    console.log('[ raccoon state ]', globalState);
-
+    
     state = state || {};
 
     for (var key in state) {
