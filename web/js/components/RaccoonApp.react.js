@@ -66,9 +66,9 @@ let RaccoonApp = React.createClass({
     * @return {object}
     */
     render: function () {
-        let MyComp = Addons.getAddon("DummyAddon");
+        /* let MyComp = Addons.getAddon("DummyAddon");
 
-        return ( <MyComp /> );
+        return ( <MyComp /> ); */
         return (
             <Router>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
