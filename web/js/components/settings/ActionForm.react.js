@@ -134,7 +134,8 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-project" className="control-label">Project</label><br/>
                         <select className="form-control" id="action-project" value={projectId}
                                 onChange={this.onFormChange.bind(this, 'project')}>
-                            <option value='' disabled={true}>-- select an option --</option>
+                            {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                            <option value=''>All projects</option>
                             {
                                 this.state.projects.map(project => {
                                     return <option value={project.id}>{project.label || project.name}</option>
@@ -146,7 +147,8 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-env" className="control-label">Environment</label><br/>
                         <select className="form-control" id="action-env" value={envId}
                                 onChange={this.onFormChange.bind(this, 'environment')}>
-                            <option value='' disabled={true}>-- select an option --</option>
+                            {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                            <option value=''>All environments</option>
                             {
                                 this.state.environments.map(env => {
                                     return <option value={env.id}>{env.label || env.name}</option>

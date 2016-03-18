@@ -17,5 +17,3 @@ class Action(BaseModel):
     environment = ReferenceField(reference_document_type=Environment)
     method = ReferenceField(reference_document_type=Method)
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
-
-
