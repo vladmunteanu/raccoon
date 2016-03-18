@@ -17,6 +17,7 @@ from .auth import *
 
 from .github import *
 from .jenkins import *
+from .flows import *
 
 
 # Import all submodules

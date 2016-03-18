@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class AuthController(BaseController):
     """
-    Projects Controller
+    Auth Controller
     """
     model = User
 

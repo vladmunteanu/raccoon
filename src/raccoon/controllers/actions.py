@@ -9,6 +9,6 @@ log = logging.getLogger(__name__)
 
 class ActionsController(BaseController):
     """
-    Projects Controller
+    Actions Controller
     """
     model = Action

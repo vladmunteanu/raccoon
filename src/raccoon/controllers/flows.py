@@ -3,13 +3,13 @@ from __future__ import absolute_import
 import logging
 
 from raccoon.controllers.base import BaseController
-from raccoon.models import Environment
+from raccoon.models import Flow
 
 log = logging.getLogger(__name__)
 
-class EnvironmentsController(BaseController):
+class FlowsController(BaseController):
     """
-    Environments Controller
+    Flows Controller
     """
-    model = Environment
+    model = Flow
 

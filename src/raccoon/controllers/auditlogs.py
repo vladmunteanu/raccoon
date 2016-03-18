@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class AuditlogsController(BaseController):
     """
-    Projects Controller
+    Auditlogs Controller
     """
     model = AuditLog
 

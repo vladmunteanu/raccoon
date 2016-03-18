@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class BuildsController(BaseController):
     """
-    Projects Controller
+    Builds Controller
     """
     model = Build
 

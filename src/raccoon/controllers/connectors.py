@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class ConnectorsController(BaseController):
     """
-    Projects Controller
+    Connectors Controller
     """
     model = Connector
 

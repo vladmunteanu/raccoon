@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class InstallsController(BaseController):
     """
-    Projects Controller
+    Installs Controller
     """
     model = Install
 

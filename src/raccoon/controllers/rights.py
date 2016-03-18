@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class RightsController(BaseController):
     """
-    Projects Controller
+    Rights Controller
     """
     model = Right
 

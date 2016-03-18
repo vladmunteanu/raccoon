@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 class UsersController(BaseController):
     """
-    Projects Controller
+    Users Controller
     """
     model = User
 

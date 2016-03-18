@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 class MethodsController(BaseController):
     """
-    Projects Controller
+    Methods Controller
     """
     model = Method
 
