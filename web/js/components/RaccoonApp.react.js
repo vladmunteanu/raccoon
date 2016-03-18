@@ -26,7 +26,7 @@ import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
 import MethodForm from './settings/MethodForm.react';
 import MethodUpdateForm from './settings/MethodUpdateForm.react';
 
-
+import Addons from "./addons/Addons";
 
 function getRaccoonState() {
     return {
@@ -34,7 +34,8 @@ function getRaccoonState() {
         environments: EnvironmentStore.all,
         actions: ActionStore.all,
         user: AuthStore.me,
-        notifications: NotificationStore.all
+        notifications: NotificationStore.all,
+        addons: Addons.all
     };
 }
 
@@ -65,6 +66,9 @@ let RaccoonApp = React.createClass({
     * @return {object}
     */
     render: function () {
+        /* let MyComp = Addons.getAddon("DummyAddon");
+
+        return ( <MyComp /> ); */
         return (
             <Router>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
@@ -100,6 +104,9 @@ let RaccoonApp = React.createClass({
  */
 RaccoonApp.getState = function (state) {
     var globalState = getRaccoonState();
+
+    console.log('[ raccoon state ]', globalState);
+
     state = state || {};
 
     for (var key in state) {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { History } from 'react-router';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
