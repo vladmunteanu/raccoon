@@ -15,12 +15,13 @@ log = logging.getLogger(__name__)
 URL_END = '/api/json'
 URLS = {
     'build': 'job/{job_name}/build' + URL_END,
-    'build_with_params':'job/{job_name}/buildWithParameters' + URL_END,
+    'build_with_params': 'job/{job_name}/buildWithParameters' + URL_END,
     'build_stop': 'job/{job_name}/{build_number}/stop' + URL_END,
     'build_info': 'job/{job_name}/{build_number}' + URL_END,
     'build_output': 'job/{job_name}/{build_number}/consoleText' + URL_END,
     'build_last': 'job/{job_name}/lastBuild' + URL_END,
     'queue_info': 'queue/item/{queue_number}' + URL_END,
+    'jobs': '' + URL_END,
 }
 
 class JenkinsInterface(BaseInterface):
@@ -102,6 +103,18 @@ class JenkinsInterface(BaseInterface):
         )
 
         raise gen.Return(response)
+
+    @gen.coroutine
+    def jobs(self, *args, **kwargs):
+        path = URLS.get('jobs')
+        url = urljoin(self.api_url, path)
+
+        response, headers = yield self.fetch(
+            method='GET',
+            url=url,
+        )
+
+        raise gen.Return(response['jobs'])
 
     @gen.coroutine
     def call(self, method, *args, **kwargs):

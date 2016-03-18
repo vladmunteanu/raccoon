@@ -5,7 +5,7 @@ from tornado import gen
 
 from raccoon.controllers.base import BaseController
 from raccoon.interfaces.jenkins import JenkinsInterface
-from raccoon.models import Action, Project
+from raccoon.models import Action, Connector
 from raccoon.utils.decorators import authenticated
 from raccoon.utils.exceptions import ReplyError
 
@@ -44,20 +44,27 @@ class JenkinsController(BaseController):
     @authenticated
     @gen.coroutine
     def get(cls, request, method=None, action=None, *args, **kwargs):
-        action = yield Action.objects.get(id=action)
-        if not action:
-            raise ReplyError(422)
+        if action:
+            action = yield Action.objects.get(id=action)
+            if not action:
+                raise ReplyError(422)
 
-        # load references
-        yield action.load_references()
-        yield action.method.load_references()
-        
-        # create GitHub interface & select operation
-        jenkins = JenkinsInterface(connector=action.method.connector)
+            # load references
+            yield action.load_references()
+            yield action.method.load_references()
+            connector = action.method.connector
+        else:
+            results = yield Connector.objects.filter(type='jenkins').find_all()
+            if not len(results):
+                raise ReplyError(422)
+
+            connector = results[0]
+
+        # create Jenkins interface
+        jenkins = JenkinsInterface(connector)
         method = getattr(jenkins, method, None)
         if not method:
             raise ReplyError(404)
 
         response = yield method(action=action, *args, **kwargs)
-
         yield request.send(response)
