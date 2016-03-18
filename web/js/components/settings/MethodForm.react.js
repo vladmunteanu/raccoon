@@ -3,8 +3,8 @@ import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import MethodStore from '../../stores/MethodStore';
+import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 
@@ -12,6 +12,7 @@ import RaccoonApp from '../RaccoonApp.react';
 function getLocalState() {
     let localState = {
         connectors: ConnectorStore.all,
+        jobs: JenkinsStore.jobs,
         method: {
             name: '',
             connector: '',
@@ -32,7 +33,7 @@ class MethodForm extends React.Component {
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Method name'),
             connector: Joi.any().disallow(null, '').required().label('Connector'),
-            method: Joi.string().required().label('Method method')
+            method: Joi.string().disallow(null, '').required().label('Jenkins job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -42,6 +43,7 @@ class MethodForm extends React.Component {
     componentDidMount() {
         MethodStore.addListener(this._onChange.bind(this));
         ConnectorStore.addListener(this._onChange.bind(this));
+        JenkinsStore.addListener(this._onChange.bind(this));
     }
 
     componentWillUnmount() {
@@ -140,10 +142,17 @@ class MethodForm extends React.Component {
                         {this.renderHelpText(this.props.getValidationMessages('connector'))}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="method-method" className="control-label">Method method</label>
-                        <input type="text"  className="form-control"
-                               id="method-method" value={meth} placeholder="api url"
-                               onChange={this.onFormChange.bind(this, 'method')}/>
+                        <label htmlFor="method-method" className="control-label">Jenkins job</label>
+                        <select className="form-control" id="job-method"
+                                value={meth}
+                                onChange={this.onFormChange.bind(this, 'method')}>
+                            <option key='default' value='' disabled={true}>-- select an option --</option>
+                            {
+                                this.state.jobs.map(job => {
+                                    return <option key={job.name} value={job.name}>{job.name}</option>
+                                })
+                            }
+                        </select>
                         {this.renderHelpText(this.props.getValidationMessages('method'))}
                     </div>
                     <div className="form-group">

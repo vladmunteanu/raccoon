@@ -4,6 +4,7 @@ import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import MethodStore from '../../stores/MethodStore';
+import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
 import { MethodForm } from './MethodForm.react';
@@ -12,6 +13,7 @@ import { MethodForm } from './MethodForm.react';
 function getLocalState(methodId) {
     let localState = {
         connectors: ConnectorStore.all,
+        jobs: JenkinsStore.jobs,
         method: MethodStore.getById(methodId),
         rowCount: 0
     };

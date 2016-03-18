@@ -23,7 +23,7 @@ class JenkinsStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/jenkins/";
 
-        console.log('000000000000 register');
+        this.jobInstances = [];
 
         // register gui related actions
         AppDispatcher.registerOnce(ActionTypes.BUILD_START, payload => {
@@ -39,9 +39,26 @@ class JenkinsStore extends BaseStore {
             resource: this.baseuri + 'build',
             args: args,
         }, payload => {
-            console.log('BUILD started', payload.data);
             this.emitChange();
         });
+    }
+
+    get jobs() {
+        if (this.jobInstances.length == 0) {
+            let connector = new Connector();
+            connector.send({
+                verb: 'get',
+                resource: this.baseuri + 'jobs'
+            }, payload => {
+                this.jobs = payload.data;
+            });
+        }
+        return this.jobInstances || [];
+    }
+
+    set jobs(data) {
+        this.jobInstances = data || [];
+        this.emitChange();
     }
 }
 
