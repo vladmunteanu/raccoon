@@ -44,7 +44,6 @@ class ActionStore extends BaseStore {
 
         return result;
     }
-
 }
 
 export default new ActionStore();

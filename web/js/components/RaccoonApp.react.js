@@ -5,8 +5,8 @@ import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
-import FlowStore from '../stores/FlowStore';
 import NotificationStore from '../stores/NotificationStore';
+import FlowStore from '../stores/FlowStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
 import ProjectBuild from './dashboard/ProjectBuild.react';
@@ -15,6 +15,7 @@ import Logout from './auth/Logout.react';
 import NotFound from './NotFound.react';
 import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
+import Flow from './dashboard/Flow.react';
 
 import ActionForm from './settings/ActionForm.react';
 import ActionUpdateForm from './settings/ActionUpdateForm.react';
@@ -94,6 +95,7 @@ let RaccoonApp = React.createClass({
                 <Route path="/register" component={Register} />
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth}>
                     <Route path=":id/action/:action_id" component={ProjectBuild} onEnter={this.requireAuth} />
+                    <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />
             </Router>
