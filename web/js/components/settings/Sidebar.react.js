@@ -77,6 +77,25 @@ var Sidebar = React.createClass({
                             </div>
                         </li>
                         <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
+                                Flows <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseFlows" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.flows.map(flow => {
+                                            return <MenuItem item={flow} link={"/settings/flow/" + flow.id} />;
+                                        })
+                                    }
+                                    <li>
+                                        <Link to="/settings/flow/new">
+                                            <i className="fa fa-plus" /> Add new
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
                             <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseConnectors" aria-expanded="false" aria-controls="collapseConnectors">
                                 Connectors <i className="fa fa-angle-down pull-right" />
                             </a>

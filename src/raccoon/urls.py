@@ -1,10 +1,5 @@
 from __future__ import absolute_import
-
-import json
-import logging
 import re
-
-import tornado.web
 
 from .controllers import *
 from raccoon.utils.exceptions import ReplyError
@@ -28,6 +23,7 @@ class Router(object):
         (r'^/api/v1/projects/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', ProjectsController),
         (r'^/api/v1/rights/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', RightsController),
         (r'^/api/v1/users/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', UsersController),
+        (r'^/api/v1/flows/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', FlowsController),
         (r'^/api/v1/auth/?$', AuthController),
         (r'^/api/v1/github/(?P<method>[a-zA-Z\_]*)/?$', GitHubController),
         (r'^/api/v1/jenkins/(?P<method>[a-zA-Z\_]*)/?$', JenkinsController),
