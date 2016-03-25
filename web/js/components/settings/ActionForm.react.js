@@ -18,6 +18,7 @@ function getLocalState() {
         action: {
             name: '',
             label: '',
+            placement: 'project',
             project: '',
             environment: '',
             method: "",
@@ -88,11 +89,13 @@ class ActionForm extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log("22222222222", this.state.action.placement);
         this.props.validate((error) => {
             if (!error) {
                 ActionStore.create({
                     name: this.state.action.name,
                     label: this.state.action.label,
+                    placement: this.state.action.placement,
                     project: this.state.action.project,
                     environment: this.state.action.environment,
                     method: this.state.action.method
@@ -105,10 +108,62 @@ class ActionForm extends React.Component {
         let action = this._getDataForRender();
         let name = action.name;
         let label = action.label;
+        let placement = action.placement;
         let projectId = action.project;
         let envId = action.environment;
         let methodId = action.method;
-
+        let placementTypes = [
+            {type: "project", name: "Project"},
+            {type: "environment", name: "Environment"},
+            {type: "card", name: "Card"}
+        ];
+        let radio = placementTypes.map((plc) => {
+            console.log("111111111111", placement, plc.type);
+            return <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
+                          onChange={this.onFormChange.bind(this, 'placement')}>
+                &nbsp;{plc.name}&nbsp;
+                </input>
+        }, this);
+        let projectPlacement = (
+            <div className="form-group">
+                <label htmlFor="action-project" className="control-label">Project</label><br/>
+                <select className="form-control" id="action-project" value={projectId}
+                        onChange={this.onFormChange.bind(this, 'project')}>
+                    {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                    <option value=''>All projects</option>
+                    {
+                        this.state.projects.map(project => {
+                            return <option value={project.id}>{project.label || project.name}</option>
+                        })
+                    }
+                </select>
+            </div>
+        );
+        let environmentPlacement = (
+            <div className="form-group">
+                <label htmlFor="action-env" className="control-label">Environment</label><br/>
+                <select className="form-control" id="action-env" value={envId}
+                        onChange={this.onFormChange.bind(this, 'environment')}>
+                    {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                    <option value=''>All environments</option>
+                    {
+                        this.state.environments.map(env => {
+                            return <option value={env.id}>{env.label || env.name}</option>
+                        })
+                    }
+                </select>
+            </div>
+        );
+        let formPlacement = (
+            <div>
+                {projectPlacement}
+                {environmentPlacement}
+            </div>
+        );
+        if (placement === "project")
+            formPlacement = projectPlacement;
+        else if (placement === "environment")
+            formPlacement = environmentPlacement;
 
         return (
             <div className="container">
@@ -131,31 +186,12 @@ class ActionForm extends React.Component {
                         {this.renderHelpText(this.props.getValidationMessages('label'))}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="action-project" className="control-label">Project</label><br/>
-                        <select className="form-control" id="action-project" value={projectId}
-                                onChange={this.onFormChange.bind(this, 'project')}>
-                            {/*<option value='' disabled={true}>-- select an option --</option>*/}
-                            <option value=''>All projects</option>
-                            {
-                                this.state.projects.map(project => {
-                                    return <option value={project.id}>{project.label || project.name}</option>
-                                })
-                            }
-                        </select>
+                        <label htmlFor="action-placement" className="control-label">Action placement</label>
+                        <div className="form-inline">
+                            {radio}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="action-env" className="control-label">Environment</label><br/>
-                        <select className="form-control" id="action-env" value={envId}
-                                onChange={this.onFormChange.bind(this, 'environment')}>
-                            {/*<option value='' disabled={true}>-- select an option --</option>*/}
-                            <option value=''>All environments</option>
-                            {
-                                this.state.environments.map(env => {
-                                    return <option value={env.id}>{env.label || env.name}</option>
-                                })
-                            }
-                        </select>
-                    </div>
+                    {formPlacement}
                     <div className="form-group">
                         <label htmlFor="action-method" className="control-label">Method</label><br/>
                         <select className="form-control" id="action-method" value={methodId}

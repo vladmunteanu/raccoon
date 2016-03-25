@@ -16,6 +16,7 @@ function getLocalState() {
         action: {
             name: '',
             label: '',
+            placement: 'project',
             project: '',
             environment: '',
             method: '',
@@ -48,11 +49,13 @@ class ActionUpdateForm extends ActionForm {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log("33333333333", this.state.action.placement)
         this.props.validate((error) => {
             if (!error) {
                 ActionStore.updateById(this.state.action.id, {
                     name: this.state.action.name,
                     label: this.state.action.label,
+                    placement: this.state.action.placement,
                     project: this.state.action.project,
                     environment: this.state.action.environment,
                     method: this.state.action.method
@@ -67,6 +70,7 @@ class ActionUpdateForm extends ActionForm {
             this.state.action = {
                 name: '',
                 label: '',
+                placement: 'project',
                 project: '',
                 environment: '',
                 method: '',

@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from motorengine import StringField, ReferenceField, DateTimeField
+from motorengine import StringField, ListField, ReferenceField, DateTimeField
 
 from raccoon.models import Project
 from raccoon.models import Environment
