@@ -46,8 +46,6 @@ var DashboardApp = React.createClass({
     * @return {object}
     */
     render: function() {
-        console.log(React.DOM);
-
         return (
             <div className="container-fluid">
                 <div className="row">

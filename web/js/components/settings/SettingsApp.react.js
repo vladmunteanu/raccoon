@@ -9,6 +9,7 @@ import Topbar from './../Topbar.react';
 import Taskbar from './../Taskbar.react';
 
 import ActionStore from '../../stores/ActionStore';
+import FlowStore from '../../stores/FlowStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import ConnectorStore from '../../stores/ConnectorStore';
@@ -91,6 +92,7 @@ var SettingsApp = React.createClass({
                         environments={this.state.environments}
                         actions={this.state.actions}
                         connectors={this.state.connectors}
+                        flows={this.state.flows}
                         users={this.state.users}
                         rights={this.state.rights}
                         methods={this.state.methods}

@@ -6,6 +6,7 @@ import AuthStore from '../stores/AuthStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
 import NotificationStore from '../stores/NotificationStore';
+import FlowStore from '../stores/FlowStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
 import ProjectBuild from './dashboard/ProjectBuild.react';
@@ -14,6 +15,7 @@ import Logout from './auth/Logout.react';
 import NotFound from './NotFound.react';
 import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
+import Flow from './dashboard/Flow.react';
 
 import ActionForm from './settings/ActionForm.react';
 import ActionUpdateForm from './settings/ActionUpdateForm.react';
@@ -25,6 +27,8 @@ import ProjectForm from './settings/ProjectForm.react';
 import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
 import MethodForm from './settings/MethodForm.react';
 import MethodUpdateForm from './settings/MethodUpdateForm.react';
+import FlowForm from './settings/FlowForm.react';
+import FlowUpdateForm from './settings/FlowUpdateForm.react';
 
 import Addons from "./addons/Addons";
 
@@ -35,6 +39,7 @@ function getRaccoonState() {
         actions: ActionStore.all,
         user: AuthStore.me,
         notifications: NotificationStore.all,
+        flows: FlowStore.all,
         addons: Addons.all
     };
 }
@@ -82,12 +87,15 @@ let RaccoonApp = React.createClass({
                     <Route path="method/:id" component={MethodUpdateForm} onEnter={this.requireAuth} />
                     <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="flow/new" component={FlowForm} onEnter={this.requireAuth} />
+                    <Route path="flow/:id" component={FlowUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth}>
                     <Route path=":id/action/:action_id" component={ProjectBuild} onEnter={this.requireAuth} />
+                    <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />
             </Router>
@@ -104,7 +112,7 @@ let RaccoonApp = React.createClass({
  */
 RaccoonApp.getState = function (state) {
     var globalState = getRaccoonState();
-    
+
     state = state || {};
 
     for (var key in state) {
@@ -146,6 +154,7 @@ RaccoonApp.fetchAll = function () {
     ProjectStore.fetchAll();
     EnvironmentStore.fetchAll();
     ActionStore.fetchAll();
+    FlowStore.fetchAll();
 };
 
 

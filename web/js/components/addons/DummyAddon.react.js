@@ -8,14 +8,12 @@ import BaseAddon from './BaseAddon.react';
 class DummyAddon extends BaseAddon {
     constructor(props) {
         super(props);
-
     }
 
     render() {
-        console.log(this);
         return (
             <p>
-                This is an Add-On.
+                This is an Add-On. {this.props.name}
             </p>
         );
     }
