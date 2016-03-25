@@ -8,7 +8,6 @@ import BaseAddon from './BaseAddon.react';
 class DummyAddon extends BaseAddon {
     constructor(props) {
         super(props);
-
     }
 
     render() {

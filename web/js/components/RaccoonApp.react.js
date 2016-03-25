@@ -112,7 +112,7 @@ let RaccoonApp = React.createClass({
  */
 RaccoonApp.getState = function (state) {
     var globalState = getRaccoonState();
-    
+
     state = state || {};
 
     for (var key in state) {
