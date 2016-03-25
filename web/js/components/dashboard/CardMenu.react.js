@@ -11,7 +11,7 @@ var CardMenu = React.createClass({
                 <ul className="dropdown-menu">
                     {
                         this.props.actions.map(action => {
-                            return <li><a href="#">{action.label}</a></li>
+                            return <li><a href={"action/" + action._id}>{action.label}</a></li>
                         })
                     }
                 </ul>

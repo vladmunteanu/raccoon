@@ -5,6 +5,7 @@ from motorengine import StringField, ReferenceField, DateTimeField
 from raccoon.models import Project
 from raccoon.models import Environment
 from raccoon.models import Method
+from raccoon.models import Flow
 from raccoon.models import BaseModel
 
 
@@ -16,4 +17,6 @@ class Action(BaseModel):
     project = ReferenceField(reference_document_type=Project)
     environment = ReferenceField(reference_document_type=Environment)
     method = ReferenceField(reference_document_type=Method)
+    flow  =  ReferenceField(reference_document_type=Flow)
+    placement = StringField()
     date_added = DateTimeField(required=True, auto_now_on_insert=True)

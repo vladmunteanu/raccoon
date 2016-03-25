@@ -24,20 +24,15 @@ class ActionStore extends BaseStore {
         this.baseuri = "/api/v1/actions/";
     }
 
-    filter(project = null, env = null) {
-        var result = this.all.filter(action => {
-            let projectId = '*';
-            let envId = '*';
+    filter(project = null, env = null, placement = null) {
+        console.log('[input]', project, env);
+        console.log('[actions]', this.all);
 
-            if (project != '*') {
-                projectId = project ? project.id : null;
-            }
+        let result = this.all.filter(action => {
+            let projectId = project ? project._id : null;
+            let envId = env ? env._id : null;
 
-            if (env != '*') {
-                envId = env ? env.id : null;
-            }
-
-            if (action.project == projectId && action.environment == envId) {
+            if (action.project == projectId && action.environment == envId && action.placement == placement) {
                 return true;
             }
         });

@@ -36,7 +36,7 @@ var Sidebar = React.createClass({
                                                 store = {ProjectStore}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
-                                                actions={ActionStore.filter(project)}
+                                                actions={ActionStore.filter(project, null, "project")}
                                             />;
                                         })
                                     }
@@ -61,7 +61,7 @@ var Sidebar = React.createClass({
                                                 store = {EnvironmentStore}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
                                                 switch={true}
-                                                actions={ActionStore.filter(null, env)}
+                                                actions={ActionStore.filter(null, env, "environment")}
                                             />;
                                         })
                                     }

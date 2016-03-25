@@ -20,12 +20,12 @@ class AddonStore {
 
     }
 
-    register(addon_name, addon_class) {
-        this.addons[addon_name] = addon_class;
+    register(addonName, addonClass) {
+        this.addons[addonName] = addonClass;
     }
 
-    getAddon(addon_name) {
-        return this.addons[addon_name];
+    getAddon(addonName) {
+        return this.addons[addonName];
     }
 
     get all() {
