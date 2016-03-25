@@ -29,8 +29,8 @@ class ActionStore extends BaseStore {
         console.log('[actions]', this.all);
 
         let result = this.all.filter(action => {
-            let projectId = project ? project._id : null;
-            let envId = env ? env._id : null;
+            let projectId = project ? project.id : null;
+            let envId = env ? env.id : null;
 
             if (action.project == projectId && action.environment == envId && action.placement == placement) {
                 return true;
