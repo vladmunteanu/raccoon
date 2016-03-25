@@ -5,6 +5,7 @@ import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
+import FlowStore from '../stores/FlowStore';
 import NotificationStore from '../stores/NotificationStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
@@ -25,6 +26,8 @@ import ProjectForm from './settings/ProjectForm.react';
 import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
 import MethodForm from './settings/MethodForm.react';
 import MethodUpdateForm from './settings/MethodUpdateForm.react';
+import FlowForm from './settings/FlowForm.react';
+import FlowUpdateForm from './settings/FlowUpdateForm.react';
 
 import Addons from "./addons/Addons";
 
@@ -35,6 +38,7 @@ function getRaccoonState() {
         actions: ActionStore.all,
         user: AuthStore.me,
         notifications: NotificationStore.all,
+        flows: FlowStore.all,
         addons: Addons.all
     };
 }
@@ -82,6 +86,8 @@ let RaccoonApp = React.createClass({
                     <Route path="method/:id" component={MethodUpdateForm} onEnter={this.requireAuth} />
                     <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="flow/new" component={FlowForm} onEnter={this.requireAuth} />
+                    <Route path="flow/:id" component={FlowUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />
@@ -146,6 +152,7 @@ RaccoonApp.fetchAll = function () {
     ProjectStore.fetchAll();
     EnvironmentStore.fetchAll();
     ActionStore.fetchAll();
+    FlowStore.fetchAll();
 };
 
 
