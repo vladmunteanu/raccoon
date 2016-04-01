@@ -11,10 +11,9 @@ class DummyAddon extends BaseAddon {
     }
 
     render() {
-        console.log(this);
         return (
             <p>
-                This is an Add-On.
+                This is an Add-On. {this.props.name}
             </p>
         );
     }
