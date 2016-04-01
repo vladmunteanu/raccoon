@@ -89,7 +89,6 @@ class ActionForm extends React.Component {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log("22222222222", this.state.action.placement);
         this.props.validate((error) => {
             if (!error) {
                 ActionStore.create({
@@ -118,7 +117,6 @@ class ActionForm extends React.Component {
             {type: "card", name: "Card"}
         ];
         let radio = placementTypes.map((plc) => {
-            console.log("111111111111", placement, plc.type);
             return <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
                           onChange={this.onFormChange.bind(this, 'placement')}>
                 &nbsp;{plc.name}&nbsp;
