@@ -26,12 +26,34 @@ class ActionStore extends BaseStore {
 
     filter(project = null, env = null, placement = null) {
         let result = this.all.filter(action => {
-            let projectId = project ? project.id : null;
-            let envId = env ? env.id : null;
-
-            if (action.project == projectId && action.environment == envId && action.placement == placement) {
-                return true;
+            console.log("[ placemant] ", action);
+            if (action.placement == placement) {
+                if (placement == "project") {
+                    if (!project) {
+                        return true;
+                    } else
+                    if (action.project == project.id) {
+                        return true;
+                    }
+                } else
+                if (placement == "environment") {
+                    if (!env) {
+                        return true;
+                    } else
+                    if (action.environment == env.id) {
+                        return true;
+                    }
+                } else
+                if (placement == "card") {
+                    if (!project && !env) {
+                        return true;
+                    } else
+                    if (action.project == project.id) {
+                        return true;
+                    }
+                }
             }
+
         });
 
         return result;
