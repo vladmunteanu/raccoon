@@ -26,7 +26,6 @@ class ActionStore extends BaseStore {
 
     filter(project = null, env = null, placement = null) {
         let result = this.all.filter(action => {
-            console.log("[ placemant] ", action);
             if (action.placement == placement) {
                 if (placement == "project") {
                     if (!project) {
