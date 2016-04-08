@@ -31,15 +31,16 @@ class GitHubInterface(BaseInterface):
         raise gen.Return(response)
 
     @gen.coroutine
-    def commits(self, project):
+    def commits(self, project, branch='master'):
         token = self.connector.config.get('token')
         headers = {
             'Authorization': 'token {}'.format(token),
         }
 
-        url = '{api_url}/repos/{repo_name}/commits'.format(
+        url = '{api_url}/repos/{repo_name}/commits?sha={branch}'.format(
             api_url=project.api_url,
-            repo_name=project.repo_name
+            repo_name=project.repo_name,
+            branch=branch
         )
 
         response, _ = yield self.fetch(
