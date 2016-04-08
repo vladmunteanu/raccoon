@@ -7,6 +7,8 @@ import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
 import NotificationStore from '../stores/NotificationStore';
 import FlowStore from '../stores/FlowStore';
+import BuildStore from '../stores/BuildStore';
+import InstallStore from '../stores/InstallStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
 import ProjectBuild from './dashboard/ProjectBuild.react';
@@ -155,6 +157,8 @@ RaccoonApp.fetchAll = function () {
     EnvironmentStore.fetchAll();
     ActionStore.fetchAll();
     FlowStore.fetchAll();
+    BuildStore.fetchAll();
+    InstallStore.fetchAll();
 };
 
 
