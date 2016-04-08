@@ -116,8 +116,8 @@ class ActionForm extends React.Component {
             {type: "environment", name: "Environment"},
             {type: "card", name: "Card"}
         ];
-        let radio = (
-                <form>
+        let radio =  (
+            <div className="form-group">
                     {
                         placementTypes.map((plc) => {
                             return (
@@ -129,11 +129,12 @@ class ActionForm extends React.Component {
                             )
                         })
                     }
-                </form>
+            </div>
             );
         let projectPlacement = (
             <div className="form-group">
-                <label htmlFor="action-project" className="control-label">Project</label><br/>
+                <label htmlFor="action-project" className="control-label">Project</label>
+                <div className="form-inline">
                 <select className="form-control" id="action-project" value={projectId}
                         onChange={this.onFormChange.bind(this, 'project')}>
                     {/*<option value='' disabled={true}>-- select an option --</option>*/}
@@ -144,11 +145,13 @@ class ActionForm extends React.Component {
                         })
                     }
                 </select>
+                </div>
             </div>
         );
         let environmentPlacement = (
             <div className="form-group">
-                <label htmlFor="action-env" className="control-label">Environment</label><br/>
+                <label htmlFor="action-env" className="control-label">Environment</label>
+                <div className="form-inline">
                 <select className="form-control" id="action-env" value={envId}
                         onChange={this.onFormChange.bind(this, 'environment')}>
                     {/*<option value='' disabled={true}>-- select an option --</option>*/}
@@ -159,23 +162,26 @@ class ActionForm extends React.Component {
                         })
                     }
                 </select>
+                </div>
             </div>
         );
-        let formPlacement = (
-            <div>
+        /*let formPlacement = (
+            <div className="form-group">
                 {projectPlacement}
                 {environmentPlacement}
             </div>
-        );
-        if (placement === "project")
+        );*/
+
+        /*if (placement === "project")
             formPlacement = projectPlacement;
         else if (placement === "environment")
             formPlacement = environmentPlacement;
-
+*/
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
                 <form onSubmit={this.onSubmit} className="form-horizontal col-sm-4">
+                    <div>
                     <div className="form-group">
                         <label htmlFor="action-name" className="control-label">Action name</label>
                         <input type="text"  className="form-control"
@@ -194,11 +200,47 @@ class ActionForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-placement" className="control-label">Action placement</label>
-                        <div className="form-inline">
-                            {radio}
+                        <div className="form-inline" id="action-placement">
+                            {
+                                placementTypes.map((plc) => {
+                                    return (
+                                        <div className="form-inline">
+                                            <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
+                                                   onChange={this.onFormChange.bind(this, 'placement')} id={"radio-" + plc.type} />
+                                            <label htmlFor={"radio-" + plc.type}>&nbsp;&nbsp;{plc.name}</label>
+                                        </div>
+                                    )
+                                })
+                            }
+
                         </div>
                     </div>
-                    {formPlacement}
+                        <div className="form-group">
+                            <label htmlFor="action-project" className="control-label">Project</label>
+                                <select className="form-control" id="action-project" value={projectId}
+                                        onChange={this.onFormChange.bind(this, 'project')}>
+                                    {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                                    <option value=''>All projects</option>
+                                    {
+                                        this.state.projects.map(project => {
+                                            return <option value={project.id}>{project.label || project.name}</option>
+                                        })
+                                    }
+                                </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="action-env" className="control-label">Environment</label>
+                                <select className="form-control" id="action-env" value={envId}
+                                        onChange={this.onFormChange.bind(this, 'environment')}>
+                                    {/*<option value='' disabled={true}>-- select an option --</option>*/}
+                                    <option value=''>All environments</option>
+                                    {
+                                        this.state.environments.map(env => {
+                                            return <option value={env.id}>{env.label || env.name}</option>
+                                        })
+                                    }
+                                </select>
+                        </div>
                     <div className="form-group">
                         <label htmlFor="action-flow" className="control-label">Flow</label><br/>
                         <select className="form-control" id="action-flow" value={flowId}
@@ -211,9 +253,9 @@ class ActionForm extends React.Component {
                             }
                         </select>
                     </div>
-
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                    </div>
                     </div>
                 </form>
             </div>

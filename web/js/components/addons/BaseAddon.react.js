@@ -5,11 +5,15 @@ class BaseAddon extends React.Component {
     constructor(props) {
         super(props);
 
-        this.context = this.props.context || {};
+        this.addon_context = this.props.context || {};
+    }
+
+    updateContext(key, value) {
+        this.addon_context[key] = value;
     }
 
     getContext() {
-        return this.context;
+        return this.addon_context;
     }
 }
 
