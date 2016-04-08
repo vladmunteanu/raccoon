@@ -6,20 +6,20 @@ import RaccoonApp from '../RaccoonApp.react';
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import ActionStore from '../../stores/ActionStore';
-import MethodStore from '../../stores/MethodStore';
+import FlowStore from '../../stores/FlowStore';
 import { ActionForm } from './ActionForm.react';
 
 
 function getLocalState() {
     let localState = {
-        methods: MethodStore.all,
+        flows: FlowStore.all,
         action: {
             name: '',
             label: '',
             placement: 'project',
             project: '',
             environment: '',
-            method: '',
+            flow: ''
         }
     };
     return RaccoonApp.getState(localState);
@@ -49,7 +49,6 @@ class ActionUpdateForm extends ActionForm {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log("33333333333", this.state.action.placement)
         this.props.validate((error) => {
             if (!error) {
                 ActionStore.updateById(this.state.action.id, {
@@ -58,7 +57,7 @@ class ActionUpdateForm extends ActionForm {
                     placement: this.state.action.placement,
                     project: this.state.action.project,
                     environment: this.state.action.environment,
-                    method: this.state.action.method
+                    flow: this.state.action.flow
                 });
             }
         });
@@ -73,7 +72,7 @@ class ActionUpdateForm extends ActionForm {
                 placement: 'project',
                 project: '',
                 environment: '',
-                method: '',
+                flow: '',
 
             }
         }

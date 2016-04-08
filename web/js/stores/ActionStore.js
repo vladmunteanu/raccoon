@@ -27,32 +27,35 @@ class ActionStore extends BaseStore {
     filter(project = null, env = null, placement = null) {
         let result = this.all.filter(action => {
             if (action.placement == placement) {
-                if (placement == "project") {
-                    if (!project) {
-                        return true;
-                    } else
-                    if (action.project == project.id) {
-                        return true;
-                    }
-                } else
-                if (placement == "environment") {
-                    if (!env) {
-                        return true;
-                    } else
-                    if (action.environment == env.id) {
-                        return true;
-                    }
-                } else
-                if (placement == "card") {
-                    if (!project && !env) {
-                        return true;
-                    } else
-                    if (action.project == project.id) {
-                        return true;
-                    }
+                switch (placement) {
+                    case "project":
+                        if (!action.project || action.project == project.id) {
+                            return true;
+                        }
+                        break;
+                    case "environment":
+                        if (!action.environment || action.environment == env.id) {
+                            return true;
+                        }
+                        break;
+                    case "card":
+                        if (!action.environment && !action.project) {
+                            return true;
+                        } else
+                        if (!action.environment && action.project == project.id) {
+                            return true;
+                        } else
+                        if (!action.project && action.environment == env.id) {
+                            return true;
+                        } else
+                        if (action.environment == env.id && action.project == project.id) {
+                            return true;
+                        }
+                        break;
                 }
-            }
 
+            }
+            return false;
         });
 
         return result;

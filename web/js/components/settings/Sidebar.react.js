@@ -58,18 +58,18 @@ var Sidebar = React.createClass({
                             </div>
                         </li>
                         <li>
-                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseActions" aria-expanded="false" aria-controls="collapseActions">
-                                Actions <i className="fa fa-angle-down pull-right" />
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
+                                Methods <i className="fa fa-angle-down pull-right" />
                             </a>
-                            <div id="collapseActions" className="collapse">
+                            <div id="collapseMethods" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.actions.map(action => {
-                                            return <MenuItem item={action} link={"/settings/action/" + action.id} />;
+                                        this.props.methods.map(method => {
+                                            return <MenuItem item={method} link={"/settings/method/" + method.id} />;
                                         })
                                     }
                                     <li>
-                                        <Link to="/settings/action/new">
+                                        <Link to="/settings/method/new">
                                             <i className="fa fa-plus" /> Add new
                                         </Link>
                                     </li>
@@ -89,6 +89,25 @@ var Sidebar = React.createClass({
                                     }
                                     <li>
                                         <Link to="/settings/flow/new">
+                                            <i className="fa fa-plus" /> Add new
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseActions" aria-expanded="false" aria-controls="collapseActions">
+                                Actions <i className="fa fa-angle-down pull-right" />
+                            </a>
+                            <div id="collapseActions" className="collapse">
+                                <ul className="nav nav-submenu">
+                                    {
+                                        this.props.actions.map(action => {
+                                            return <MenuItem item={action} link={"/settings/action/" + action.id} />;
+                                        })
+                                    }
+                                    <li>
+                                        <Link to="/settings/action/new">
                                             <i className="fa fa-plus" /> Add new
                                         </Link>
                                     </li>
@@ -148,25 +167,6 @@ var Sidebar = React.createClass({
                                         <a href="#">
                                             <i className="fa fa-plus" /> Add new
                                         </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
-                                Methods <i className="fa fa-angle-down pull-right" />
-                            </a>
-                            <div id="collapseMethods" className="collapse">
-                                <ul className="nav nav-submenu">
-                                    {
-                                        this.props.methods.map(method => {
-                                            return <MenuItem item={method} link={"/settings/method/" + method.id} />;
-                                        })
-                                    }
-                                    <li>
-                                        <Link to="/settings/method/new">
-                                            <i className="fa fa-plus" /> Add new
-                                        </Link>
                                     </li>
                                 </ul>
                             </div>
