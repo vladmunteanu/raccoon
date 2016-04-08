@@ -11,7 +11,7 @@ import ActionStore from  '../../stores/ActionStore';
 function getLocalState(action_id) {
     let action = ActionStore.getById(action_id);
     if (action) {
-        action.flow = "56f52309fb6329100ec1853f"; // TODO (alexm): remove this dummy flow id
+        action.flow = "56fe819167e92c74346ff4a3"; // TODO (alexm): remove this dummy flow id
     }
 
     let flow = action ? FlowStore.getById(action.flow) : null;
@@ -67,10 +67,22 @@ let Flow = React.createClass({
     },
 
     render: function () {
+        if (!this.state.action || !this.state.flow) {
+            // loading
+            return (<div>Loading</div>);
+        }
+
         let flow = this.state.flow;
         let step_index = this.state.step;
         let LastStepAddon = this.refs['LastStepAddon'];
-        let last_context = {};
+
+        // create context
+        let last_context = {
+            action: this.state.action.id,
+            project: this.state.action.project,
+            environment: this.state.environment,
+            flow: this.state.action.flow,
+        };
 
         if (LastStepAddon) {
             last_context = LastStepAddon.getContext();
@@ -78,6 +90,7 @@ let Flow = React.createClass({
 
 
         if (step_index > flow.steps.length - 1) {
+            console.log('alexm: @@@@@@@@@@@', last_context);
             return (<div></div>);
         }
 
@@ -92,8 +105,6 @@ let Flow = React.createClass({
                         })
                     }
                 </ol>
-
-                <h4>This is a flow</h4>
 
                 {/* display the current step in the flow */}
                 <StepAddon
