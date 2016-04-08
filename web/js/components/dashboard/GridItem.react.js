@@ -48,6 +48,11 @@ let GridItem = React.createClass({
         this.setState(state);
     },
 
+    _onSelectBuild: function(id, event) {
+        this.state.installedBuild = BuildStore.getById(id);
+        this.setState(this.state);
+    },
+
     render: function () {
         return (
             <div className="box pull-left">
@@ -69,7 +74,7 @@ let GridItem = React.createClass({
                             {
                                 this.state.builds.map(build => {
                                     return (
-                                        <li>
+                                        <li onClick={this._onSelectBuild.bind(this, build.id)}>
                                             <a href="#">
                                                 <h4 className="list-group-item-heading environment">
                                                     {build.version}
@@ -104,9 +109,8 @@ let GridItem = React.createClass({
                     </div>
                 </div>
                 <div className="footer">
-            <span className="time pull-right" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="23-05-2015 2:00 PM">
-              <span className="fa fa-clock-o" /> 15m ago
-            </span>
+                    <span className="time pull-right" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="23-05-2015 2:00 PM">
+                    <span className="fa fa-clock-o" /> 15m ago</span>
                     <button className="btn btn-xs btn-default pull-right btn-install">Install</button>
                 </div>
             </div>
