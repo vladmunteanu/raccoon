@@ -1,8 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, Link, History } from 'react-router';
-
-import { GridList, GridTile } from 'material-ui';
 
 import RaccoonApp from '../RaccoonApp.react';
 import ProjectStore from '../../stores/ProjectStore';
@@ -42,9 +39,6 @@ var DashboardApp = React.createClass({
         this.setState(state);
     },
 
-    /**
-    * @return {object}
-    */
     render: function() {
         return (
             <div className="container-fluid">
@@ -55,14 +49,12 @@ var DashboardApp = React.createClass({
                         actions={this.state.actions}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-                        <Topbar />
-                        <Taskbar />
+                        <Topbar/>
+                        <Taskbar/>
 
                         <div className="content">
                             {this.props.children}
-
                             {
-
                                 this.state.projects.map(project => {
                                     if (project.visible) {
                                         return (
@@ -70,9 +62,9 @@ var DashboardApp = React.createClass({
                                                 {
                                                     this.state.environments.map(environment => {
                                                         if (environment.visible) {
-                                                            return <GridItem project={project}
-                                                                             environment={environment}
-                                                                    />;
+                                                            return <GridItem
+                                                                project={project}
+                                                                environment={environment}/>;
                                                         }
                                                     })
                                                 }
@@ -81,7 +73,6 @@ var DashboardApp = React.createClass({
                                     }
                                 })
                             }
-
                         </div>
                     </div>
                 </div>

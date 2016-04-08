@@ -22,9 +22,13 @@ class BuildStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/builds/";
-
     }
 
+    filter(project) {
+        return this.all.filter(build => {
+            return build.project == project.id;
+        });
+    }
 }
 
 export default new BuildStore();
