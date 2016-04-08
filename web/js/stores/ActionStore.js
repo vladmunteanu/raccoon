@@ -20,7 +20,7 @@ class ActionStore extends BaseStore {
             return actionStore;
         }
 
-        // set base URI for resources 
+        // set base URI for resources
         this.baseuri = "/api/v1/actions/";
     }
 

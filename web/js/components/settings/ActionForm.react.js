@@ -9,19 +9,19 @@ import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
-import MethodStore from '../../stores/MethodStore';
+import FlowStore from '../../stores/FlowStore';
 
 
 function getLocalState() {
     let localState = {
-        methods: MethodStore.all,
+        flows: FlowStore.all,
         action: {
             name: '',
             label: '',
             placement: 'project',
             project: '',
             environment: '',
-            method: "",
+            flow: ''
         }
     };
     return RaccoonApp.getState(localState);
@@ -45,14 +45,14 @@ class ActionForm extends React.Component {
         ActionStore.addListener(this._onChange.bind(this));
         ProjectStore.addListener(this._onChange.bind(this));
         EnvironmentStore.addListener(this._onChange.bind(this));
-        MethodStore.addListener(this._onChange.bind(this));
+        FlowStore.addListener(this._onChange.bind(this));
     }
 
     componentWillUnmount() {
         ActionStore.removeListener(this._onChange.bind(this));
         ProjectStore.removeListener(this._onChange.bind(this));
         EnvironmentStore.removeListener(this._onChange.bind(this));
-        MethodStore.removeListener(this._onChange.bind(this));
+        FlowStore.removeListener(this._onChange.bind(this));
     }
 
     _onChange() {
@@ -97,7 +97,7 @@ class ActionForm extends React.Component {
                     placement: this.state.action.placement,
                     project: this.state.action.project,
                     environment: this.state.action.environment,
-                    method: this.state.action.method
+                    flow: this.state.action.flow
                 });
             }
         });
@@ -110,18 +110,27 @@ class ActionForm extends React.Component {
         let placement = action.placement;
         let projectId = action.project;
         let envId = action.environment;
-        let methodId = action.method;
+        let flowId = action.flow;
         let placementTypes = [
             {type: "project", name: "Project"},
             {type: "environment", name: "Environment"},
             {type: "card", name: "Card"}
         ];
-        let radio = placementTypes.map((plc) => {
-            return <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
-                          onChange={this.onFormChange.bind(this, 'placement')}>
-                &nbsp;{plc.name}&nbsp;
-                </input>
-        }, this);
+        let radio = (
+                <form>
+                    {
+                        placementTypes.map((plc) => {
+                            return (
+                                <div>
+                                    <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
+                                        onChange={this.onFormChange.bind(this, 'placement')} id={"radio-" + plc.type} />
+                                    <label for={"radio-" + plc.type}>{plc.name}</label>
+                                </div>
+                            )
+                        })
+                    }
+                </form>
+            );
         let projectPlacement = (
             <div className="form-group">
                 <label htmlFor="action-project" className="control-label">Project</label><br/>
@@ -191,13 +200,13 @@ class ActionForm extends React.Component {
                     </div>
                     {formPlacement}
                     <div className="form-group">
-                        <label htmlFor="action-method" className="control-label">Method</label><br/>
-                        <select className="form-control" id="action-method" value={methodId}
-                                onChange={this.onFormChange.bind(this, 'method')}>
+                        <label htmlFor="action-flow" className="control-label">Flow</label><br/>
+                        <select className="form-control" id="action-flow" value={flowId}
+                                onChange={this.onFormChange.bind(this, 'flow')}>
                             <option value='' disabled={true}>-- select an option --</option>
                             {
-                                this.state.methods.map(method => {
-                                    return <option value={method.id}>{method.label || method.name}</option>
+                                this.state.flows.map(flow => {
+                                    return <option value={flow.id}>{flow.label || flow.name}</option>
                                 })
                             }
                         </select>
