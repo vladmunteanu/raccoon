@@ -69,6 +69,13 @@ let Flow = React.createClass({
     render: function () {
         let flow = this.state.flow;
         let step_index = this.state.step;
+        let LastStepAddon = this.refs['LastStepAddon'];
+        let last_context = {};
+
+        if (LastStepAddon) {
+            last_context = LastStepAddon.getContext();
+        }
+
 
         if (step_index > flow.steps.length - 1) {
             return (<div></div>);
@@ -89,7 +96,11 @@ let Flow = React.createClass({
                 <h4>This is a flow</h4>
 
                 {/* display the current step in the flow */}
-                <StepAddon name={"Addon cu numaru' " + step_index} />
+                <StepAddon
+                    ref="LastStepAddon"
+                    name={"Addon cu numaru' " + step_index}
+                    context={last_context}
+                />
 
                 <nav>
                     <ul className="pager">
