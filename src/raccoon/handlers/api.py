@@ -56,7 +56,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         try:
             if verb not in self.ALLOWED_VERBS:
                 raise ReplyError(403)
-
             controller, params = Router.get(resource)
             method = getattr(controller, verb, None)
 
@@ -75,7 +74,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 data=jdata,
                 socket=self
             )
-
             yield method(req, **params)
         except ReplyError as e:
             self.write_message(str(e))

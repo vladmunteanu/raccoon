@@ -66,9 +66,9 @@ var Sidebar = React.createClass({
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <Link to="settings/environment/new">
                                             <i className="fa fa-plus" /> Add new
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
