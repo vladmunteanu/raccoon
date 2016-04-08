@@ -3,11 +3,12 @@ from __future__ import absolute_import
 import logging
 from tornado import gen
 
-from raccoon.controllers.base import BaseController
-from raccoon.interfaces.jenkins import JenkinsInterface
-from raccoon.models import Action, Connector
 from raccoon.utils.decorators import authenticated
 from raccoon.utils.exceptions import ReplyError
+from raccoon.controllers.base import BaseController
+from raccoon.interfaces.jenkins import JenkinsInterface
+from raccoon.models import Flow, Connector
+
 
 log = logging.getLogger(__name__)
 
@@ -43,16 +44,16 @@ class JenkinsController(BaseController):
     @classmethod
     @authenticated
     @gen.coroutine
-    def get(cls, request, method=None, action=None, *args, **kwargs):
-        if action:
-            action = yield Action.objects.get(id=action)
-            if not action:
+    def get(cls, request, method=None, flow=None, *args, **kwargs):
+        if flow:
+            flow = yield Flow.objects.get(id=flow)
+            if not flow:
                 raise ReplyError(422)
 
             # load references
-            yield action.load_references()
-            yield action.method.load_references()
-            connector = action.method.connector
+            yield flow.load_references()
+            yield flow.method.load_references()
+            connector = flow.method.connector
         else:
             results = yield Connector.objects.filter(type='jenkins').find_all()
             if not len(results):
@@ -66,5 +67,5 @@ class JenkinsController(BaseController):
         if not method:
             raise ReplyError(404)
 
-        response = yield method(action=action, *args, **kwargs)
+        response = yield method(flow=flow, *args, **kwargs)
         yield request.send(response)

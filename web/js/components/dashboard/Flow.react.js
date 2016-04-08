@@ -1,11 +1,16 @@
 import React from 'react'
 
 import RaccoonApp from '../RaccoonApp.react';
+import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import Addons from "../addons/Addons";
 
+// stores
 import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
+
+import Constants from '../../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
 
 
 function getLocalState(action_id) {
@@ -69,7 +74,7 @@ let Flow = React.createClass({
     render: function () {
         if (!this.state.action || !this.state.flow) {
             // loading
-            return (<div>Loading</div>);
+            return (<div></div>);
         }
 
         let flow = this.state.flow;
@@ -90,7 +95,10 @@ let Flow = React.createClass({
 
 
         if (step_index > flow.steps.length - 1) {
-            console.log('alexm: @@@@@@@@@@@', last_context);
+            AppDispatcher.dispatch({
+                action: ActionTypes.BUILD_START,
+                data: last_context,
+            });
             return (<div></div>);
         }
 

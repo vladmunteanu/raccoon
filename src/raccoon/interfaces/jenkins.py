@@ -46,7 +46,7 @@ class JenkinsInterface(BaseInterface):
         )
 
     @gen.coroutine
-    def build(self, action, *args, **kwargs):
+    def build(self, flow, *args, **kwargs):
         """
         :param kwargs: parameter for jenkins job
         :return: Build information
@@ -55,10 +55,18 @@ class JenkinsInterface(BaseInterface):
         if kwargs:
             path = URLS.get('build_with_params')
 
-        job_name = 'Webserver-Unit-Tests'
+        job_name = flow.method.method
+
+        # create arguments
+        arguments = {}
+        for argument in flow.method.arguments:
+            value = argument['value']
+            if value.startswith('$'):
+                value = kwargs.get(value[1:]) if kwargs.get(value[1:]) else value
+            arguments[argument['name']] = value
 
         # create url with params
-        query = urlencode(kwargs)
+        query = urlencode(arguments)
         url = urljoin(self.api_url, path).format(
             job_name=job_name,
         )
@@ -79,11 +87,11 @@ class JenkinsInterface(BaseInterface):
                 # stop polling if build stated
                 break
 
-            yield sleep(50)
+            yield sleep(100)
 
         # get build info
         build_number = response.get('executable', {}).get('number')
-        response = yield self.build_info(build_number=build_number)
+        response = yield self.build_info(flow=flow, build_number=build_number)
 
         raise gen.Return(response)
 
@@ -117,11 +125,13 @@ class JenkinsInterface(BaseInterface):
         raise gen.Return(response['jobs'])
 
     @gen.coroutine
-    def call(self, method, *args, **kwargs):
+    def call(self, method, flow=None, *args, **kwargs):
         if method not in URLS:
             raise ReplyError(404)
 
-        job_name = 'Webserver-Unit-Tests'
+        # select job from flow method
+        if flow:
+            job_name = flow.method.method
 
         # select path
         path = URLS.get(method)
