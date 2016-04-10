@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route } from 'react-router';
+import { Router, Route, IndexRoute } from 'react-router';
 
 import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
@@ -17,6 +17,7 @@ import NotFound from './NotFound.react';
 import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
 import Flow from './dashboard/Flow.react';
+import CardsView from './dashboard/CardsView.react';
 
 import ActionForm from './settings/ActionForm.react';
 import ActionUpdateForm from './settings/ActionUpdateForm.react';
@@ -95,6 +96,7 @@ let RaccoonApp = React.createClass({
                 <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth}>
+                    <IndexRoute component={CardsView} />
                     <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />

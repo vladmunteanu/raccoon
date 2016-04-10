@@ -14,10 +14,9 @@ import GridItem from './GridItem.react';
 import Notification from '../Notification.react';
 
 
-var DashboardApp = React.createClass({
+var CardsView = React.createClass({
 
     getInitialState: function() {
-        RaccoonApp.fetchAll();
         return RaccoonApp.getState();
     },
 
@@ -42,28 +41,30 @@ var DashboardApp = React.createClass({
 
     render: function() {
         return (
-            <div className="container-fluid">
-                <div className="row">
-                    <Sidebar
-                        projects={this.state.projects}
-                        environments={this.state.environments}
-                        actions={this.state.actions}
-                    />
-                    <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-                        <Topbar/>
-                        <Taskbar/>
-
-                        <Notification />
-
-                        <div className="content">
-                            {this.props.children}
-                        </div>
-                    </div>
-                </div>
+            <div>
+                {
+                    this.state.projects.map(project => {
+                        if (project.visible) {
+                            return (
+                                <div className="container-fluid grid-list">
+                                    {
+                                        this.state.environments.map(environment => {
+                                            if (environment.visible) {
+                                                return <GridItem
+                                                    project={project}
+                                                    environment={environment}/>;
+                                            }
+                                        })
+                                    }
+                                </div>
+                            );
+                        }
+                    })
+                }
             </div>
         );
     }
 
 });
 
-export default DashboardApp;
+export default CardsView;
