@@ -2,6 +2,7 @@ import React from 'react'
 
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
+import Utils from '../../utils/Utils';
 
 import ActionStore from '../../stores/ActionStore';
 import BuildStore from '../../stores/BuildStore';
@@ -48,9 +49,19 @@ let GridItem = React.createClass({
         this.setState(state);
     },
 
+    findAncestor: function (el, cls) {
+        while ((el = el.parentElement) && !el.classList.contains(cls));
+        return el;
+    },
+
     _onSelectBuild: function(id, event) {
         this.state.installedBuild = BuildStore.getById(id);
         this.setState(this.state);
+        //
+        //let parent = this.findAncestor(event.target, 'dropdown-menu');
+        //if (parent) {
+        //    parent.style.visibility = 'hidden';
+        //}
     },
 
     render: function () {
@@ -63,7 +74,7 @@ let GridItem = React.createClass({
                     </div>
 
                     <div className="dropdown">
-                        <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <h4 className="list-group-item-heading environment">
                                 {this.props.project.name} — {this.state.installedBuild.version}-{this.props.project.build_nr}
                                 <span className="caret" />
@@ -96,7 +107,14 @@ let GridItem = React.createClass({
                                     return (
                                         <li className="media">
                                             <div className="media-left">
-                                                <img src="/static/assets/img/user.jpg" className="img-circle" data-toggle="tooltip" data-placement="bottom" data-html="true" title="" data-original-title="Alexandru Mihai<br/>23-05-2015 2:00 PM" />
+                                                <img src={Utils.gravatarUrl(commit.author.email)}
+                                                     title={commit.author.name}
+                                                     className="img-circle"
+                                                     data-toggle="tooltip"
+                                                     data-placement="bottom"
+                                                     data-html="true"
+                                                     data-original-title="Alexandru Mihai<br/>23-05-2015 2:00 PM"
+                                                />
                                             </div>
                                             <div className="media-body">
                                                 {commit.message}

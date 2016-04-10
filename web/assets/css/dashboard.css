@@ -238,30 +238,10 @@ body {
     display: none;
 }
 
-.slide-details {
-    display: block !important;
-    animation: slide-details 0.5s forwards;
-}
-
-@keyframes slide-details {
-    0% {
-        opacity: 0;
-        margin-left: 0px;
-    }
-    100% {
-        opacity: 1;
-        margin-left: 263px;
-    }
-}
-
-.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0; // remove the gap so it doesn't close
- }
-
-.steps {
-
-}
+/*.dropdown:hover .dropdown-menu {*/
+    /*display: block;*/
+    /*margin-top: 0; !* remove the gap so it doesn't close *!*/
+/*}*/
 
 /* Notifications */
 .notifications-container {
