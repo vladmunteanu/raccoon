@@ -37,4 +37,6 @@ class Request(object):
             'verb': self.verb,
             'resource': self.resource,
             'data': response,
+            'code': 200,
+            'message': 'OK',
         }, default=json_serial))

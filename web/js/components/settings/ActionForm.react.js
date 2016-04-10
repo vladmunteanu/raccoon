@@ -39,20 +39,21 @@ class ActionForm extends React.Component {
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        ActionStore.addListener(this._onChange.bind(this));
-        ProjectStore.addListener(this._onChange.bind(this));
-        EnvironmentStore.addListener(this._onChange.bind(this));
-        FlowStore.addListener(this._onChange.bind(this));
+        ActionStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
+        FlowStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        ActionStore.removeListener(this._onChange.bind(this));
-        ProjectStore.removeListener(this._onChange.bind(this));
-        EnvironmentStore.removeListener(this._onChange.bind(this));
-        FlowStore.removeListener(this._onChange.bind(this));
+        ActionStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
+        EnvironmentStore.removeListener(this._onChange);
+        FlowStore.removeListener(this._onChange);
     }
 
     _onChange() {

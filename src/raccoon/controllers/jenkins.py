@@ -44,7 +44,26 @@ class JenkinsController(BaseController):
     @classmethod
     @authenticated
     @gen.coroutine
-    def get(cls, request, method=None, flow=None, *args, **kwargs):
+    def get(cls, request, method=None, *args, **kwargs):
+        results = yield Connector.objects.filter(type='jenkins').find_all()
+        if not len(results):
+            raise ReplyError(422)
+
+        connector = results[0]
+
+        # create Jenkins interface
+        jenkins = JenkinsInterface(connector)
+        method = getattr(jenkins, method, None)
+        if not method:
+            raise ReplyError(404)
+
+        response = yield method(*args, **kwargs)
+        yield request.send(response)
+
+    @classmethod
+    @authenticated
+    @gen.coroutine
+    def post(cls, request, method=None, flow=None, *args, **kwargs):
         if flow:
             flow = yield Flow.objects.get(id=flow)
             if not flow:

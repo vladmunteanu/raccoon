@@ -35,9 +35,9 @@ class JenkinsStore extends BaseStore {
         let connector = new Connector();
 
         connector.send({
-            verb: 'get',
+            verb: 'post',
             resource: this.baseuri + 'build',
-            args: args,
+            body: args,
         }, payload => {
             this.emitChange();
         });

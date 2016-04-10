@@ -7,10 +7,11 @@ import EnvironmentStore from '../../stores/EnvironmentStore';
 import AuthStore from '../../stores/AuthStore';
 import ActionStore from '../../stores/ActionStore';
 
-import Sidebar from './Sidebar.react.js';
-import Topbar from './../Topbar.react.js';
-import Taskbar from './../Taskbar.react.js';
-import GridItem from './GridItem.react.js';
+import Sidebar from './Sidebar.react';
+import Topbar from './../Topbar.react';
+import Taskbar from './../Taskbar.react';
+import GridItem from './GridItem.react';
+import Notification from '../Notification.react';
 
 
 var DashboardApp = React.createClass({
@@ -51,6 +52,8 @@ var DashboardApp = React.createClass({
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
                         <Topbar/>
                         <Taskbar/>
+
+                        <Notification />
 
                         <div className="content">
                             {this.props.children}

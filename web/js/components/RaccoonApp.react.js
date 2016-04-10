@@ -11,7 +11,6 @@ import BuildStore from '../stores/BuildStore';
 import InstallStore from '../stores/InstallStore';
 
 import DashboardApp from './dashboard/DashboardApp.react';
-import ProjectBuild from './dashboard/ProjectBuild.react';
 import Login from './auth/Login.react';
 import Logout from './auth/Logout.react';
 import NotFound from './NotFound.react';
@@ -96,7 +95,6 @@ let RaccoonApp = React.createClass({
                 <Route path="/logout" component={Logout} />
                 <Route path="/register" component={Register} />
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth}>
-                    <Route path=":id/action/:action_id" component={ProjectBuild} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />

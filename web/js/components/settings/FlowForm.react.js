@@ -34,14 +34,15 @@ class FlowForm extends React.Component {
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.addAddon = this.addAddon.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        MethodStore.addListener(this._onChange.bind(this));
+        MethodStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        MethodStore.removeListener(this._onChange.bind(this));
+        MethodStore.removeListener(this._onChange);
     }
 
     _onChange() {

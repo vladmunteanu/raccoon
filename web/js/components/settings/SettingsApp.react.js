@@ -7,7 +7,9 @@ import RaccoonApp from '../RaccoonApp.react';
 import Sidebar from './Sidebar.react';
 import Topbar from './../Topbar.react';
 import Taskbar from './../Taskbar.react';
+import Notification from '../Notification.react';
 
+// stores
 import ActionStore from '../../stores/ActionStore';
 import FlowStore from '../../stores/FlowStore';
 import ProjectStore from '../../stores/ProjectStore';
@@ -50,7 +52,6 @@ var SettingsApp = React.createClass({
         RightStore.addListener(this._onChange);
         UserStore.addListener(this._onChange);
         MethodStore.addListener(this._onChange);
-        NotificationStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
@@ -61,7 +62,6 @@ var SettingsApp = React.createClass({
         RightStore.removeListener(this._onChange);
         UserStore.removeListener(this._onChange);
         MethodStore.removeListener(this._onChange);
-        NotificationStore.addListener(this._onChange);
     },
 
     _onChange: function() {
@@ -74,15 +74,6 @@ var SettingsApp = React.createClass({
      */
     render: function() {
         let error_message = '';
-
-        if (!!this.state.notifications && this.state.notifications.length > 0) {
-            let notification = this.state.notifications.pop();
-            error_message = (
-                <div className="alert alert-danger col-sm-4" role="alert">
-                    {notification.message}
-                </div>
-            );
-        }
 
         return (
             <div className="container-fluid">
@@ -98,10 +89,10 @@ var SettingsApp = React.createClass({
                         methods={this.state.methods}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-                        {error_message}
                         <Topbar />
                         <Taskbar />
 
+                        <Notification />
 
                         <div className="content">
                             {this.props.children}
