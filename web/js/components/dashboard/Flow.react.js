@@ -8,6 +8,7 @@ import Addons from "../addons/Addons";
 // stores
 import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
+import BuildStore from  '../../stores/BuildStore';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
@@ -94,6 +95,11 @@ let Flow = React.createClass({
             AppDispatcher.dispatch({
                 action: ActionTypes.BUILD_START,
                 data: last_context,
+            });
+            BuildStore.create({
+                project: last_context.project,
+                branch: last_context.branch,
+                version: last_context.version || '1.5.1',
             });
             return (<div></div>);
         }
