@@ -55,6 +55,7 @@ class MethodForm extends React.Component {
     _onChange() {
         let state = getLocalState();
         state.method = this.state.method;
+        state.rowCount = state.method.arguments.length || 1;
         this.setState(state);
     }
 
