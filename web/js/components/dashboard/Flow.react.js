@@ -43,7 +43,7 @@ let Flow = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        let state = getLocalState(this.props.params.id);
+        let state = getLocalState(nextProps.params.id);
         this.step = state.step = 0;
         this.setState(state);
     },
@@ -75,7 +75,7 @@ let Flow = React.createClass({
 
         let flow = this.state.flow;
         let step_index = this.state.step;
-        let LastStepAddon = this.refs['LastStepAddon'];
+        let LastStepAddon = this.refs[flow.id + '-LastStepAddon'];
 
         // create context
         let last_context = {
@@ -112,7 +112,8 @@ let Flow = React.createClass({
 
                 {/* display the current step in the flow */}
                 <StepAddon
-                    ref="LastStepAddon"
+                    key={flow.id + '-' + step_index}
+                    ref={flow.id + '-LastStepAddon'}
                     name={"Addon cu numaru' " + step_index}
                     context={last_context}
                 />
