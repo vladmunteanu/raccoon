@@ -15,10 +15,6 @@ let ActionTypes = Constants.ActionTypes;
 
 function getLocalState(action_id) {
     let action = ActionStore.getById(action_id);
-    if (action) {
-        action.flow = "56fe819167e92c74346ff4a3"; // TODO (alexm): remove this dummy flow id
-    }
-
     let flow = action ? FlowStore.getById(action.flow) : null;
 
     let localState = {
