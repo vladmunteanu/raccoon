@@ -5,63 +5,58 @@ import CardMenu from './CardMenu.react';
 import Utils from '../../utils/Utils';
 
 import ActionStore from '../../stores/ActionStore';
+import ProjectStore from '../../stores/ProjectStore';
 import BuildStore from '../../stores/BuildStore';
 import InstallStore from '../../stores/InstallStore';
 
 
-function getLocalState() {
+function getLocalState(project, env) {
     let localState = {
-        builds: [],
-        install: null,
+        builds: BuildStore.filter(project),
+        install: InstallStore.getLatestInstall(project, env),
         installedBuild: {
             version: '',
             branch: '',
             changelog: []
         }
     };
+
+    if (localState.install) {
+        let installedBuild = BuildStore.getById(localState.install.build);
+        if (installedBuild)
+            localState.installedBuild = installedBuild;
+    }
+
     return RaccoonApp.getState(localState);
 }
 
 let GridItem = React.createClass({
     getInitialState: function () {
-        return getLocalState();
+        return getLocalState(this.props.project, this.props.environment);
     },
 
-    componentDidMount: function() {
+    componentWillMount: function() {
         ActionStore.addListener(this._onChange);
         BuildStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        InstallStore.addListener(this._onChange);
     },
 
     componentWillUnmount: function() {
         ActionStore.removeListener(this._onChange);
         BuildStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
+        InstallStore.removeListener(this._onChange);
     },
 
     _onChange: function() {
-        let state = getLocalState();
-        state.builds = BuildStore.filter(this.props.project);
-        state.install = InstallStore.getLatestInstall(
-            this.props.project,
-            this.props.environment
-        );
-        if (state.install)
-            state.installedBuild = BuildStore.getById(state.install.build);
+        let state = getLocalState(this.props.project, this.props.environment);
         this.setState(state);
-    },
-
-    findAncestor: function (el, cls) {
-        while ((el = el.parentElement) && !el.classList.contains(cls));
-        return el;
     },
 
     _onSelectBuild: function(id, event) {
         this.state.installedBuild = BuildStore.getById(id);
         this.setState(this.state);
-        //
-        //let parent = this.findAncestor(event.target, 'dropdown-menu');
-        //if (parent) {
-        //    parent.style.visibility = 'hidden';
-        //}
     },
 
     render: function () {
@@ -127,9 +122,7 @@ let GridItem = React.createClass({
                     </div>
                 </div>
                 <div className="footer">
-                    <span className="time pull-right" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="23-05-2015 2:00 PM">
-                    <span className="fa fa-clock-o" /> 15m ago</span>
-                    <button className="btn btn-xs btn-default pull-right btn-install">Install</button>
+                    <button className="btn btn-xs btn-primary pull-right">Install</button>
                 </div>
             </div>
         );

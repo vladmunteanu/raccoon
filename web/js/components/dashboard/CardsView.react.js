@@ -51,6 +51,7 @@ var CardsView = React.createClass({
                                         this.state.environments.map(environment => {
                                             if (environment.visible) {
                                                 return <GridItem
+                                                    key={project.id + '-' + environment.id}
                                                     project={project}
                                                     environment={environment}/>;
                                             }
