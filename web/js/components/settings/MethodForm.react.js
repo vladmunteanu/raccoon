@@ -165,17 +165,17 @@ class MethodForm extends React.Component {
                         {
                             Array(this.state.rowCount).fill(null).map((_, i) => {
                                 return (
-                                    <div className="form-inline" key={i}>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                             id="method-arguments-name"
-                                             value={args[i] ? args[i]["name"]: ''}
-                                             placeholder="name"
-                                             onChange={this.onChangeArgument.bind(this, i, 'name')}/>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                             id="method-arguments-value"
-                                             value={args[i] ? args[i]["value"] : ''}
-                                             placeholder="value"
-                                             onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                    <div className="form-inline" key={'method-arguments-' + i}>
+                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                                 id="method-arguments-name"
+                                                 value={args[i] ? args[i]["name"]: ''}
+                                                 placeholder="name"
+                                                 onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                                 id="method-arguments-value"
+                                                 value={args[i] ? args[i]["value"] : ''}
+                                                 placeholder="value"
+                                                 onChange={this.onChangeArgument.bind(this, i, 'value')}/>
                                     </div>
                                 );
                             })
