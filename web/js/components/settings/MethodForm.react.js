@@ -83,7 +83,10 @@ class MethodForm extends React.Component {
 
     onChangeArgument(idxRow, key, event) {
         if (!this.state.method.arguments[idxRow]) {
-            this.state.method.arguments.push({"name": "", "value": ""})
+            this.state.method.arguments[idxRow] = {
+                'name': '',
+                'value': ''
+            };
         }
         this.state.method.arguments[idxRow][key] = event.target.value;
         this.setState(this.state);
@@ -161,31 +164,20 @@ class MethodForm extends React.Component {
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
                         {
                             Array(this.state.rowCount).fill(null).map((_, i) => {
-                                if (args[i]) {
-                                    return <div className="form-inline" key={i}>
+                                return (
+                                    <div className="form-inline" key={i}>
                                         <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-name"
-                                               value={args[i]["name"]}
-                                               placeholder="name"
-                                               onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                             id="method-arguments-name"
+                                             value={args[i] ? args[i]["name"]: ''}
+                                             placeholder="name"
+                                             onChange={this.onChangeArgument.bind(this, i, 'name')}/>
                                         <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-value"
-                                               value={args[i]["value"]}
-                                               placeholder="value"
-                                               onChange={this.onChangeArgument.bind(this, i, 'value')}/>
-                                    </div>;
-                                } else {
-                                    return <div className="form-inline">
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-name"
-                                               placeholder="name"
-                                               onChange={this.onChangeArgument.bind(this, i, 'name')}/>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-value"
-                                               placeholder="value"
-                                               onChange={this.onChangeArgument.bind(this, i, 'value')}/>
-                                    </div>;
-                                }
+                                             id="method-arguments-value"
+                                             value={args[i] ? args[i]["value"] : ''}
+                                             placeholder="value"
+                                             onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                    </div>
+                                );
                             })
                         }
                     </div>
