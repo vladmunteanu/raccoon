@@ -99,7 +99,7 @@ let Flow = React.createClass({
             BuildStore.create({
                 project: last_context.project,
                 branch: last_context.branch,
-                version: last_context.version || '1.5.1',
+                version: last_context.version || '1.0.0',
             });
             return (<div></div>);
         }
