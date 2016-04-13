@@ -27,7 +27,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.projects.map(project => {
-                                            return <MenuItem item={project} link={"/settings/project/" + project.id} />;
+                                            return <MenuItem key={project.id} item={project} link={"/settings/project/" + project.id} />;
                                         })
                                     }
                                     <li>
@@ -46,7 +46,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.environments.map(environment => {
-                                            return <MenuItem item={environment} link={"/settings/environment/" + environment.id} />;
+                                            return <MenuItem key={environment.id} item={environment} link={"/settings/environment/" + environment.id} />;
                                         })
                                     }
                                     <li>
@@ -65,7 +65,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.methods.map(method => {
-                                            return <MenuItem item={method} link={"/settings/method/" + method.id} />;
+                                            return <MenuItem key={method.id} item={method} link={"/settings/method/" + method.id} />;
                                         })
                                     }
                                     <li>
@@ -84,7 +84,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.flows.map(flow => {
-                                            return <MenuItem item={flow} link={"/settings/flow/" + flow.id} />;
+                                            return <MenuItem key={flow.id} item={flow} link={"/settings/flow/" + flow.id} />;
                                         })
                                     }
                                     <li>
@@ -103,7 +103,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.actions.map(action => {
-                                            return <MenuItem item={action} link={"/settings/action/" + action.id} />;
+                                            return <MenuItem key={action.id} item={action} link={"/settings/action/" + action.id} />;
                                         })
                                     }
                                     <li>
@@ -122,7 +122,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.connectors.map(connector => {
-                                            return <MenuItem item={connector} link={"/settings/connector/" + connector.id} />;
+                                            return <MenuItem key={connector.id} item={connector} link={"/settings/connector/" + connector.id} />;
                                         })
                                     }
                                     <li>
@@ -141,7 +141,7 @@ var Sidebar = React.createClass({
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.users.map(user => {
-                                            return <MenuItem item={user} />;
+                                            return <MenuItem key={user.id} item={user} />;
                                         })
                                     }
                                     <li>
@@ -159,8 +159,8 @@ var Sidebar = React.createClass({
                             <div id="collapseRights" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.rights.map(user => {
-                                            return <MenuItem item={user} />;
+                                        this.props.rights.map(right => {
+                                            return <MenuItem key={right.id} item={right} />;
                                         })
                                     }
                                     <li>
