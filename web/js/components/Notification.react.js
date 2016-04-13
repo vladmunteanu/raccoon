@@ -38,7 +38,7 @@ var Notification = React.createClass({
             <div className={'notifications-container ' + (visible ? '' : 'hidden')}>
                 {
                     this.state.notifications.map((notification) => {
-                        return <NotificationItem data={notification}/>;
+                        return <NotificationItem key={notification.requestId} data={notification}/>;
                     })
                 }
             </div>

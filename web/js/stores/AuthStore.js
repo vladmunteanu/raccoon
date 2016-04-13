@@ -60,7 +60,7 @@ class AuthStore extends BaseStore {
                 password: data.password,
             }
         }, payload => {
-            if (! payload.hasOwnProperty('code')) {
+            if (payload.code == 200) {
                 this.save(payload.data);
             }
         });
@@ -77,7 +77,7 @@ class AuthStore extends BaseStore {
                 password: data.password
             }
         }, payload => {
-            if (! payload.hasOwnProperty('code')) {
+            if (payload.code == 200) {
                 this.save(payload.data);
             }
         });
@@ -95,7 +95,7 @@ class AuthStore extends BaseStore {
 
     saveMe(data) {
         _user = data;
-        _user.avatarUrl = 'https://secure.gravatar.com/avatar/' + Utils.md5(_user.email) + '?d=mm';
+        _user.avatarUrl = Utils.gravatarUrl(_user.email);
 
         this.emitChange();
     }
