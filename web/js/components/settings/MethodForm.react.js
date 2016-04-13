@@ -28,7 +28,7 @@ function getLocalState() {
 class MethodForm extends React.Component {
     constructor(props) {
         super(props);
-        this.formName = 'New method';
+        this.formName = 'New job';
         this.state = getLocalState();
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Method name'),

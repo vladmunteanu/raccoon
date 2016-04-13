@@ -59,7 +59,7 @@ var Sidebar = React.createClass({
                         </li>
                         <li>
                             <a href="javascript: void(0);" data-toggle="collapse" data-target="#collapseMethods" aria-expanded="false" aria-controls="collapseMethods">
-                                Methods <i className="fa fa-angle-down pull-right" />
+                                Jobs <i className="fa fa-angle-down pull-right" />
                             </a>
                             <div id="collapseMethods" className="collapse">
                                 <ul className="nav nav-submenu">

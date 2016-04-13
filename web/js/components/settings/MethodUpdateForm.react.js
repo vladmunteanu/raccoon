@@ -26,7 +26,7 @@ function getLocalState(methodId) {
 class MethodUpdateForm extends MethodForm {
     constructor(props) {
         super(props);
-        this.formName = 'Update method';
+        this.formName = 'Update job';
         this.state = getLocalState(this.props.params.id);
         this.onSubmit = this.onSubmit.bind(this);
     }
