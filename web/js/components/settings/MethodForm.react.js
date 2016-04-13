@@ -33,7 +33,7 @@ class MethodForm extends React.Component {
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Method name'),
             connector: Joi.any().disallow(null, '').required().label('Connector'),
-            method: Joi.string().disallow(null, '').required().label('Jenkins job')
+            method: Joi.string().disallow(null, '').required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -144,7 +144,7 @@ class MethodForm extends React.Component {
                         {this.renderHelpText(this.props.getValidationMessages('connector'))}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="method-method" className="control-label">Jenkins job</label>
+                        <label htmlFor="method-method" className="control-label">Job</label>
                         <select className="form-control" id="job-method"
                                 value={meth}
                                 onChange={this.onFormChange.bind(this, 'method')}>
