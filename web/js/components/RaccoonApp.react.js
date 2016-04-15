@@ -46,36 +46,68 @@ function getRaccoonState() {
     };
 }
 
+class RaccoonApp extends React.Component {
 
-let RaccoonApp = React.createClass({
-
-    getInitialState: function () {
-        console.log('Raccoon app, initial state');
-
-        return {};
-    },
+    constructor(props) {
+        super(props);
+    }
 
     /**
      * Middleware that checks if user is authenticated; if not redirect to /login
-     * @param nextState
-     * @param replaceState
-     * @param callback
      */
-    requireAuth: function (nextState, replaceState, callback) {
+    requireAuth(nextState, replaceState, callback) {
         if (!AuthStore.isLoggedIn()) {
             replaceState({nextPathname: nextState.location.pathname}, '/login');
         }
 
         callback();
-    },
+    }
 
-    /**
-    * @return {object}
-    */
-    render: function () {
-        /* let MyComp = Addons.getAddon("DummyAddon");
+    static getState(state) {
+        var globalState = getRaccoonState();
 
-        return ( <MyComp /> ); */
+        state = state || {};
+
+        for (var key in state) {
+            if (state.hasOwnProperty(key)) {
+                globalState[key] = state[key];
+            }
+        }
+
+        return globalState;
+    }
+
+    static getBrowserState() {
+        var state = JSON.parse(localStorage.getItem('state'));
+
+        if (!state) {
+            state = {
+                toggle: {
+                    project: {},
+                    environment: {}
+                }
+            };
+            localStorage.setItem('state', JSON.stringify(state));
+        }
+
+        return state;
+    }
+
+    static saveBrowserState(state) {
+        localStorage.setItem('state', JSON.stringify(state));
+    }
+
+    static fetchAll() {
+        AuthStore.fetchMe();
+        ProjectStore.fetchAll();
+        EnvironmentStore.fetchAll();
+        ActionStore.fetchAll();
+        FlowStore.fetchAll();
+        BuildStore.fetchAll();
+        InstallStore.fetchAll();
+    }
+
+    render() {
         return (
             <Router>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
@@ -103,64 +135,6 @@ let RaccoonApp = React.createClass({
             </Router>
         );
     }
-
-});
-
-
-/**
- * Updates the state passed with the global state
- * @param state [Object]
- * @returns {*|{}}
- */
-RaccoonApp.getState = function (state) {
-    var globalState = getRaccoonState();
-
-    state = state || {};
-
-    for (var key in state) {
-        if (state.hasOwnProperty(key)) {
-            globalState[key] = state[key];
-        }
-    }
-
-    return globalState;
-};
-
-
-RaccoonApp.getBrowserState = function () {
-    var state = JSON.parse(localStorage.getItem('state'));
-
-    if (!state) {
-        state = {
-            toggle: {
-                project: {},
-                environment: {}
-            }
-        };
-        localStorage.setItem('state', JSON.stringify(state));
-    }
-
-    return state;
-};
-
-RaccoonApp.saveBrowserState = function (state) {
-    localStorage.setItem('state', JSON.stringify(state));
-};
-
-
-/**
- * Fetches the global data
- */
-RaccoonApp.fetchAll = function () {
-    AuthStore.fetchMe();
-    ProjectStore.fetchAll();
-    EnvironmentStore.fetchAll();
-    ActionStore.fetchAll();
-    FlowStore.fetchAll();
-    BuildStore.fetchAll();
-    InstallStore.fetchAll();
-};
-
-
+}
 
 export default RaccoonApp;
