@@ -28,32 +28,34 @@ function getLocalState() {
 class MethodForm extends React.Component {
     constructor(props) {
         super(props);
-        this.formName = 'New method';
+        this.formName = 'New job';
         this.state = getLocalState();
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Method name'),
             connector: Joi.any().disallow(null, '').required().label('Connector'),
-            method: Joi.string().disallow(null, '').required().label('Jenkins job')
+            method: Joi.string().disallow(null, '').required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        MethodStore.addListener(this._onChange.bind(this));
-        ConnectorStore.addListener(this._onChange.bind(this));
-        JenkinsStore.addListener(this._onChange.bind(this));
+        MethodStore.addListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
+        JenkinsStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        MethodStore.removeListener(this._onChange.bind(this));
-        ConnectorStore.removeListener(this._onChange.bind(this));
+        MethodStore.removeListener(this._onChange);
+        ConnectorStore.removeListener(this._onChange);
     }
 
     _onChange() {
         let state = getLocalState();
         state.method = this.state.method;
+        state.rowCount = state.method.arguments.length || 1;
         this.setState(state);
     }
 
@@ -81,7 +83,10 @@ class MethodForm extends React.Component {
 
     onChangeArgument(idxRow, key, event) {
         if (!this.state.method.arguments[idxRow]) {
-            this.state.method.arguments.push({"name": "", "value": ""})
+            this.state.method.arguments[idxRow] = {
+                'name': '',
+                'value': ''
+            };
         }
         this.state.method.arguments[idxRow][key] = event.target.value;
         this.setState(this.state);
@@ -142,7 +147,7 @@ class MethodForm extends React.Component {
                         {this.renderHelpText(this.props.getValidationMessages('connector'))}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="method-method" className="control-label">Jenkins job</label>
+                        <label htmlFor="method-method" className="control-label">Job</label>
                         <select className="form-control" id="job-method"
                                 value={meth}
                                 onChange={this.onFormChange.bind(this, 'method')}>
@@ -159,31 +164,20 @@ class MethodForm extends React.Component {
                         <label htmlFor="method-arguments" className="control-label">Arguments</label>
                         {
                             Array(this.state.rowCount).fill(null).map((_, i) => {
-                                if (args[i]) {
-                                    return <div className="form-inline" key={i}>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-name"
-                                               value={args[i]["name"]}
-                                               placeholder="name"
-                                               onChange={this.onChangeArgument.bind(this, i, 'name')}/>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-value"
-                                               value={args[i]["value"]}
-                                               placeholder="value"
-                                               onChange={this.onChangeArgument.bind(this, i, 'value')}/>
-                                    </div>;
-                                } else {
-                                    return <div className="form-inline">
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-name"
-                                               placeholder="name"
-                                               onChange={this.onChangeArgument.bind(this, i, 'name')}/>
-                                        <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                               id="method-arguments-value"
-                                               placeholder="value"
-                                               onChange={this.onChangeArgument.bind(this, i, 'value')}/>
-                                    </div>;
-                                }
+                                return (
+                                    <div className="form-inline" key={'method-arguments-' + i}>
+                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                                 id="method-arguments-name"
+                                                 value={args[i] ? args[i]["name"]: ''}
+                                                 placeholder="name"
+                                                 onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                                 id="method-arguments-value"
+                                                 value={args[i] ? args[i]["value"] : ''}
+                                                 placeholder="value"
+                                                 onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                    </div>
+                                );
                             })
                         }
                     </div>

@@ -22,14 +22,16 @@ class EnvironmentForm extends React.Component {
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
+
     }
 
     componentDidMount() {
-        EnvironmentStore.addListener(this._onChange.bind(this));
+        EnvironmentStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        EnvironmentStore.removeListener(this._onChange.bind(this));
+        EnvironmentStore.removeListener(this._onChange);
     }
 
     _onChange() {

@@ -1,10 +1,11 @@
 import React from 'react';
-import { History } from 'react-router';
+import { Link, History } from 'react-router';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
 
 import RaccoonApp from '../RaccoonApp.react';
+import Notification from '../Notification.react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
@@ -86,23 +87,15 @@ let Login = React.createClass({
     },
 
     render: function () {
-        let error_message = '';
-
-        if (!!this.state.notifications && this.state.notifications.length > 0) {
-            let notification = this.state.notifications.pop();
-            error_message = (
-                <div className="alert alert-danger col-sm-4" role="alert">
-                    {notification.message}
-                </div>
-            );
-        }
         return (
 
             <div className="row">
                 <div className="col-sm-offset-4">
-                    <div className="container">
-                        {error_message}
+                    {/* show notifications */}
+                    <div style={{marginTop: 31 + 'px'}}>
+                      <Notification />
                     </div>
+
                     <div className="container">
 
                         <h3>Sign In</h3>
@@ -126,7 +119,7 @@ let Login = React.createClass({
                                 {this.renderHelpText(this.props.getValidationMessages('password'))}
                             </div>
                             <div className="form-group">
-                                <a href="/#/register">Not registered yet?</a>
+                                <Link to="/register">Not registered yet?</Link>
                                 <input type="submit" value="Sign In" className="btn btn-info pull-right"/>
                             </div>
                         </form>

@@ -18,6 +18,10 @@ class Utils {
         md5hash.update(value);
         return md5hash.digest('hex');
     }
+
+    static gravatarUrl(email) {
+        return 'https://secure.gravatar.com/avatar/' + this.md5(email) + '?d=mm';
+    }
 }
 
 export default Utils;

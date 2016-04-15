@@ -238,27 +238,52 @@ body {
     display: none;
 }
 
-.slide-details {
-    display: block !important;
-    animation: slide-details 0.5s forwards;
+/*.dropdown:hover .dropdown-menu {*/
+    /*display: block;*/
+    /*margin-top: 0; !* remove the gap so it doesn't close *!*/
+/*}*/
+
+/* Notifications */
+.notifications-container {
+    position: absolute;
+    margin: 0 auto;
+    margin-top: -30px;
+    left: 0;
+    right: 0;
+    width: 60%;
+    z-index: 1000;
 }
 
-@keyframes slide-details {
+.alert-expire {
+    -webkit-animation: alert-expire .3s forwards;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-delay: 3s;
+    animation: alert-expire .3s forwards;
+    animation-iteration-count: 1;
+    animation-delay: 3s;
+}
+
+@-webkit-keyframes alert-expire {
     0% {
-        opacity: 0;
-        margin-left: 0px;
+        opacity: 1;
     }
     100% {
-        opacity: 1;
-        margin-left: 263px;
+        opacity: 0;
+        height: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
     }
 }
-
-.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0; // remove the gap so it doesn't close
- }
-
-.steps {
-
+@keyframes alert-expire {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        height: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
 }

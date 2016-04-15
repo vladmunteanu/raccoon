@@ -1,19 +1,21 @@
 import React from 'react'
 
 import RaccoonApp from '../RaccoonApp.react';
+import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import Addons from "../addons/Addons";
 
+// stores
 import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
+import BuildStore from  '../../stores/BuildStore';
+
+import Constants from '../../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
 
 
 function getLocalState(action_id) {
     let action = ActionStore.getById(action_id);
-    if (action) {
-        action.flow = "56fe819167e92c74346ff4a3"; // TODO (alexm): remove this dummy flow id
-    }
-
     let flow = action ? FlowStore.getById(action.flow) : null;
 
     let localState = {
@@ -42,7 +44,7 @@ let Flow = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
-        let state = getLocalState(this.props.params.id);
+        let state = getLocalState(nextProps.params.id);
         this.step = state.step = 0;
         this.setState(state);
     },
@@ -69,12 +71,12 @@ let Flow = React.createClass({
     render: function () {
         if (!this.state.action || !this.state.flow) {
             // loading
-            return (<div>Loading</div>);
+            return (<div></div>);
         }
 
         let flow = this.state.flow;
         let step_index = this.state.step;
-        let LastStepAddon = this.refs['LastStepAddon'];
+        let LastStepAddon = this.refs[flow.id + '-LastStepAddon'];
 
         // create context
         let last_context = {
@@ -90,7 +92,15 @@ let Flow = React.createClass({
 
 
         if (step_index > flow.steps.length - 1) {
-            console.log('alexm: @@@@@@@@@@@', last_context);
+            AppDispatcher.dispatch({
+                action: ActionTypes.BUILD_START,
+                data: last_context,
+            });
+            BuildStore.create({
+                project: last_context.project,
+                branch: last_context.branch,
+                version: last_context.version || '1.0.0',
+            });
             return (<div></div>);
         }
 
@@ -108,7 +118,8 @@ let Flow = React.createClass({
 
                 {/* display the current step in the flow */}
                 <StepAddon
-                    ref="LastStepAddon"
+                    key={flow.id + '-' + step_index}
+                    ref={flow.id + '-LastStepAddon'}
                     name={"Addon cu numaru' " + step_index}
                     context={last_context}
                 />

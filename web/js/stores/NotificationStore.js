@@ -9,6 +9,7 @@ import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
 
+
 let notificationStore = null;
 
 class NotificationStore extends BaseStore {
@@ -28,8 +29,10 @@ class NotificationStore extends BaseStore {
     }
 
     push(message) {
-        this.instances = this.instances || [];
+        // ignore 200 OK GET messages
+        if (message.code == 200 && message.verb.toUpperCase() == 'GET') return ;
 
+        this.instances = this.instances || [];
         this.instances.push(message);
         this.emitChange();
     }
@@ -38,12 +41,10 @@ class NotificationStore extends BaseStore {
         return this.instances.pop();
     }
 
- /*   get all() {
-        let result = this.instances;
-//        this.instances = null;
-
-        return result;
-    }*/
+    clear() {
+        this.instances = [];
+        this.emitChange();
+    }
 
 }
 

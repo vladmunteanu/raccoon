@@ -8,10 +8,11 @@ import tornado.web
 import tornado.websocket
 
 from raccoon.urls import Router
-from raccoon.utils.request import Request
+from raccoon.utils.request import Request, CLIENT_CONNECTIONS
 from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
+
 
 class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     """
@@ -20,11 +21,21 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     ALLOWED_VERBS = ('get', 'post', 'put', 'delete', 'patch')
 
-    def open(self):
-        log.info('WebSocket opened')
+    @property
+    def connection_id(self):
+        """
+        Returns a unique connection id
+        """
+        return self.request.headers.get('Sec-Websocket-Key')
 
     def check_authorization(self):
         return True
+
+    def open(self):
+        global CLIENT_CONNECTIONS
+        # save all connections to use in broadcast
+        CLIENT_CONNECTIONS[self.connection_id] = self
+        log.info(['WebSocket opened', CLIENT_CONNECTIONS.keys()])
 
     @gen.coroutine
     def on_message(self, message):
@@ -82,4 +93,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             self.write_message(str(ex))
 
     def on_close(self):
-        log.info('WebSocket closed')
+        global CLIENT_CONNECTIONS
+        # remove connection after user disconnected
+        CLIENT_CONNECTIONS.pop(self.connection_id, None)
+        log.info(['WebSocket closed', CLIENT_CONNECTIONS.keys()])

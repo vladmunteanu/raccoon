@@ -32,14 +32,15 @@ class ConnectorForm extends React.Component {
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        ConnectorStore.addListener(this._onChange.bind(this));
+        ConnectorStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        ConnectorStore.removeListener(this._onChange.bind(this));
+        ConnectorStore.removeListener(this._onChange);
     }
 
     _onChange() {

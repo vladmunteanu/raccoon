@@ -39,16 +39,17 @@ class ProjectForm extends React.Component {
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
-        ProjectStore.addListener(this._onChange.bind(this));
-        ConnectorStore.addListener(this._onChange.bind(this));
+        ProjectStore.addListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        ProjectStore.removeListener(this._onChange.bind(this));
-        ConnectorStore.removeListener(this._onChange.bind(this));
+        ProjectStore.removeListener(this._onChange);
+        ConnectorStore.removeListener(this._onChange);
     }
 
     _onChange() {
