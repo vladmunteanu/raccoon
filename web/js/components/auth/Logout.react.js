@@ -1,19 +1,21 @@
 import React from 'react';
-import { History } from 'react-router';
 
-let Logout = React.createClass({
-    mixins: [ History ],
-
+class Logout extends React.Component {
     componentDidMount() {
-        delete localStorage.token
-        this.history.pushState(null, '/login');
-    },
+        delete localStorage.token;
+        this.context.router.push('/login');
+    }
 
-    render: function () {
+    render() {
         return (
             <p>You are now logged out</p>
         );
     }
-});
+}
+
+Logout.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
+
 
 export default Logout;

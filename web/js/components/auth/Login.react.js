@@ -25,9 +25,8 @@ function getLocalState() {
 }
 
 class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = getLocalState();
         this.validatorTypes = {
             email: Joi.string().email().required().label('Email'),
@@ -79,7 +78,7 @@ class Login extends React.Component {
 
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch everything at login
-            this.props.history.pushState(null, '/');
+            this.context.router.push('/');
         }
     }
 
@@ -133,5 +132,9 @@ class Login extends React.Component {
 
     }
 }
+
+Login.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export default validation(strategy)(Login);

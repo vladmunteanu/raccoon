@@ -1,6 +1,5 @@
 import React from 'react';
-import { Router, Route, IndexRoute } from 'react-router';
-import { createHistory } from 'history'
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
 import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
@@ -50,7 +49,6 @@ function getRaccoonState() {
 class RaccoonApp extends React.Component {
     constructor(props) {
         super(props);
-        this.history = createHistory();
     }
 
     /**
@@ -110,7 +108,7 @@ class RaccoonApp extends React.Component {
 
     render() {
         return (
-            <Router history={this.history}>
+            <Router history={hashHistory}>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
                     <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />
