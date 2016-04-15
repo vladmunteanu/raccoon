@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, History } from 'react-router';
+import { Link } from 'react-router';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
@@ -24,23 +24,26 @@ function getLocalState() {
     return RaccoonApp.getState(localState);
 }
 
-let Login = React.createClass({
-    mixins: [ History ],
+class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log(props);
+        this.state = getLocalState();
+        this.validatorTypes = {
+            email: Joi.string().email().required().label('Email'),
+            password: Joi.string().required().label('Password')
+        };
+        this.getValidatorData = this.getValidatorData.bind(this);
+        this.renderHelpText = this.renderHelpText.bind(this);
+        this.login = this.login.bind(this);
+        this._onChange = this._onChange.bind(this);
+    }
 
-    getInitialState: function () {
-        return getLocalState();
-    },
-
-    validatorTypes: {
-        email: Joi.string().email().required().label('Email'),
-        password: Joi.string().required().label('Password')
-    },
-
-    getValidatorData: function () {
+    getValidatorData() {
         return this.state;
-    },
+    }
 
-    renderHelpText: function (messages) {
+    renderHelpText(messages) {
         return (
             <div className="text-danger">
                 {
@@ -50,43 +53,43 @@ let Login = React.createClass({
                 }
             </div>
         );
-    },
+    }
 
-    login: function (event) {
+    login(event) {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
                 AuthStore.authenticate(this.state);
             }
         });
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         AuthStore.addListener(this._onChange);
         NotificationStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         AuthStore.removeListener(this._onChange);
         NotificationStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         this.setState(getLocalState());
 
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch everything at login
-            this.history.pushState(null, '/');
+            this.props.history.pushState(null, '/');
         }
-    },
+    }
 
-    onFormChange: function(name, event) {
+    onFormChange(name, event) {
         this.state[name] = event.target.value;
         this.setState(this.state);
         this.props.validate(name);
-    },
+    }
 
-    render: function () {
+    render() {
         return (
 
             <div className="row">
@@ -129,6 +132,6 @@ let Login = React.createClass({
         );
 
     }
-});
+}
 
 export default validation(strategy)(Login);
