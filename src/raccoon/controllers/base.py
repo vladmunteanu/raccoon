@@ -61,7 +61,7 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        yield request.send(response.get_dict())
+        yield request.broadcast(response.get_dict())
 
     @classmethod
     @authenticated
@@ -96,7 +96,7 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        yield request.send(response.get_dict())
+        yield request.broadcast(response.get_dict())
 
     @classmethod
     @authenticated

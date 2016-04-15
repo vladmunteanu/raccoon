@@ -7,6 +7,7 @@ from tornado import gen
 from raccoon.utils.utils import json_serial
 
 log = logging.getLogger(__name__)
+CLIENT_CONNECTIONS = {}
 
 class Request(object):
     def __init__(self, idx, verb, resource, token, data, socket, *args, **kwargs):
@@ -40,3 +41,22 @@ class Request(object):
             'code': 200,
             'message': 'OK',
         }, default=json_serial))
+
+    @gen.coroutine
+    def broadcast(self, response):
+        # send requestId to user that did the request
+        self.send(response)
+
+        # broadcast to other connected users
+        data = json.dumps({
+            'requestId': 'broadcast-notification',
+            'verb': self.verb,
+            'resource': self.resource,
+            'data': response,
+            'code': 200,
+            'message': 'OK',
+        }, default=json_serial)
+
+        for connection_id, socket in CLIENT_CONNECTIONS.items():
+            if connection_id != self.socket.connection_id:
+                socket.write_message(data)
