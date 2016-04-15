@@ -6,9 +6,8 @@ import Loader from '../components/Loader.react';
 
 var Topbar = React.createClass({
 
-    toggleTasks: function () {
-        console.log('aaaaa');
-        //$('.slidemenu').toggleClass('slidemenu-open');
+    toggleTasks: function (event) {
+        $('#taskbar').toggleClass('slidemenu-open');
     },
 
     render: function () {
@@ -32,9 +31,9 @@ var Topbar = React.createClass({
                         <ul className="nav navbar-nav navbar-right">
                             <li><Link to="/">Dashboard</Link></li>
                             <li><Link to="/settings">Settings</Link></li>
-                            <li><a href="#">Help</a></li>
+                            <li><a href="javascript: void(0);">Help</a></li>
                             <li><Link to="/logout">Log Out</Link></li>
-                            <li><a href="javascript: void(0);" className="btn-tasks" onclick={this.toggleTasks}><i className="fa fa-tasks" /></a></li>
+                            <li><Link to="#" className="btn-tasks" onClick={this.toggleTasks}><i className="fa fa-tasks" /></Link></li>
                         </ul>
                     </div>
                 </div>

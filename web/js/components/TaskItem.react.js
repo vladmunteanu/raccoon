@@ -16,12 +16,12 @@ class TaskItem extends React.Component {
                 <p className="list-group-item-text">
                     It is a long established fact that a reader will be distracted. <br/>
                     Progress: {progress}%
-                    <div className="progress">
-                        <div className="progress-bar progress-bar-value" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style={progressStyle}>
-                            <span className="sr-only">40% Complete (success)</span>
-                        </div>
-                    </div>
                 </p>
+                <div className="progress">
+                    <div className="progress-bar progress-bar-value" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100" style={progressStyle}>
+                        <span className="sr-only">{progress}% Complete (success)</span>
+                    </div>
+                </div>
             </div>
         );
     }
