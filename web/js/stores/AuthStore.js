@@ -9,31 +9,12 @@ import Connector from '../utils/Connector';
 import LoginAction from '../actions/LoginAction';
 import Utils from '../utils/Utils';
 
-import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 import jwt_decode from 'jwt-decode';
 
 
 let authStore = null;
 let _user = null;
-
-let dispatchToken = AppDispatcher.register(function(payload) {
-    let authStore = new AuthStore();
-
-    switch (payload.action) {
-        case ActionTypes.LOGIN_USER:
-            authStore.authenticate(payload.data);
-            break;
-
-        case ActionTypes.REGISTER_USER:
-            authStore.register(payload.data);
-            break;
-
-        default:
-        // do nothing
-    }
-});
 
 class AuthStore extends BaseStore {
 
@@ -47,7 +28,6 @@ class AuthStore extends BaseStore {
 
         _user = null;
         this._error = null;
-        this.dispatchToken = dispatchToken;
     }
 
     authenticate(data) {

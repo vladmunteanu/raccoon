@@ -7,11 +7,8 @@ import validation from 'react-validation-mixin';
 import RaccoonApp from '../RaccoonApp.react';
 import Notification from '../Notification.react';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
 import NotificationStore from '../../stores/NotificationStore';
-
-import Constants from '../../constants/Constants';
 
 
 function getLocalState() {

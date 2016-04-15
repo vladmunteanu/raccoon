@@ -3,9 +3,6 @@ import keyMirror from 'keymirror';
 
 export default {
     ActionTypes: keyMirror({
-        // auth
-        REGISTER_USER: null,
-
         // projects
         PROJECT_TOGGLE_VISIBLE: null,
 
