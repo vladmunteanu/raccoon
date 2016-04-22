@@ -3,18 +3,18 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import RaccoonApp from '../RaccoonApp.react';
-import MethodStore from '../../stores/MethodStore';
+import JobStore from '../../stores/JobStore';
 import FlowStore from '../../stores/FlowStore';
 import { FlowForm } from './FlowForm.react';
 
 
 function getLocalState() {
     let localState = {
-        methods: MethodStore.all,
+        jobs: JobStore.all,
         flow: {
             name: '',
             steps: [],
-            method: ''
+            job: ''
         }
     };
     return RaccoonApp.getState(localState);
@@ -49,7 +49,7 @@ class FlowUpdateForm extends FlowForm {
                 FlowStore.updateById(this.state.flow.id, {
                     name: this.state.flow.name,
                     steps: this.state.flow.steps,
-                    method: this.state.flow.method
+                    job: this.state.flow.job
                 });
             }
         });
@@ -61,7 +61,7 @@ class FlowUpdateForm extends FlowForm {
             this.state.flow = {
                 name: '',
                 steps: [],
-                method: ''
+                job: ''
             }
         }
         return this.state.flow;

@@ -21,8 +21,8 @@ export default {
         // rights
         RIGHT_TOGGLE_VISIBLE: null,
 
-        //methods
-        METHOD_TOGGLE_VISIBLE: null,
+        //jobs
+        JOB_TOGGLE_VISIBLE: null,
 
         //notifications
         NOTIFICATION: null,

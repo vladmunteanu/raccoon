@@ -5,12 +5,12 @@ from raccoon.models import BaseModel, Connector
 from raccoon.utils.dbfields import DictField
 
 
-class Method(BaseModel):
-    __collection__ = 'methods'
+class Job(BaseModel):
+    __collection__ = 'jobs'
 
     name = StringField(required=True)
     connector = ReferenceField(reference_document_type=Connector)
-    method = StringField(required=True)
+    job = StringField(required=True)
     arguments = ListField(DictField())
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
