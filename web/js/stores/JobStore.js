@@ -6,22 +6,22 @@ import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
 import AuthStore from './AuthStore';
 
-let methodStore = null;
+let jobStore = null;
 
-class MethodStore extends BaseStore {
+class JobStore extends BaseStore {
 
     constructor() {
-        if (!methodStore) {
+        if (!jobStore) {
             super();
-            methodStore = this;
+            jobStore = this;
         } else {
-            return methodStore;
+            return jobStore;
         }
 
         // set base URI for resources
-        this.baseuri = "/api/v1/methods/";
+        this.baseuri = "/api/v1/jobs/";
     }
 
 }
 
-export default new MethodStore();
+export default new JobStore();

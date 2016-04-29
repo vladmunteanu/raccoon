@@ -9,7 +9,7 @@ from .builds import *
 from .connectors import *
 from .environments import *
 from .installs import *
-from .methods import *
+from .jobs import *
 from .projects import *
 from .rights import *
 from .users import *

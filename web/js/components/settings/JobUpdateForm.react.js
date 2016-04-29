@@ -3,27 +3,27 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
-import MethodStore from '../../stores/MethodStore';
+import JobStore from '../../stores/JobStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
 import RaccoonApp from '../RaccoonApp.react';
-import { MethodForm } from './MethodForm.react';
+import { JobForm } from './JobForm.react.js';
 
 
-function getLocalState(methodId) {
+function getLocalState(jobId) {
     let localState = {
         connectors: ConnectorStore.all,
         jobs: JenkinsStore.jobs,
-        method: MethodStore.getById(methodId),
+        job: JobStore.getById(jobId),
         rowCount: 0
     };
-    if (localState.method){
-        localState.rowCount = localState.method.arguments.length;
+    if (localState.job){
+        localState.rowCount = localState.job.arguments.length;
     }
     return localState;
 }
 
-class MethodUpdateForm extends MethodForm {
+class JobUpdateForm extends JobForm {
     constructor(props) {
         super(props);
         this.formName = 'Update job';
@@ -48,29 +48,29 @@ class MethodUpdateForm extends MethodForm {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                MethodStore.updateById(this.state.method.id, {
-                    name: this.state.method.name,
-                    connector: this.state.method.connector,
-                    method: this.state.method.method,
-                    arguments: this.state.method.arguments
+                JobStore.updateById(this.state.job.id, {
+                    name: this.state.job.name,
+                    connector: this.state.job.connector,
+                    job: this.state.job.job,
+                    arguments: this.state.job.arguments
                 });
             }
         });
     }
 
     _getDataForRender() {
-        this.state.method = MethodStore.getById(this.props.params.id);
-        if(!this.state.method) {
-            this.state.method = {
+        this.state.job = JobStore.getById(this.props.params.id);
+        if(!this.state.job) {
+            this.state.job = {
                 name: '',
                 connector: null,
-                method: '',
+                job: '',
                 arguments: []
             }
         }
-        return this.state.method;
+        return this.state.job;
     }
 }
 
-export { MethodUpdateForm };
-export default validation(strategy)(MethodUpdateForm);
+export { JobUpdateForm };
+export default validation(strategy)(JobUpdateForm);

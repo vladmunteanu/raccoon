@@ -122,15 +122,10 @@ class ActionForm extends React.Component {
                 <label htmlFor="action-project" className="control-label">Project</label>
                 <select className="form-control" id="action-project" value={projectId}
                         onChange={this.onFormChange.bind(this, 'project')}>
-                    <option value=''>All projects</option>
+                    <option key='default' value=''>All projects</option>
                     {
                         this.state.projects.map(project => {
-                            if (projectId)
-                                return <option value={project.id}>{project.label || project.name}</option>
-                            else
-                                return <option value=''>All projects</option>
-
-
+                            return <option key={project.id} value={project.id}>{project.label || project.name}</option>
                         })
                     }
                 </select>
@@ -141,13 +136,10 @@ class ActionForm extends React.Component {
                 <label htmlFor="action-env" className="control-label">Environment</label>
                 <select className="form-control" id="action-env" value={envId}
                         onChange={this.onFormChange.bind(this, 'environment')}>
-                    <option value=''>All environments</option>
+                    <option key='default' value=''>All environments</option>
                     {
                         this.state.environments.map(env => {
-                            if (envId)
-                                return <option value={env.id}>{env.label || env.name}</option>
-                            else
-                                return <option value=''>All environments</option>
+                            return <option key={env.id} value={env.id}>{env.label || env.name}</option>
                         })
                     }
                 </select>
@@ -169,7 +161,6 @@ class ActionForm extends React.Component {
             <div className="container">
                 <h3>{this.formName}</h3>
                 <form onSubmit={this.onSubmit} className="form-horizontal col-sm-4">
-                    <div>
                     <div className="form-group">
                         <label htmlFor="action-name" className="control-label">Action name</label>
                         <input type="text"  className="form-control"
@@ -208,17 +199,16 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-flow" className="control-label">Flow</label><br/>
                         <select className="form-control" id="action-flow" value={flowId}
                                 onChange={this.onFormChange.bind(this, 'flow')}>
-                            <option value='' disabled={true}>-- select an option --</option>
+                            <option key='default' value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.flows.map(flow => {
-                                    return <option value={flow.id}>{flow.label || flow.name}</option>
+                                    return <option key={flow.id} value={flow.id}>{flow.label || flow.name}</option>
                                 })
                             }
                         </select>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
-                    </div>
                     </div>
                 </form>
             </div>
