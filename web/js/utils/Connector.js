@@ -80,13 +80,19 @@ class Connector {
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
 
+        console.log(message);
+
         if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
-            message.action = message.verb.toUpperCase() + ' ' + message.resource;
+            let matches = message.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
+            let res = matches && matches[1];
+
+            message.action = message.verb.toUpperCase() + ' ' + res;
+            console.log([message.action, message]);
             AppDispatcher.dispatch(message);
         }
 
         // display notifications
-        if (message.hasOwnProperty('code')) {
+        if (message.hasOwnProperty('code') && message.requestId != 'notification') {
             message.action = ActionTypes.NOTIFICATION;
             AppDispatcher.dispatch(message);
         }
@@ -120,8 +126,10 @@ class Connector {
         this.pendingCallbacks[request.requestId] = callback;
 
         if (callback) {
-            //registering actions
-            let action = request.verb.toUpperCase() + ' ' + request.resource;
+            //registering actions (removing resource id and everything after the resource name)
+            let matches = request.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
+            let res = matches && matches[1];
+            let action = request.verb.toUpperCase() + ' ' + res;
             AppDispatcher.registerOnce(action, callback);
         }
 
