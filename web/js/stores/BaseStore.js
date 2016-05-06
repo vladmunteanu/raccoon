@@ -14,7 +14,8 @@ class BaseStore extends EventEmitter {
     constructor() {
         super();
         this.baseuri = null;
-        this.instances = null;
+        this.instances = [];
+
     }
 
     emitChange() {
@@ -71,13 +72,17 @@ class BaseStore extends EventEmitter {
             verb: 'put',
             resource: this.baseuri + id,
             body: data
-        }, payload => {
-            let instance = this.instances.find(function(element, index, array) {
-                return element.id === id;
+        });/*, payload => {
+            this.instances = this.instances.map(instance => {
+                if (instance.id === payload.data.id) {
+                    return payload.data;
+                } else {
+                    return instance;
+                }
             });
-            instance = payload.data;
+            console.log([this.instances]);
             this.emitChange();
-        });
+        });*/
     }
 
     create(data) {
