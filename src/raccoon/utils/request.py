@@ -50,8 +50,6 @@ class Request(object):
     def broadcast(self, response):
         data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
-            if connection_id != self.socket.connection_id:
-                # mark the broadcast as notification by removing the requestId
-                data['requestId'] = 'notification'
-
+            # mark the broadcast as notification for other users
+            data['requestId'] = self.requestId if connection_id == self.socket.connection_id else 'notification'
             socket.write_message(json.dumps(data, default=json_serial))
