@@ -1,14 +1,11 @@
 import React from 'react';
-import FluxStore from 'flux';
-
 import RaccoonApp from './../components/RaccoonApp.react.js';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
-
 import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
+let ActionTypes = Constants.ActionTypes;
 let projectStore = null;
 
 class ProjectStore extends BaseStore {
@@ -24,25 +21,13 @@ class ProjectStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/projects/";
 
+        //register BaseStore actions
+        this.registerActions();
+
         // register gui related actions
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
-
-        AppDispatcher.registerOnce('PUT ' + '/api/v1/projects/', payload => {
-            console.log(['constructor', payload, this.instances]);
-
-            this.instances = this.instances.map(instance => {
-                if (instance.id === payload.data.id) {
-                    return payload.data;
-                } else {
-                    return instance;
-                }
-            });
-            console.log([this.instances]);
-            this.emitChange();
-        })
-
     }
 
     toggleVisible(id) {

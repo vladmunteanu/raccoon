@@ -25,6 +25,9 @@ class ConnectorStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/connectors/";
 
+        //register BaseStore actions
+        this.registerActions();
+
         // register actions
         AppDispatcher.registerOnce(ActionTypes.CONNECTOR_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);

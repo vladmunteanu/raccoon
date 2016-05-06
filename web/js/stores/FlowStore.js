@@ -17,6 +17,9 @@ class FlowStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/flows/";
+
+        //register BaseStore actions
+        this.registerActions();
     }
 }
 

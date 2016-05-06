@@ -25,6 +25,9 @@ class RightStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/rights/";
+
+        //register BaseStore actions
+        this.registerActions();
     }
 
 }
