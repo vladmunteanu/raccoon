@@ -28,6 +28,21 @@ class ProjectStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
+
+        AppDispatcher.registerOnce('PUT ' + '/api/v1/projects/', payload => {
+            console.log(['constructor', payload, this.instances]);
+
+            this.instances = this.instances.map(instance => {
+                if (instance.id === payload.data.id) {
+                    return payload.data;
+                } else {
+                    return instance;
+                }
+            });
+            console.log([this.instances]);
+            this.emitChange();
+        })
+
     }
 
     toggleVisible(id) {

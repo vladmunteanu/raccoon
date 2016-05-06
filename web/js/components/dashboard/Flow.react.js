@@ -26,49 +26,53 @@ function getLocalState(action_id) {
     return RaccoonApp.getState(localState);
 }
 
-let Flow = React.createClass({
-    step: 0,
+class Flow extends React.Component {
 
-    getInitialState: function () {
-        return getLocalState(this.props.params.id);
-    },
+    constructor(props) {
+        super(props);
+        this.state = getLocalState(this.props.params.id);
+        this._onChange = this._onChange.bind(this);
+        this._handleBack = this._handleBack.bind(this);
+        this._handleNext = this._handleNext.bind(this);
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         ActionStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         ActionStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
-    },
+    }
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps(nextProps) {
         let state = getLocalState(nextProps.params.id);
         this.step = state.step = 0;
         this.setState(state);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         let state = getLocalState(this.props.params.id);
         state.step = this.step;
         this.setState(state);
-    },
+    }
 
-    _handleBack: function (event) {
+    _handleBack(event) {
         let state = getLocalState(this.props.params.id);
         this.step -= 1;
         state.step = this.step;
         this.setState(state);
-    },
-    _handleNext: function (event) {
+    }
+
+    _handleNext(event) {
         let state = getLocalState(this.props.params.id);
         this.step += 1;
         state.step = this.step;
         this.setState(state);
-    },
+    }
 
-    render: function () {
+    render() {
         if (!this.state.action || !this.state.flow) {
             // loading
             return (<div></div>);
@@ -90,7 +94,7 @@ let Flow = React.createClass({
             last_context = LastStepAddon.getContext();
         }
 
-
+        // TODO (alexm): trigger action from FLOW
         if (step_index > flow.steps.length - 1) {
             AppDispatcher.dispatch({
                 action: ActionTypes.BUILD_START,
@@ -141,6 +145,6 @@ let Flow = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default Flow;
