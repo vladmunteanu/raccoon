@@ -92,7 +92,7 @@ class Connector {
         }
 
         // display notifications
-        if (message.hasOwnProperty('code') && message.requestId != 'broadcast-notification') {
+        if (message.hasOwnProperty('code') && message.requestId != 'notification') {
             message.action = ActionTypes.NOTIFICATION;
             AppDispatcher.dispatch(message);
         }
