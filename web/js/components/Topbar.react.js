@@ -3,16 +3,15 @@ import { Link } from 'react-router'
 
 import Loader from '../components/Loader.react';
 
+class Topbar extends React.Component {
 
-var Topbar = React.createClass({
-
-    toggleTasks: function (event) {
+    toggleTasks(event) {
         $('#taskbar').toggleClass('slidemenu-open');
         //event.stopPropagation();
         //event.nativeEvent.stopImmediatePropagation();
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <nav className="navbar navbar-default">
                 <Loader />
@@ -42,6 +41,6 @@ var Topbar = React.createClass({
             </nav>
         );
     }
-});
+}
 
 export default Topbar;
