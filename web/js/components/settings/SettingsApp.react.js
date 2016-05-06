@@ -31,20 +31,20 @@ function getLocalState() {
     return RaccoonApp.getState(localState);
 }
 
-var SettingsApp = React.createClass({
+class SettingsApp extends React.Component {
 
-    getInitialState: function() {
+    constructor(props, context) {
+        super(props, context);
         RaccoonApp.fetchAll();
-
         ConnectorStore.fetchAll();
         RightStore.fetchAll();
         UserStore.fetchAll();
         JobStore.fetchAll();
+        this.state = getLocalState();
+        this._onChange = this._onChange.bind(this);
+    }
 
-        return getLocalState();
-    },
-
-    componentDidMount: function() {
+    componentDidMount() {
         ActionStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
@@ -52,9 +52,9 @@ var SettingsApp = React.createClass({
         RightStore.addListener(this._onChange);
         UserStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         ActionStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
@@ -62,17 +62,14 @@ var SettingsApp = React.createClass({
         RightStore.removeListener(this._onChange);
         UserStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         let state = getLocalState();
         this.setState(state);
-    },
+    }
 
-    /**
-     * @return {object}
-     */
-    render: function() {
+    render() {
         let error_message = '';
 
         return (
@@ -91,9 +88,7 @@ var SettingsApp = React.createClass({
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
                         <Topbar />
                         <Taskbar />
-
                         <Notification />
-
                         <div className="content">
                             {this.props.children}
                         </div>
@@ -101,8 +96,7 @@ var SettingsApp = React.createClass({
                 </div>
             </div>
         );
-    },
-
-});
+    }
+}
 
 export default SettingsApp;

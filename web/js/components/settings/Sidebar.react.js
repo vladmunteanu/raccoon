@@ -10,8 +10,8 @@ import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 
-var Sidebar = React.createClass({
-    render: function () {
+class Sidebar extends React.Component {
+    render() {
         return (
             <div className="col-sm-3 col-md-2 sidebar">
                 <ul className="nav nav-sidebar" style={{height: 115 + 'px'}}>
@@ -176,6 +176,6 @@ var Sidebar = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default Sidebar;

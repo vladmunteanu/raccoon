@@ -26,36 +26,39 @@ function getLocalState(project, env) {
     return RaccoonApp.getState(localState);
 }
 
-let GridItem = React.createClass({
-    getInitialState: function () {
-        return getLocalState(this.props.project, this.props.environment);
-    },
+class GridItem extends React.Component {
 
-    componentWillMount: function() {
+    constructor(props) {
+        super(props);
+        this.state = getLocalState(this.props.project, this.props.environment);
+        this._onChange = this._onChange.bind(this);
+    }
+
+    componentWillMount() {
         ActionStore.addListener(this._onChange);
         BuildStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         InstallStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         ActionStore.removeListener(this._onChange);
         BuildStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         InstallStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         let state = getLocalState(this.props.project, this.props.environment);
         this.setState(state);
-    },
+    }
 
-    _onSelectBuild: function(id, event) {
+    _onSelectBuild(id, event) {
         this.state.installedBuild = BuildStore.getById(id);
         this.setState(this.state);
-    },
+    }
 
-    render: function () {
+    render() {
         let buildsDropdown = (<div></div>);
         let installedBuild = null;
         if (this.state.builds.length)
@@ -150,6 +153,6 @@ let GridItem = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default GridItem;
