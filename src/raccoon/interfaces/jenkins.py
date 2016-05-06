@@ -55,11 +55,11 @@ class JenkinsInterface(BaseInterface):
         if kwargs:
             path = URLS.get('build_with_params')
 
-        job_name = flow.method.method
+        job_name = flow.job.job
 
         # create arguments
         arguments = {}
-        for argument in flow.method.arguments:
+        for argument in flow.job.arguments:
             value = argument['value']
             if value.startswith('$'):
                 value = kwargs.get(value[1:]) if kwargs.get(value[1:]) else value
