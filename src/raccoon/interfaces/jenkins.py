@@ -131,7 +131,7 @@ class JenkinsInterface(BaseInterface):
 
         # select job from flow method
         if flow:
-            job_name = flow.method.method
+            job_name = flow.job.job
 
         # select path
         path = URLS.get(method)
