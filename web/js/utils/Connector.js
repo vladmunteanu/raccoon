@@ -80,14 +80,11 @@ class Connector {
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
 
-        console.log(message);
-
         if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
             let matches = message.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
             let res = matches && matches[1];
 
             message.action = message.verb.toUpperCase() + ' ' + res;
-            console.log([message.action, message]);
             AppDispatcher.dispatch(message);
         }
 
@@ -97,11 +94,6 @@ class Connector {
             AppDispatcher.dispatch(message);
         }
 
-       /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
-            this.pendingCallbacks[message.requestId](message);
-            // freeing some memory
-            delete this.pendingCallbacks[message.requestId];
-        }*/
     }
 
     /**

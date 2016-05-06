@@ -24,24 +24,15 @@ class ProjectStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/projects/";
 
+        //register BaseStore actions
+        this.registerActions();
+
         // register gui related actions
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
 
-        AppDispatcher.registerOnce('PUT ' + '/api/v1/projects/', payload => {
-            console.log(['constructor', payload, this.instances]);
 
-            this.instances = this.instances.map(instance => {
-                if (instance.id === payload.data.id) {
-                    return payload.data;
-                } else {
-                    return instance;
-                }
-            });
-            console.log([this.instances]);
-            this.emitChange();
-        })
 
     }
 
