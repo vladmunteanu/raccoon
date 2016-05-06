@@ -3,9 +3,6 @@ import keyMirror from 'keymirror';
 
 export default {
     ActionTypes: keyMirror({
-        // auth
-        REGISTER_USER: null,
-
         // projects
         PROJECT_TOGGLE_VISIBLE: null,
 
@@ -24,8 +21,8 @@ export default {
         // rights
         RIGHT_TOGGLE_VISIBLE: null,
 
-        //methods
-        METHOD_TOGGLE_VISIBLE: null,
+        //jobs
+        JOB_TOGGLE_VISIBLE: null,
 
         //notifications
         NOTIFICATION: null,

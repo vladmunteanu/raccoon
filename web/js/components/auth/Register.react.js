@@ -1,5 +1,4 @@
 import React from 'react'
-import { History } from 'react-router';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
@@ -11,8 +10,6 @@ import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
 import NotificationStore from '../../stores/NotificationStore';
 
-import Constants from '../../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 function getLocalState() {
     let localState = {
@@ -25,24 +22,26 @@ function getLocalState() {
     return RaccoonApp.getState(localState);
 }
 
-let Register = React.createClass({
-    mixins: [ History ],
+class Register extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = getLocalState();
+        this.validatorTypes = {
+            name: Joi.string().min(3).max(50).required().label('Full name'),
+            password: Joi.string().alphanum().min(8).max(30).required().label('Password'),
+            email: Joi.string().email().required().label('Email')
+        };
+        this.getValidatorData = this.getValidatorData.bind(this);
+        this.renderHelpText = this.renderHelpText.bind(this);
+        this.register = this.register.bind(this);
+        this._onChange = this._onChange.bind(this);
+    }
 
-    getInitialState: function () {
-        return getLocalState();
-    },
-
-    validatorTypes: {
-        name: Joi.string().min(3).max(50).required().label('Full name'),
-        password: Joi.string().alphanum().min(8).max(30).required().label('Password'),
-        email: Joi.string().email().required().label('Email')
-    },
-
-    getValidatorData: function () {
+    getValidatorData() {
         return this.state;
-    },
+    }
 
-    renderHelpText: function (messages) {
+    renderHelpText(messages) {
         return (
             <div className="text-danger">
                 {
@@ -52,45 +51,42 @@ let Register = React.createClass({
                 }
             </div>
         );
-    },
+    }
 
-    register: function (event) {
+    register(event) {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                AppDispatcher.dispatch({
-                    action: ActionTypes.REGISTER_USER,
-                    data: this.state
-                });
+                AuthStore.register(this.state);
             }
         });
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         AuthStore.addListener(this._onChange);
         NotificationStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         AuthStore.removeListener(this._onChange);
         NotificationStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         this.setState(getLocalState());
         if (AuthStore.isLoggedIn()) {
             RaccoonApp.fetchAll(); // fetch all everything at login
-            this.history.pushState(null, '/');
+            this.context.router.push('/');
         }
-    },
+    }
 
-    onFormChange: function(name, event) {
+    onFormChange(name, event) {
         this.state[name] = event.target.value;
         this.setState(this.state);
         this.props.validate(name);
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <div className="row">
                 <div className="col-sm-offset-4 col-md-offset-4">
@@ -138,6 +134,10 @@ let Register = React.createClass({
             </div>
         );
     }
-});
+}
+
+Register.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export default validation(strategy)(Register);

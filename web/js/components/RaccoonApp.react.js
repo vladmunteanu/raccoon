@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, IndexRoute } from 'react-router';
+import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
 import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
@@ -27,8 +27,8 @@ import EnvironmentForm from './settings/EnvironmentForm.react';
 import EnvironmentUpdateForm from './settings/EnvironmentUpdateForm.react';
 import ProjectForm from './settings/ProjectForm.react';
 import ProjectUpdateForm from './settings/ProjectUpdateForm.react';
-import MethodForm from './settings/MethodForm.react';
-import MethodUpdateForm from './settings/MethodUpdateForm.react';
+import JobForm from './settings/JobForm.react.js';
+import JobUpdateForm from './settings/JobUpdateForm.react.js';
 import FlowForm from './settings/FlowForm.react';
 import FlowUpdateForm from './settings/FlowUpdateForm.react';
 
@@ -47,7 +47,6 @@ function getRaccoonState() {
 }
 
 class RaccoonApp extends React.Component {
-
     constructor(props) {
         super(props);
     }
@@ -109,7 +108,7 @@ class RaccoonApp extends React.Component {
 
     render() {
         return (
-            <Router>
+            <Router history={hashHistory}>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
                     <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />
@@ -117,8 +116,8 @@ class RaccoonApp extends React.Component {
                     <Route path="connector/:id" component={ConnectorUpdateForm} onEnter={this.requireAuth} />
                     <Route path="environment/new" component={EnvironmentForm} onEnter={this.requireAuth} />
                     <Route path="environment/:id" component={EnvironmentUpdateForm} onEnter={this.requireAuth} />
-                    <Route path="method/new" component={MethodForm} onEnter={this.requireAuth} />
-                    <Route path="method/:id" component={MethodUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="job/new" component={JobForm} onEnter={this.requireAuth} />
+                    <Route path="job/:id" component={JobUpdateForm} onEnter={this.requireAuth} />
                     <Route path="project/new" component={ProjectForm} onEnter={this.requireAuth} />
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                     <Route path="flow/new" component={FlowForm} onEnter={this.requireAuth} />

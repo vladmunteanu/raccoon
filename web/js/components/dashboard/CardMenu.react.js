@@ -1,8 +1,7 @@
 import React from 'react';
-import ActionStore from '../../stores/ActionStore';
 
-var CardMenu = React.createClass({
-    render: function () {
+class CardMenu extends React.Component {
+    render() {
         return (
             <div className="btn-group btn-settings pull-right">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -18,6 +17,6 @@ var CardMenu = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default CardMenu;

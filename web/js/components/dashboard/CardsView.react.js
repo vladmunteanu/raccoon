@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from 'react-dom';
 
 import RaccoonApp from '../RaccoonApp.react';
 import ProjectStore from '../../stores/ProjectStore';
@@ -14,32 +13,34 @@ import GridItem from './GridItem.react';
 import Notification from '../Notification.react';
 
 
-var CardsView = React.createClass({
+class CardsView extends React.Component {
 
-    getInitialState: function() {
-        return RaccoonApp.getState();
-    },
+    constructor(props, context) {
+        super(props, context);
+        this.state = RaccoonApp.getState();
+        this._onChange = this._onChange.bind(this);
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         AuthStore.addListener(this._onChange);
         ActionStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         AuthStore.removeListener(this._onChange);
         ActionStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function() {
+    _onChange() {
         let state = RaccoonApp.getState();
         this.setState(state);
-    },
+    }
 
-    render: function() {
+    render() {
         return (
             <div>
                 {
@@ -65,7 +66,6 @@ var CardsView = React.createClass({
             </div>
         );
     }
-
-});
+}
 
 export default CardsView;

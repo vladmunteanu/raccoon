@@ -17,7 +17,7 @@ from .right import *
 
 from .build import *
 from .install import *
-from .method import *
+from .job import *
 from .flow import *
 from .action import *
 from .user import *

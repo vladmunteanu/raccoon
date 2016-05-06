@@ -90,7 +90,7 @@ let Flow = React.createClass({
             last_context = LastStepAddon.getContext();
         }
 
-
+        // TODO (alexm): trigger action from FLOW
         if (step_index > flow.steps.length - 1) {
             AppDispatcher.dispatch({
                 action: ActionTypes.BUILD_START,

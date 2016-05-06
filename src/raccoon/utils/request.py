@@ -31,32 +31,27 @@ class Request(object):
     def user(self, user):
         self.currentUser = user
 
-    @gen.coroutine
-    def send(self, response):
-        self.socket.write_message(json.dumps({
+    def serialize(self, data):
+        return {
             'requestId': self.requestId,
             'verb': self.verb,
             'resource': self.resource,
-            'data': response,
+            'data': data,
             'code': 200,
             'message': 'OK',
-        }, default=json_serial))
+        }
+
+    @gen.coroutine
+    def send(self, response):
+        data = self.serialize(response)
+        self.socket.write_message(json.dumps(data, default=json_serial))
 
     @gen.coroutine
     def broadcast(self, response):
-        # send requestId to user that did the request
-        self.send(response)
-
-        # broadcast to other connected users
-        data = json.dumps({
-            'requestId': 'broadcast-notification',
-            'verb': self.verb,
-            'resource': self.resource,
-            'data': response,
-            'code': 200,
-            'message': 'OK',
-        }, default=json_serial)
-
+        data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             if connection_id != self.socket.connection_id:
-                socket.write_message(data)
+                # mark the broadcast as notification by removing the requestId
+                data['requestId'] = 'notification'
+
+            socket.write_message(json.dumps(data, default=json_serial))

@@ -8,6 +8,8 @@ var Topbar = React.createClass({
 
     toggleTasks: function (event) {
         $('#taskbar').toggleClass('slidemenu-open');
+        //event.stopPropagation();
+        //event.nativeEvent.stopImmediatePropagation();
     },
 
     render: function () {

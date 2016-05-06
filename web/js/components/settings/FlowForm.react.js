@@ -4,18 +4,18 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import FlowStore from '../../stores/FlowStore';
-import MethodStore from '../../stores/MethodStore';
+import JobStore from '../../stores/JobStore';
 import Addons from '../addons/Addons'
 
 
 function getLocalState() {
     let localState = {
-        methods: MethodStore.all,
+        jobs: JobStore.all,
         addons: Addons.all,
         flow: {
             name: '',
             steps: [],
-            method: ''
+            job: ''
         }
     };
     return localState;
@@ -28,7 +28,7 @@ class FlowForm extends React.Component {
         this.state = getLocalState();
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Flow name'),
-            method: Joi.string().min(3).max(50).required().label('Method')
+            job: Joi.string().min(3).max(50).required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -38,11 +38,11 @@ class FlowForm extends React.Component {
     }
 
     componentDidMount() {
-        MethodStore.addListener(this._onChange);
+        JobStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
-        MethodStore.removeListener(this._onChange);
+        JobStore.removeListener(this._onChange);
     }
 
     _onChange() {
@@ -89,7 +89,7 @@ class FlowForm extends React.Component {
                 FlowStore.create({
                     name: this.state.flow.name,
                     steps: this.state.flow.steps,
-                    method: this.state.flow.method
+                    job: this.state.flow.job
                 });
             }
         });
@@ -99,7 +99,7 @@ class FlowForm extends React.Component {
         let flow = this._getDataForRender();
         let name = flow.name;
         let steps = flow.steps;
-        let methodId = flow.method;
+        let jobId = flow.job;
 
 
         return (
@@ -138,13 +138,13 @@ class FlowForm extends React.Component {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="flow-method" className="control-label">Method</label><br/>
-                        <select className="form-control" id="flow-method" value={methodId}
-                                onChange={this.onFormChange.bind(this, 'method')}>
-                            <option value='' disabled={true}>-- select an option --</option>
+                        <label htmlFor="flow-job" className="control-label">Job</label><br/>
+                        <select className="form-control" id="flow-job" value={jobId}
+                                onChange={this.onFormChange.bind(this, 'job')}>
+                            <option key='default' value='' disabled={true}>-- select an option --</option>
                             {
-                                this.state.methods.map(method => {
-                                    return <option value={method.id}>{method.label || method.name}</option>
+                                this.state.jobs.map(job => {
+                                    return <option key={job.id} value={job.id}>{job.label || job.name}</option>
                                 })
                             }
                         </select>
