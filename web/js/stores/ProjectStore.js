@@ -1,14 +1,11 @@
 import React from 'react';
-import FluxStore from 'flux';
-
 import RaccoonApp from './../components/RaccoonApp.react.js';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
-
 import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
+let ActionTypes = Constants.ActionTypes;
 let projectStore = null;
 
 class ProjectStore extends BaseStore {
@@ -31,9 +28,6 @@ class ProjectStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.PROJECT_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
-
-
-
     }
 
     toggleVisible(id) {

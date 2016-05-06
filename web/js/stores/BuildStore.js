@@ -22,6 +22,9 @@ class BuildStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/builds/";
+
+        //register BaseStore actions
+        this.registerActions();
     }
 
     filter(project) {
