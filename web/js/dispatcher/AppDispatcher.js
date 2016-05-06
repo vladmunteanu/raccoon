@@ -3,7 +3,7 @@ import { Dispatcher } from 'flux';
 let appDispatcher = null;
 
 
-class AppDispatcher extends Dispatcher{
+class AppDispatcher extends Dispatcher {
     constructor () {
         // make it singleton
         if (!appDispatcher) {
