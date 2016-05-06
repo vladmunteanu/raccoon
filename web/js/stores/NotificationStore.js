@@ -31,10 +31,10 @@ class NotificationStore extends BaseStore {
     push(message) {
         // ignore:
         // - 200 OK GET messages
-        // - broadcast messages = no requestId
+        // - broadcast messages if requestId = notification
         if (
             (message.code == 200 && message.verb.toUpperCase() == 'GET') ||
-            !message.requestId
+            message.requestId == 'notification'
         ) {
             return ;
         }

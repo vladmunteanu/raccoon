@@ -52,6 +52,6 @@ class Request(object):
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             if connection_id != self.socket.connection_id:
                 # mark the broadcast as notification by removing the requestId
-                data['requestId'] = None
+                data['requestId'] = 'notification'
 
             socket.write_message(json.dumps(data, default=json_serial))
