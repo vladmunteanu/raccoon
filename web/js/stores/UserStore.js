@@ -26,6 +26,8 @@ class UserStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/users/";
 
+        //register BaseStore actions
+        this.registerActions();
     }
 
 }

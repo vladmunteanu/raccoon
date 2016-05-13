@@ -6,7 +6,6 @@ import assign from 'object-assign';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
-import LoginAction from '../actions/LoginAction';
 import Utils from '../utils/Utils';
 
 

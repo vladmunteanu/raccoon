@@ -9,13 +9,29 @@ import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 
-
 class BaseStore extends EventEmitter {
     constructor() {
         super();
         this.baseuri = null;
         this.instances = [];
+    }
 
+    registerActions() {
+        AppDispatcher.registerOnce('PUT ' + this.baseuri, payload => {
+            this.instances = this.instances.map(instance => {
+                if (instance.id === payload.data.id) {
+                    return payload.data;
+                } else {
+                    return instance;
+                }
+            });
+            this.emitChange();
+        });
+
+        AppDispatcher.registerOnce('POST ' + this.baseuri, payload => {
+            this.instances.push(payload.data);
+            this.emitChange();
+        });
     }
 
     emitChange() {
@@ -91,10 +107,10 @@ class BaseStore extends EventEmitter {
             verb: 'post',
             resource: this.baseuri,
             body: data
-        }, payload => {
+        });/*, payload => {
             this.instances.push(payload.data);
             this.emitChange();
-        });
+        });*/
     }
 
 }

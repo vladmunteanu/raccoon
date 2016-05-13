@@ -1,17 +1,14 @@
 import React from 'react';
 
 
-let NotFound = React.createClass({
+class NotFound extends React.Component {
 
-    /**
-     * @return {object}
-     */
-    render: function () {
+    render() {
         return (
             <h1>Page not found</h1>
         );
-    },
+    }
 
-});
+}
 
 export default NotFound;

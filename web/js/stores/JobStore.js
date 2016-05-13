@@ -20,6 +20,9 @@ class JobStore extends BaseStore {
 
         // set base URI for resources
         this.baseuri = "/api/v1/jobs/";
+
+        //register BaseStore actions
+        this.registerActions();
     }
 
 }

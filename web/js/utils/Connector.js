@@ -92,11 +92,6 @@ class Connector {
             AppDispatcher.dispatch(message);
         }
 
-       /* if (typeof this.pendingCallbacks[message.requestId] !== 'undefined') {
-            this.pendingCallbacks[message.requestId](message);
-            // freeing some memory
-            delete this.pendingCallbacks[message.requestId];
-        }*/
     }
 
     /**

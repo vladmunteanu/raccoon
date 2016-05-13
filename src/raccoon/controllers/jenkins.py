@@ -71,8 +71,8 @@ class JenkinsController(BaseController):
 
             # load references
             yield flow.load_references()
-            yield flow.method.load_references()
-            connector = flow.method.connector
+            yield flow.job.load_references()
+            connector = flow.job.connector
         else:
             results = yield Connector.objects.filter(type='jenkins').find_all()
             if not len(results):
