@@ -16,6 +16,7 @@ function getLocalState() {
         job: {
             name: '',
             connector: '',
+            connector_name: '',
             job: '',
             arguments: []
         },
@@ -33,6 +34,7 @@ class JobForm extends React.Component {
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Job name'),
             connector: Joi.any().disallow(null, '').required().label('Connector'),
+            action_type: Joi.any().disallow(null, '').required().label('Action type'),
             job: Joi.string().disallow(null, '').required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
@@ -61,6 +63,9 @@ class JobForm extends React.Component {
 
     onFormChange(name, event) {
         this.state.job[name] = event.target.value;
+        if (name == 'connector') {
+
+        }
         this.setState(this.state);
         this.props.validate(name);
     }
@@ -103,6 +108,7 @@ class JobForm extends React.Component {
                 JobStore.create({
                     name: this.state.job.name,
                     connector: this.state.job.connector,
+                    action_type: this.state.job.action_type,
                     job: this.state.job.job,
                     arguments: this.state.job.arguments
                 });
@@ -117,9 +123,14 @@ class JobForm extends React.Component {
     render() {
         let job = this._getDataForRender();
         let name = job.name;
-        let connectorId = job.connector;
         let jobId = job.job;
         let args = job.arguments;
+        let connector_id = job.connector || undefined;
+        let connector = this.state.connectors.filter(connector => {
+            return connector.id == connector_id;
+        })[0];
+        let connector_type = connector ? connector.type : '';
+        let action_types = ConnectorStore.types[connector_type] || [];
 
         return (
             <div className="container">
@@ -135,9 +146,9 @@ class JobForm extends React.Component {
                     <div className="form-group">
                         <label htmlFor="connector-job" className="control-label">Connector</label>
                         <select className="form-control" id="connector-job"
-                                value={connectorId}
+                                value={connector_id}
                                 onChange={this.onFormChange.bind(this, 'connector')}>
-                            <option key='default' value='' disabled={true}>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.connectors.map(connector => {
                                     return <option key={connector.id} value={connector.id}>{connector.name}</option>
@@ -147,11 +158,25 @@ class JobForm extends React.Component {
                         {this.renderHelpText(this.props.getValidationMessages('connector'))}
                     </div>
                     <div className="form-group">
+                        <label htmlFor="connector-action-type" className="control-label">Action Type</label>
+                        <select className="form-control" id="connector-action-type"
+                                value={job.action_type}
+                                onChange={this.onFormChange.bind(this, 'action_type')}>
+                            <option value='' disabled={true}>-- select an option --</option>
+                            {
+                                action_types.map(action => {
+                                    return <option key={action.id} value={action.id}>{action.label}</option>
+                                })
+                            }
+                        </select>
+                        {this.renderHelpText(this.props.getValidationMessages('action_type'))}
+                    </div>
+                    <div className="form-group">
                         <label htmlFor="job-job" className="control-label">Job</label>
                         <select className="form-control" id="job-job"
                                 value={jobId}
                                 onChange={this.onFormChange.bind(this, 'job')}>
-                            <option key='default' value='' disabled={true}>-- select an option --</option>
+                            <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.jobs.map(job => {
                                     return <option key={job.name} value={job.name}>{job.name}</option>

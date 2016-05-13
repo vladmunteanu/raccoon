@@ -2,7 +2,6 @@ import React from 'react';
 import FluxStore from 'flux';
 import assign from 'object-assign';
 
-
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Connector from '../utils/Connector';
 import BaseStore from './BaseStore';
@@ -11,6 +10,7 @@ import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
 let connectorStore = null;
+let connectorTypes = {};
 
 class ConnectorStore extends BaseStore {
 
@@ -32,6 +32,14 @@ class ConnectorStore extends BaseStore {
         AppDispatcher.registerOnce(ActionTypes.CONNECTOR_TOGGLE_VISIBLE, payload => {
             this.toggleVisible(payload.data.id);
         });
+    }
+
+    register(name, publicMethods) {
+        connectorTypes[name] = publicMethods;
+    }
+
+    get types() {
+        return connectorTypes;
     }
 
 }
