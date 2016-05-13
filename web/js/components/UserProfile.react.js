@@ -3,31 +3,33 @@ import React from 'react';
 import Utils from '../utils/Utils';
 import AuthStore from '../stores/AuthStore';
 
-let getCurrentState = function () {
+function getCurrentState() {
     return {
         user: AuthStore.me || {},
     };
 }
 
-var UserProfile = React.createClass({
+class UserProfile extends React.Component {
 
-    getInitialState: function () {
-        return getCurrentState();
-    },
+    constructor(props) {
+        super(props);
+        this.state = getCurrentState();
+        this._onChange = this._onChange.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         AuthStore.addListener(this._onChange);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         AuthStore.removeListener(this._onChange);
-    },
+    }
 
-    _onChange: function () {
+    _onChange() {
         this.setState(getCurrentState());
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <li className="media">
                 <div className="media-left">
@@ -42,6 +44,6 @@ var UserProfile = React.createClass({
             </li>
         );
     }
-});
+}
 
 export default UserProfile;

@@ -16,7 +16,7 @@ class BaseInterface(object):
 
     @gen.coroutine
     def fetch(self, url, method='GET', body=None, headers=None):
-        print ('******', url)
+        log.info(['******', url])
 
         body = body or 'no body' if method.upper() == 'POST' else None
         response = yield self.HTTPClient.fetch(HTTPRequest(

@@ -3,24 +3,21 @@ import React from 'react';
 import TaskItem from './TaskItem.react';
 
 
-var Taskbar = React.createClass({
+class Taskbar extends React.Component {
 
-    getInitialState: function () {
-        return {};
-    },
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this._onChange = this._onChange.bind(this);
+    }
 
-    componentDidMount: function () {
-    },
+    componentDidMount() {}
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {}
 
-    },
+    _onChange() {}
 
-    _onChange: function () {
-
-    },
-
-    render: function () {
+    render() {
         return (
             <nav className="slidemenu slidemenu-vertical slidemenu-right" id="taskbar">
                 {/* show tabs */}
@@ -42,6 +39,6 @@ var Taskbar = React.createClass({
             </nav>
         );
     }
-});
+}
 
 export default Taskbar;

@@ -51,6 +51,7 @@ class JobUpdateForm extends JobForm {
                 JobStore.updateById(this.state.job.id, {
                     name: this.state.job.name,
                     connector: this.state.job.connector,
+                    action_type: this.state.job.action_type,
                     job: this.state.job.job,
                     arguments: this.state.job.arguments
                 });
@@ -63,7 +64,8 @@ class JobUpdateForm extends JobForm {
         if(!this.state.job) {
             this.state.job = {
                 name: '',
-                connector: null,
+                connector: '',
+                action_type: '',
                 job: '',
                 arguments: []
             }

@@ -10,6 +10,7 @@ class Job(BaseModel):
 
     name = StringField(required=True)
     connector = ReferenceField(reference_document_type=Connector)
+    action_type = StringField(required=True)
     job = StringField(required=True)
     arguments = ListField(DictField())
     date_added = DateTimeField(required=True, auto_now_on_insert=True)

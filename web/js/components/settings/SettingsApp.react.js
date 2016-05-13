@@ -52,6 +52,7 @@ class SettingsApp extends React.Component {
         RightStore.addListener(this._onChange);
         UserStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
+        FlowStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
@@ -62,6 +63,7 @@ class SettingsApp extends React.Component {
         RightStore.removeListener(this._onChange);
         UserStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);
+        FlowStore.removeListener(this._onChange);
     }
 
     _onChange() {

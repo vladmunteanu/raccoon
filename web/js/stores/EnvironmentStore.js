@@ -1,6 +1,5 @@
 import React from 'react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
-
 import RaccoonApp from './../components/RaccoonApp.react.js';
 import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
@@ -8,7 +7,6 @@ import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
 let environmentStore = null;
-
 
 class EnvironmentStore extends BaseStore {
 

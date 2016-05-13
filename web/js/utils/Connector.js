@@ -75,8 +75,6 @@ class Connector {
      * @param message
      */
     processMessage(message) {
-
-
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
 
