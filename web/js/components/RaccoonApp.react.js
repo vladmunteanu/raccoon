@@ -128,6 +128,9 @@ class RaccoonApp extends React.Component {
                 <Route path="/register" component={Register} />
                 <Route path="/" component={DashboardApp} onEnter={this.requireAuth}>
                     <IndexRoute component={CardsView} />
+                    <Route path="action/:id/card/:project/:env" component={Flow} onEnter={this.requireAuth} />
+                    <Route path="action/:id/project/:project" component={Flow} onEnter={this.requireAuth} />
+                    <Route path="action/:id/env/:env" component={Flow} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />
