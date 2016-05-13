@@ -107,5 +107,25 @@ class BaseController(object):
     @classmethod
     @authenticated
     @gen.coroutine
-    def delete(cls, *args, **kwargs):
-        raise ReplyError(501)
+    def delete(cls, request, id):
+        if not cls.model:
+            raise ReplyError(404)
+
+        if not id:
+            raise ReplyError(400)
+
+        instance = yield cls.model.objects.get(id=id)
+
+        if not instance:
+            raise ReplyError(404)
+
+        yield instance.load_references()
+
+        try:
+            yield instance.delete()
+        except UniqueKeyViolationError as e:
+            raise ReplyError(409, cls.model.get_message_from_exception(e))
+        except InvalidDocumentError as e:
+            raise ReplyError(400, cls.model.get_message_from_exception(e))
+
+        yield request.broadcast(id)

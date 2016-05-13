@@ -47,7 +47,7 @@ class Request(object):
         self.socket.write_message(json.dumps(data, default=json_serial))
 
     @gen.coroutine
-    def broadcast(self, response):
+    def broadcast(self, response=None):
         data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users

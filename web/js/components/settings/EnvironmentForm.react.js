@@ -76,9 +76,22 @@ class EnvironmentForm extends React.Component {
         });
     }
 
+    onDelete() {
+        EnvironmentStore.deleteByid(this.state.environment.id, {
+            name: this.state.environment.name
+        });
+        this.props.history.push('/settings/environment/new');
+    }
+
     render() {
         let environment = this._getDataForRender();
         let name = environment.name;
+        let del;
+
+        if (this.formName === 'Update environment') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -95,12 +108,18 @@ class EnvironmentForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
+
         );
     }
 }
+
+EnvironmentForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { EnvironmentForm };
 export default validation(strategy)(EnvironmentForm);

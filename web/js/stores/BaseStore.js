@@ -32,6 +32,16 @@ class BaseStore extends EventEmitter {
             this.instances.push(payload.data);
             this.emitChange();
         });
+
+        AppDispatcher.registerOnce('DELETE ' + this.baseuri, payload => {
+            if (payload.code == 200)
+                this.instances = this.instances.filter(instance => {
+                    if (instance.id !== payload.data) {
+                        return instance
+                    }
+                });
+                this.emitChange();
+        });
     }
 
     emitChange() {
@@ -111,6 +121,14 @@ class BaseStore extends EventEmitter {
             this.instances.push(payload.data);
             this.emitChange();
         });*/
+    }
+    
+    deleteByid(id) {
+        let connector = new Connector();
+        connector.send({
+            verb: 'delete',
+            resource: this.baseuri + id
+        });
     }
 
 }
