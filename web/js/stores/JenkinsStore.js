@@ -2,8 +2,10 @@ import React from 'react';
 import FluxStore from 'flux';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import BaseStore from './BaseStore';
 import Connector from '../utils/Connector';
+
+import BaseStore from './BaseStore';
+import BuildStore from './BuildStore';
 
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
@@ -26,8 +28,13 @@ class JenkinsStore extends BaseStore {
         this.jobInstances = [];
 
         // register gui related actions
-        AppDispatcher.registerOnce(ActionTypes.BUILD_START, payload => {
-            this.build(payload.data);
+        AppDispatcher.registerOnce('jenkins', payload => {
+            let method_name = payload.data['method'];
+            let args = payload.data['args'];
+
+            console.log(['GOT dispatch', payload]);
+
+            this[method_name](args);
         });
     }
 
@@ -39,6 +46,12 @@ class JenkinsStore extends BaseStore {
             resource: this.baseuri + 'build',
             body: args,
         }, payload => {
+            BuildStore.create({
+                project: args.project,
+                branch: args.branch,
+                version: args.version || '1.0.0',
+            });
+
             this.emitChange();
         });
     }
