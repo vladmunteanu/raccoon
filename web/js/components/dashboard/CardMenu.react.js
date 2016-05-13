@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 class CardMenu extends React.Component {
     render() {
@@ -10,7 +11,11 @@ class CardMenu extends React.Component {
                 <ul className="dropdown-menu">
                     {
                         this.props.actions.map(action => {
-                            return <li><a href={"action/" + action._id}>{action.label}</a></li>
+                            return <li>
+                                <Link to={'/action/' + action.id}>
+                                    {action.label}
+                                </Link>
+                            </li>
                         })
                     }
                 </ul>
