@@ -1,6 +1,3 @@
-/**
- * Created by mdanilescu on 18/03/16.
- */
 import React from 'react';
 import BaseStore from './BaseStore';
 
