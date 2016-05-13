@@ -39,3 +39,7 @@ class UsersController(BaseController):
 
         token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
+
+
+class MeController(UsersController):
+    model = User
