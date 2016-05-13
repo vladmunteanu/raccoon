@@ -75,19 +75,14 @@ class Connector {
      * @param message
      */
     processMessage(message) {
-
-
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
-
-        console.log(message);
 
         if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
             let matches = message.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
             let res = matches && matches[1];
 
             message.action = message.verb.toUpperCase() + ' ' + res;
-            console.log([message.action, message]);
             AppDispatcher.dispatch(message);
         }
 
