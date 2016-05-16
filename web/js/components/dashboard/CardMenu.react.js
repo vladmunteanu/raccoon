@@ -12,7 +12,7 @@ class CardMenu extends React.Component {
                     {
                         this.props.actions.map(action => {
                             return <li>
-                                <Link to={'/action/' + action.id}>
+                                <Link to={`/action/${action.id}/card/${this.props.project}/${this.props.environment}`}>
                                     {action.label}
                                 </Link>
                             </li>

@@ -25,6 +25,7 @@ class Router(object):
         (r'^/api/v1/users/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', UsersController),
         (r'^/api/v1/flows/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', FlowsController),
         (r'^/api/v1/auth/?$', AuthController),
+        (r'^/api/v1/me/(?P<id>[a-zA-Z0-9\-\_\.]*)/?$', MeController),
         (r'^/api/v1/github/(?P<method>[a-zA-Z\_]*)/?$', GitHubController),
         (r'^/api/v1/jenkins/(?P<method>[a-zA-Z\_]*)/?$', JenkinsController),
 

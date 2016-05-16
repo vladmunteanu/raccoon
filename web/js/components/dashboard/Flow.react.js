@@ -3,26 +3,45 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 
-import Addons from "../addons/Addons";
+import Addons from '../addons/Addons';
 
 // stores
 import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
+import ProjectStore from  '../../stores/ProjectStore';
+import EnvironmentStore from  '../../stores/EnvironmentStore';
 import BuildStore from  '../../stores/BuildStore';
+import JobStore from  '../../stores/JobStore';
+import ConnectorStore from  '../../stores/ConnectorStore';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 
-function getLocalState(action_id) {
-    let action = ActionStore.getById(action_id);
+function getLocalState(actionId, projectId=null, envId=null) {
+    let action = ActionStore.getById(actionId);
     let flow = action ? FlowStore.getById(action.flow) : null;
+    let job = flow ? JobStore.getById(flow.job) : null;
+    let connector = job ? ConnectorStore.getById(job.connector) : null;
 
     let localState = {
         action: action,
+        project: null,
+        environment: null,
         flow: flow,
+        job: job,
+        connector: connector,
         step: 0,
     };
+
+    if (projectId) {
+       localState.project = ProjectStore.getById(projectId);
+    }
+
+    if (envId) {
+       localState.environment = EnvironmentStore.getById(envId);
+    }
+
     return RaccoonApp.getState(localState);
 }
 
@@ -31,7 +50,9 @@ class Flow extends React.Component {
     constructor(props) {
         super(props);
         this.step = 0;
-        this.state = getLocalState(this.props.params.id);
+        this.state = getLocalState(this.props.params.id,
+            this.props.params.project,
+            this.props.params.env);
         this._onChange = this._onChange.bind(this);
         this._handleBack = this._handleBack.bind(this);
         this._handleNext = this._handleNext.bind(this);
@@ -39,42 +60,62 @@ class Flow extends React.Component {
 
     componentDidMount() {
         ActionStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
+        JobStore.addListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
+
+        JobStore.fetchAll();
+        ConnectorStore.fetchAll();
     }
 
     componentWillUnmount() {
         ActionStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
+        EnvironmentStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
+        JobStore.removeListener(this._onChange);
+        ConnectorStore.removeListener(this._onChange);
     }
 
     componentWillReceiveProps(nextProps) {
-        let state = getLocalState(nextProps.params.id);
+        JobStore.fetchAll();
+        ConnectorStore.fetchAll();
+
+        let state = getLocalState(nextProps.params.id, nextProps.params.project, nextProps.params.env);
         this.step = state.step = 0;
         this.setState(state);
     }
 
     _onChange() {
-        let state = getLocalState(this.props.params.id);
+        let state = getLocalState(this.props.params.id,
+            this.props.params.project,
+            this.props.params.env);
         state.step = this.step;
         this.setState(state);
     }
 
     _handleBack(event) {
-        let state = getLocalState(this.props.params.id);
+        let state = getLocalState(this.props.params.id,
+            this.props.params.project,
+            this.props.params.env);
         this.step -= 1;
         state.step = this.step;
         this.setState(state);
     }
 
     _handleNext(event) {
-        let state = getLocalState(this.props.params.id);
+        let state = getLocalState(this.props.params.id,
+            this.props.params.project,
+            this.props.params.env);
         this.step += 1;
         state.step = this.step;
         this.setState(state);
     }
 
     render() {
-        if (!this.state.action || !this.state.flow) {
+        if (!this.state.action || !this.state.flow || !this.state.connector) {
             // loading
             return (<div></div>);
         }
@@ -86,8 +127,8 @@ class Flow extends React.Component {
         // create context
         let last_context = {
             action: this.state.action.id,
-            project: this.state.action.project,
-            environment: this.state.environment,
+            project: this.state.project || this.state.action.project,
+            environment: this.state.environment || this.state.action.environment,
             flow: this.state.action.flow,
         };
 
@@ -98,14 +139,19 @@ class Flow extends React.Component {
         // TODO (alexm): trigger action from FLOW
         if (step_index > flow.steps.length - 1) {
             AppDispatcher.dispatch({
-                action: ActionTypes.BUILD_START,
-                data: last_context,
+                action: this.state.connector.type,
+                data: {
+                    method: this.state.job.action_type,
+                    args: last_context,
+                }
             });
-            BuildStore.create({
-                project: last_context.project,
-                branch: last_context.branch,
-                version: last_context.version || '1.0.0',
-            });
+            console.log(['alexm: DISPATCHED', {
+                action: this.state.connector.type,
+                data: {
+                    method: this.state.job.action_type,
+                    args: last_context,
+                }
+            }]);
             return (<div></div>);
         }
 
