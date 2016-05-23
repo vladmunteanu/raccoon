@@ -32,8 +32,6 @@ class JenkinsStore extends BaseStore {
             let method_name = payload.data['method'];
             let args = payload.data['args'];
 
-            console.log(['GOT dispatch', payload]);
-
             this[method_name](args);
         });
     }

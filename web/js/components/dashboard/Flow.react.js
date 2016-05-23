@@ -136,7 +136,7 @@ class Flow extends React.Component {
             last_context = LastStepAddon.getContext();
         }
 
-        // TODO (alexm): trigger action from FLOW
+        // trigger action from FLOW
         if (step_index > flow.steps.length - 1) {
             AppDispatcher.dispatch({
                 action: this.state.connector.type,
@@ -145,13 +145,6 @@ class Flow extends React.Component {
                     args: last_context,
                 }
             });
-            console.log(['alexm: DISPATCHED', {
-                action: this.state.connector.type,
-                data: {
-                    method: this.state.job.action_type,
-                    args: last_context,
-                }
-            }]);
             return (<div></div>);
         }
 
