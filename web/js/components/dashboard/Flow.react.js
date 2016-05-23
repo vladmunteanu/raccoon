@@ -8,9 +8,6 @@ import Addons from '../addons/Addons';
 // stores
 import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
-import ProjectStore from  '../../stores/ProjectStore';
-import EnvironmentStore from  '../../stores/EnvironmentStore';
-import BuildStore from  '../../stores/BuildStore';
 import JobStore from  '../../stores/JobStore';
 import ConnectorStore from  '../../stores/ConnectorStore';
 
@@ -26,21 +23,13 @@ function getLocalState(actionId, projectId=null, envId=null) {
 
     let localState = {
         action: action,
-        project: null,
-        environment: null,
+        project: projectId,
+        environment: envId,
         flow: flow,
         job: job,
         connector: connector,
         step: 0,
     };
-
-    if (projectId) {
-       localState.project = ProjectStore.getById(projectId);
-    }
-
-    if (envId) {
-       localState.environment = EnvironmentStore.getById(envId);
-    }
 
     return RaccoonApp.getState(localState);
 }
@@ -60,8 +49,6 @@ class Flow extends React.Component {
 
     componentDidMount() {
         ActionStore.addListener(this._onChange);
-        ProjectStore.addListener(this._onChange);
-        EnvironmentStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
         ConnectorStore.addListener(this._onChange);
@@ -72,8 +59,6 @@ class Flow extends React.Component {
 
     componentWillUnmount() {
         ActionStore.removeListener(this._onChange);
-        ProjectStore.removeListener(this._onChange);
-        EnvironmentStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);
         ConnectorStore.removeListener(this._onChange);
@@ -127,8 +112,8 @@ class Flow extends React.Component {
         // create context
         let last_context = {
             action: this.state.action.id,
-            project: this.state.project.id || this.state.action.project,
-            environment: this.state.environment.id || this.state.action.environment,
+            project: this.state.project || this.state.action.project,
+            environment: this.state.environment || this.state.action.environment,
             flow: this.state.action.flow,
         };
 
