@@ -1,11 +1,13 @@
 import React from 'react';
 import BaseAddon from './BaseAddon.react';
 import BuildStore from '../../stores/BuildStore';
+import EnvironmentStore from '../../stores/EnvironmentStore';
 import Utils from '../../utils/Utils';
 
-function getLocalState(projectId) {
+function getLocalState(projectId, envId) {
     return {
         builds: BuildStore.filter(projectId),
+        environment: EnvironmentStore.getById(envId),
         selectedBuild: null,
     }
 }
@@ -13,26 +15,30 @@ function getLocalState(projectId) {
 class SelectBuildAddon extends BaseAddon {
     constructor(props) {
         super(props);
-        this.state = getLocalState(this.props.context.project);
+        this.state = getLocalState(this.props.context.project, this.props.context.environment);
         this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
         BuildStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
         BuildStore.removeListener(this._onChange);
+        EnvironmentStore.removeListener(this._onChange);
     }
 
     _onChange() {
-        let state = getLocalState(this.props.context.project);
+        let state = getLocalState(this.props.context.project, this.props.context.environment);
+        this.updateContext('environment', state.environment.name);
         this.setState(state);
     }
     
     _onBuildSelect(buildId, event) {
         let build = BuildStore.getById(buildId);
         this.state.selectedBuild = build;
+        this.updateContext('branch', build.branch);
         this.setState(this.state);
     }
 
