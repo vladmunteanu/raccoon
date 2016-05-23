@@ -14,7 +14,6 @@ from .connector import *
 from .environment import *
 from .project import *
 from .right import *
-from .task import *
 
 from .build import *
 from .install import *
@@ -22,3 +21,4 @@ from .job import *
 from .flow import *
 from .action import *
 from .user import *
+from .task import *

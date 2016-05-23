@@ -36,7 +36,7 @@ class JenkinsController(BaseController):
             "data": {
             },
             "requestId": "abc123",
-            "resource": "/api/v1/github/branches",
+            "resource": "/api/v1/jenkins/build",
             "verb": "get"
         }
         """
@@ -57,7 +57,7 @@ class JenkinsController(BaseController):
         if not method:
             raise ReplyError(404)
 
-        response = yield method(*args, **kwargs)
+        response = yield method(request=request, *args, **kwargs)
         yield request.send(response)
 
     @classmethod
@@ -86,5 +86,5 @@ class JenkinsController(BaseController):
         if not method:
             raise ReplyError(404)
 
-        response = yield method(flow=flow, *args, **kwargs)
+        response = yield method(request=request, flow=flow, *args, **kwargs)
         yield request.send(response)
