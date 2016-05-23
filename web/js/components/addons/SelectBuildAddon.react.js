@@ -39,6 +39,7 @@ class SelectBuildAddon extends BaseAddon {
         let build = BuildStore.getById(buildId);
         this.state.selectedBuild = build;
         this.updateContext('branch', build.branch);
+        this.updateContext('version', build.version);
         this.setState(this.state);
     }
 
