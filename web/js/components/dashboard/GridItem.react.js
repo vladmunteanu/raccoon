@@ -12,7 +12,7 @@ import InstallStore from '../../stores/InstallStore';
 
 function getLocalState(project, env) {
     let localState = {
-        builds: BuildStore.filter(project),
+        builds: BuildStore.filter(project.id),
         install: InstallStore.getLatestInstall(project, env),
         installedBuild: null
     };

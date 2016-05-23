@@ -127,8 +127,8 @@ class Flow extends React.Component {
         // create context
         let last_context = {
             action: this.state.action.id,
-            project: this.state.project || this.state.action.project,
-            environment: this.state.environment || this.state.action.environment,
+            project: this.state.project.id || this.state.action.project,
+            environment: this.state.environment.id || this.state.action.environment,
             flow: this.state.action.flow,
         };
 
