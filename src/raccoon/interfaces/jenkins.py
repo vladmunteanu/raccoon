@@ -62,7 +62,8 @@ class JenkinsInterface(BaseInterface):
         # create arguments
         arguments = {}
         for argument in flow.job.arguments:
-            value = argument['value']
+            # convert argument to string b/c json decode might return int
+            value = str(argument['value'])
             if value.startswith('$'):
                 value = kwargs.get(value[1:]) if kwargs.get(value[1:]) else value
             arguments[argument['name']] = value
