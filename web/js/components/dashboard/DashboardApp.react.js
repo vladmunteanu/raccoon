@@ -52,8 +52,8 @@ class DashboardApp extends React.Component {
                         actions={this.state.actions}
                     />
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
-                        <Topbar/>
-                        <Taskbar/>
+                        <Topbar />
+                        <Taskbar />
 
                         <Notification />
 

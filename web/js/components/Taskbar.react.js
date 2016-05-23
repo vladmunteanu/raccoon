@@ -1,6 +1,7 @@
 import React from 'react';
 
 import TaskItem from './TaskItem.react';
+import TaskStore from '../stores/TaskStore';
 
 
 class Taskbar extends React.Component {
@@ -11,13 +12,21 @@ class Taskbar extends React.Component {
         this._onChange = this._onChange.bind(this);
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        console.log('Taskbar.componentDidMount');
+        TaskStore.addListener(this._onChange);
+        TaskStore.fetchAll();
+    }
 
-    componentWillUnmount() {}
+    componentWillUnmount() {
+        console.log('Taskbar.componentWillUnmount');
+        TaskStore.removeListener(this._onChange);
+    }
 
     _onChange() {}
 
     render() {
+        console.log('Taskbar.render');
         return (
             <nav className="slidemenu slidemenu-vertical slidemenu-right" id="taskbar">
                 {/* show tabs */}

@@ -82,7 +82,7 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
-        task = yield Task(user=request.user, job=flow.job).save()
+        task = yield Task(user=request.user, job=flow.job, context=kwargs).save()
         chain = \
             tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
             tasks.jenkins_job_watcher.s(id=task._id, api_url=self.api_url)
