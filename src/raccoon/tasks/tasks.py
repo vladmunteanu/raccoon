@@ -68,7 +68,7 @@ class JenkinsJobWatcherTask(Task):
         # change status from ABORTED to REVOKED
         status = 'REVOKED' if status == 'ABORTED' else status
 
-        if status in ('SUCCESS', 'ABORTED', 'FAILURE'):
+        if status in ('SUCCESS', 'REVOKED', 'FAILURE'):
             return status
 
         raise self.retry(countdown=5, max_retries=None)
