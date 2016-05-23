@@ -1,14 +1,16 @@
 from __future__ import absolute_import
 
 import logging
-import re
 from urllib.parse import urlencode, urlparse, urljoin
 
 from tornado import gen
 
 from .base import BaseInterface
-from src.raccoon.utils.exceptions import ReplyError
-from src.raccoon.utils.utils import sleep
+from raccoon.models import Task
+from raccoon.utils.exceptions import ReplyError
+from raccoon.utils.utils import sleep
+from raccoon.tasks import tasks
+
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +25,7 @@ URLS = {
     'queue_info': 'queue/item/{queue_number}' + URL_END,
     'jobs': '' + URL_END,
 }
+
 
 class JenkinsInterface(BaseInterface):
     """
@@ -79,38 +82,35 @@ class JenkinsInterface(BaseInterface):
 
         # get queue info
         queue_url = headers.get('Location')
-        response = None
-        while True:
-            response = yield self.queue_info(url=queue_url)
-            executable = response.get('executable')
-            if executable:
-                # stop polling if build stated
-                break
 
-            yield sleep(100)
+        task = yield Task().save()
+        chain = \
+            tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
+            tasks.jenkins_job_watcher.s(id=task._id, api_url=self.api_url)
+        chain_task = chain.delay()
 
-        # get build info
-        build_number = response.get('executable', {}).get('number')
-        response = yield self.build_info(flow=flow, build_number=build_number)
+        task.tasks = [chain_task.id, chain_task.parent.id]
+        yield task.save()
 
-        raise gen.Return(response)
+        raise ReplyError(201)
 
-    @gen.coroutine
-    def queue_info(self, url, *args, **kwargs):
-        """
-        :param url: URL for the queued task
-        :return: information about the task that will be executed
-        """
-        parsed_url = urlparse(url)
-        path = '{}/api/json'.format(parsed_url.path.strip('/'))
-        url = urljoin(self.api_url, path)
-
-        response, headers = yield self.fetch(
-            method='GET',
-            url=url,
-        )
-
-        raise gen.Return(response)
+    # CELERY task
+    # @gen.coroutine
+    # def queue_info(self, url, *args, **kwargs):
+    #     """
+    #     :param url: URL for the queued task
+    #     :return: information about the task that will be executed
+    #     """
+    #     parsed_url = urlparse(url)
+    #     path = '{}/api/json'.format(parsed_url.path.strip('/'))
+    #     url = urljoin(self.api_url, path)
+    #
+    #     response, headers = yield self.fetch(
+    #         method='GET',
+    #         url=url,
+    #     )
+    #
+    #     raise gen.Return(response)
 
     @gen.coroutine
     def jobs(self, *args, **kwargs):

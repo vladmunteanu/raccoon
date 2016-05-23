@@ -14,6 +14,7 @@ from .connector import *
 from .environment import *
 from .project import *
 from .right import *
+from .task import *
 
 from .build import *
 from .install import *
