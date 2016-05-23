@@ -36,7 +36,7 @@ class JenkinsController(BaseController):
             "data": {
             },
             "requestId": "abc123",
-            "resource": "/api/v1/github/branches",
+            "resource": "/api/v1/jenkins/build",
             "verb": "get"
         }
         """
