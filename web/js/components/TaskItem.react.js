@@ -1,7 +1,22 @@
 import React from 'react'
+import TimeAgo from 'react-timeago'
 
+let UNITS = {
+    seconds: 's', minute:   'm', hour:  'h',
+    day:     'd', week:     'w', month: 'mon',
+    year:    'y',
+};
 
 class TaskItem extends React.Component {
+    formatter(value, unit, suffix, epochSeconds) {
+        if (value <= 60 && unit.indexOf('second') == 0) return 'now';
+        else {
+            unit = UNITS[unit];
+        }
+
+        return `${value}${unit} ${suffix}`;
+    }
+
     render() {
         let now = new Date().getTime();
         let started_at = this.props.data.started_at || 0;
@@ -16,11 +31,18 @@ class TaskItem extends React.Component {
         let progressStyle = {
             width: progress + '%'
         };
+
         return (
             <div className="list-group-item">
                 <div className="list-group-item-heading">
                     <span className="title">{this.props.data.context.project}</span>
-                    <span className="time pull-right">9m ago</span>
+                    <span className="time pull-right">
+                        <TimeAgo
+                            date={this.props.data.date_added * 1000}
+                            minPeriod={60}
+                            formatter={this.formatter}
+                            />
+                    </span>
                 </div>
                 <p className="list-group-item-text">
                     {this.props.data.context.branch}<br />

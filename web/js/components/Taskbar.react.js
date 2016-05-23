@@ -4,6 +4,9 @@ import TaskItem from './TaskItem.react';
 import TaskStore from '../stores/TaskStore';
 
 
+let READY_STATES = new Set(['FAILURE', 'REVOKED', 'SUCCESS']);
+let UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED']);
+
 class Taskbar extends React.Component {
 
     constructor(props) {
@@ -15,13 +18,11 @@ class Taskbar extends React.Component {
     }
 
     componentDidMount() {
-        console.log('Taskbar.componentDidMount');
         TaskStore.addListener(this._onChange);
         TaskStore.fetchAll();
     }
 
     componentWillUnmount() {
-        console.log('Taskbar.componentWillUnmount');
         TaskStore.removeListener(this._onChange);
     }
 
@@ -32,7 +33,6 @@ class Taskbar extends React.Component {
     }
 
     render() {
-        console.log(['Taskbar.render', this.state.tasks]);
         return (
             <nav className="slidemenu slidemenu-vertical slidemenu-right" id="taskbar">
                 {/* show tabs */}
@@ -45,14 +45,24 @@ class Taskbar extends React.Component {
                     <div role="tabpanel" className="tab-pane active" id="taskbar-running">
                         <div className="list-group">
                             {
-                                this.state.tasks.map((data) => {
-                                    return <TaskItem data={data} />;
+                                this.state.tasks.sort((a, b) => {return b.date_added - a.date_added;}).map((data) => {
+                                    if (UNREADY_STATES.has(data.status)) {
+                                        return <TaskItem key={data.id} data={data}/>;
+                                    }
                                 })
                             }
                         </div>
                     </div>
                     <div role="tabpanel" className="tab-pane" id="taskbar-history">
-                        <p>Nothing to show here.</p>
+                        <div className="list-group">
+                            {
+                                this.state.tasks.sort((a, b) => {return b.date_added - a.date_added;}).map((data) => {
+                                    if (READY_STATES.has(data.status)) {
+                                        return <TaskItem key={data.id} data={data}/>;
+                                    }
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
             </nav>
