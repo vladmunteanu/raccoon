@@ -5,12 +5,14 @@ import requests
 from urllib.parse import urlparse, urljoin
 
 from celery import Celery, Task
+from celery.utils.log import get_task_logger
 from websocket import create_connection
 
 from settings import DB
 from raccoon.utils.utils import json_serial
 
 
+log = get_task_logger(__name__)
 connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
     scheme=DB['scheme'],
     host=DB['host'],
@@ -23,8 +25,17 @@ ws = None
 def broadcast(data):
     global ws
 
-    if not ws:
-        ws = create_connection('ws://localhost:8888/websocket')
+    try:
+        if not ws:
+            ws = create_connection('ws://localhost:8888/websocket')
+        else:
+            try:
+                ws.ping()
+                ws.ping()
+            except BrokenPipeError:
+                ws = create_connection('ws://localhost:8888/websocket')
+    except ConnectionRefusedError:
+        log.error('Connection to raccoon server refused!', exc_info=True)
 
     ws.send(json.dumps({
         'verb': 'post',
