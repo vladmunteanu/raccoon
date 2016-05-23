@@ -3,7 +3,7 @@ import React from 'react'
 import RaccoonApp from '../RaccoonApp.react';
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 
-import Addons from "../addons/Addons";
+import Addons from '../addons/Addons';
 
 // stores
 import FlowStore from '../../stores/FlowStore';
@@ -11,6 +11,8 @@ import ActionStore from  '../../stores/ActionStore';
 import ProjectStore from  '../../stores/ProjectStore';
 import EnvironmentStore from  '../../stores/EnvironmentStore';
 import BuildStore from  '../../stores/BuildStore';
+import JobStore from  '../../stores/JobStore';
+import ConnectorStore from  '../../stores/ConnectorStore';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
@@ -19,12 +21,16 @@ let ActionTypes = Constants.ActionTypes;
 function getLocalState(actionId, projectId=null, envId=null) {
     let action = ActionStore.getById(actionId);
     let flow = action ? FlowStore.getById(action.flow) : null;
+    let job = flow ? JobStore.getById(flow.job) : null;
+    let connector = job ? ConnectorStore.getById(job.connector) : null;
 
     let localState = {
         action: action,
         project: null,
         environment: null,
         flow: flow,
+        job: job,
+        connector: connector,
         step: 0,
     };
 
@@ -57,6 +63,11 @@ class Flow extends React.Component {
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
+        JobStore.addListener(this._onChange);
+        ConnectorStore.addListener(this._onChange);
+
+        JobStore.fetchAll();
+        ConnectorStore.fetchAll();
     }
 
     componentWillUnmount() {
@@ -64,12 +75,15 @@ class Flow extends React.Component {
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
+        JobStore.removeListener(this._onChange);
+        ConnectorStore.removeListener(this._onChange);
     }
 
     componentWillReceiveProps(nextProps) {
-        let state = getLocalState(nextProps.params.id,
-            nextProps.params.project,
-            nextProps.params.env);
+        JobStore.fetchAll();
+        ConnectorStore.fetchAll();
+
+        let state = getLocalState(nextProps.params.id, nextProps.params.project, nextProps.params.env);
         this.step = state.step = 0;
         this.setState(state);
     }
@@ -101,7 +115,7 @@ class Flow extends React.Component {
     }
 
     render() {
-        if (!this.state.action || !this.state.flow) {
+        if (!this.state.action || !this.state.flow || !this.state.connector) {
             // loading
             return (<div></div>);
         }
@@ -122,16 +136,14 @@ class Flow extends React.Component {
             last_context = LastStepAddon.getContext();
         }
 
-        // TODO (alexm): trigger action from FLOW
+        // trigger action from FLOW
         if (step_index > flow.steps.length - 1) {
             AppDispatcher.dispatch({
-                action: ActionTypes.BUILD_START,
-                data: last_context,
-            });
-            BuildStore.create({
-                project: last_context.project,
-                branch: last_context.branch,
-                version: last_context.version || '1.0.0',
+                action: this.state.connector.type,
+                data: {
+                    method: this.state.job.action_type,
+                    args: last_context,
+                }
             });
             return (<div></div>);
         }

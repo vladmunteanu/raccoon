@@ -31,6 +31,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_authorization(self):
         return True
 
+    @gen.coroutine
     def open(self):
         global CLIENT_CONNECTIONS
         # save all connections to use in broadcast
@@ -57,8 +58,9 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         body = jdata.get('body', {})
         args = jdata.get('args', {})
         verb = jdata.get('verb').lower()
+        requestId = jdata.get('requestId')
 
-        authHeader = jdata.get('headers', {}).get('Authorization')
+        authHeader = jdata.get('headers', {}).get('Authorization', '')
         parts = authHeader.split('Bearer ')
         token = None
         if len(parts) == 2:
@@ -78,20 +80,24 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             else:
                 params.update(args)
             req = Request(
-                idx=jdata.get('requestId'),
-                verb=jdata.get('verb'),
-                resource=jdata.get('resource'),
+                idx=requestId,
+                verb=verb,
+                resource=resource,
                 token=token,
                 data=jdata,
                 socket=self
             )
             yield method(req, **params)
         except ReplyError as e:
+            e.requestId = requestId
+            e.verb = verb
+            e.resource = resource
             self.write_message(str(e))
         except Exception:
-            ex = ReplyError(500)
+            ex = ReplyError(500, requestId=requestId, verb=verb, resource=resource)
             self.write_message(str(ex))
 
+    @gen.coroutine
     def on_close(self):
         global CLIENT_CONNECTIONS
         # remove connection after user disconnected

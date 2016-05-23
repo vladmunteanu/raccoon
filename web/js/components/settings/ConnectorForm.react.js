@@ -92,11 +92,22 @@ class ConnectorForm extends React.Component {
         });
     }
 
+    onDelete() {
+        ConnectorStore.deleteByid(this.state.connector.id);
+        this.context.router.push('/settings/connector/new');
+    }
+
     render() {
         let connector = this._getDataForRender();
         let name = connector.name;
         let type = connector.type;
         let config = connector.config;
+        let del;
+
+        if (this.formName === 'Update connector') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -134,12 +145,17 @@ class ConnectorForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
         );
     }
 }
+
+ConnectorForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { ConnectorForm };
 export default validation(strategy)(ConnectorForm);

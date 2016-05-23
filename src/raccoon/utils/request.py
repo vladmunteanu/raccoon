@@ -46,10 +46,9 @@ class Request(object):
         data = self.serialize(response)
         self.socket.write_message(json.dumps(data, default=json_serial))
 
-    @gen.coroutine
-    def broadcast(self, response):
+    def broadcast(self, response=None):
         data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
-            data['requestId'] = self.requestId if connection_id == self.socket.connection_id else 'notification'
+            data['requestId'] = self.requestId if self.socket and connection_id == self.socket.connection_id else 'notification'
             socket.write_message(json.dumps(data, default=json_serial))

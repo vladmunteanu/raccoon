@@ -18,6 +18,7 @@ from .auth import *
 from .github import *
 from .jenkins import *
 from .flows import *
+from .notifications import *
 
 
 # Import all submodules

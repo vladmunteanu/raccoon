@@ -49,7 +49,7 @@ class AuthStore extends BaseStore {
         let connector = new Connector();
         connector.send({
             verb: 'post',
-            resource: '/api/v1/users/',
+            resource: '/api/v1/me/',
             body: {
                 name: data.name,
                 email: data.email,
@@ -66,7 +66,7 @@ class AuthStore extends BaseStore {
         let connector = new Connector();
         connector.send({
             verb: 'get',
-            resource: '/api/v1/users/' + this.userId,
+            resource: '/api/v1/me/' + this.userId,
         }, payload => {
             this.saveMe(payload.data);
         });
