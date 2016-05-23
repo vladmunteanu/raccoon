@@ -98,12 +98,23 @@ class ProjectForm extends React.Component {
         });
     }
 
+    onDelete() {
+        ProjectStore.deleteByid(this.state.project.id);
+        this.context.router.push('/settings/project/new');
+    }
+
     render() {
         let project = this._getDataForRender();
         let name = project.name;
         let label = project.label;
         let url = project.repo_url;
         let connectorId = project.connector;
+        let del;
+
+        if (this.formName === 'Update project') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -153,12 +164,17 @@ class ProjectForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
         );
     }
 }
+
+ProjectForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { ProjectForm };
 export default validation(strategy)(ProjectForm);

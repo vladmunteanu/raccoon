@@ -77,10 +77,8 @@ class EnvironmentForm extends React.Component {
     }
 
     onDelete() {
-        EnvironmentStore.deleteByid(this.state.environment.id, {
-            name: this.state.environment.name
-        });
-        this.props.history.push('/settings/environment/new');
+        EnvironmentStore.deleteByid(this.state.environment.id);
+        this.context.router.push('/settings/environment/new');
     }
 
     render() {
