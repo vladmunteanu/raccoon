@@ -34,13 +34,14 @@ class BaseStore extends EventEmitter {
         });
 
         AppDispatcher.registerOnce('DELETE ' + this.baseuri, payload => {
-            if (payload.code == 200)
+            if (payload.code == 200) {
                 this.instances = this.instances.filter(instance => {
                     if (instance.id !== payload.data) {
                         return instance
                     }
                 });
                 this.emitChange();
+            }
         });
     }
 
@@ -132,5 +133,9 @@ class BaseStore extends EventEmitter {
     }
 
 }
+
+BaseStore.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export default BaseStore;

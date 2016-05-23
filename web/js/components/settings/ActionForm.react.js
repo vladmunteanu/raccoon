@@ -104,6 +104,11 @@ class ActionForm extends React.Component {
         });
     }
 
+    onDelete() {
+        ActionStore.deleteByid(this.state.action.id);
+        this.context.router.push('/settings/action/new');
+    }
+
     render() {
         let action = this._getDataForRender();
         let name = action.name;
@@ -117,6 +122,7 @@ class ActionForm extends React.Component {
             {type: "environment", name: "Environment"},
             {type: "card", name: "Card"}
         ];
+        let del;
         let projectPlacement = (
             <div className="form-group">
                 <label htmlFor="action-project" className="control-label">Project</label>
@@ -156,6 +162,11 @@ class ActionForm extends React.Component {
             formPlacement = projectPlacement;
         else if (placement === "environment")
             formPlacement = environmentPlacement;
+
+        if (this.formName === 'Update action') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -209,12 +220,17 @@ class ActionForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
         );
     }
 }
+
+ActionForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { ActionForm };
 export default validation(strategy)(ActionForm);

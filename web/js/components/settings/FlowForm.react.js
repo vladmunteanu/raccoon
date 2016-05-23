@@ -95,12 +95,22 @@ class FlowForm extends React.Component {
         });
     }
 
+    onDelete() {
+        FlowStore.deleteByid(this.state.flow.id);
+        this.context.router.push('/settings/flow/new');
+    }
+
     render() {
         let flow = this._getDataForRender();
         let name = flow.name;
         let steps = flow.steps;
         let jobId = flow.job;
+        let del;
 
+        if (this.formName === 'Update flow') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -152,12 +162,17 @@ class FlowForm extends React.Component {
 
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
         );
     }
 }
+
+FlowForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { FlowForm };
 export default validation(strategy)(FlowForm);
