@@ -54,6 +54,19 @@ class JenkinsStore extends BaseStore {
         });
     }
 
+    install(args) {
+        let connector = new Connector();
+        console.log("Triggered install", args);
+        connector.send({
+            verb: 'post',
+            resource: this.baseuri + 'build',
+            body: args,
+        }, payload => {
+            console.log("Installed");
+            this.emitChange();
+        });
+    }
+
     get jobs() {
         if (this.jobInstances.length == 0) {
             let connector = new Connector();
