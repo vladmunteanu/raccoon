@@ -1,13 +1,6 @@
 import React from 'react';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
 import BaseStore from './BaseStore';
-import Connector from '../utils/Connector';
-import AuthStore from './AuthStore';
-import Constants from '../constants/Constants';
-
-
 let buildStore = null;
 
 class BuildStore extends BaseStore {
@@ -27,9 +20,9 @@ class BuildStore extends BaseStore {
         this.registerActions();
     }
 
-    filter(project) {
+    filter(projectId) {
         return this.all.filter(build => {
-            return build.project == project.id;
+            return build.project == projectId;
         });
     }
 }
