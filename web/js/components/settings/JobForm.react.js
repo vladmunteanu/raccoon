@@ -120,6 +120,11 @@ class JobForm extends React.Component {
         this.setState({rowCount: this.state.rowCount + 1});
     }
 
+    onDelete() {
+        JobStore.deleteByid(this.state.job.id);
+        this.context.router.push('/settings/job/new');
+    }
+
     render() {
         let job = this._getDataForRender();
         let name = job.name;
@@ -131,6 +136,12 @@ class JobForm extends React.Component {
         })[0];
         let connector_type = connector ? connector.type : '';
         let action_types = ConnectorStore.types[connector_type] || [];
+        let del;
+
+        if (this.formName === 'Update job') {
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            );
+        }
 
         return (
             <div className="container">
@@ -192,29 +203,34 @@ class JobForm extends React.Component {
                                 return (
                                     <div className="form-inline" key={'job-arguments-' + i}>
                                             <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                                 id="job-arguments-name"
-                                                 value={args[i] ? args[i]["name"]: ''}
-                                                 placeholder="name"
-                                                 onChange={this.onChangeArgument.bind(this, i, 'name')}/>
+                                                   id="job-arguments-name"
+                                                   value={args[i] ? args[i]["name"]: ''}
+                                                   placeholder="name"
+                                                   onChange={this.onChangeArgument.bind(this, i, 'name')}/>
                                             <input type="text" className="form-control" style={{ width: 50 + '%' }}
-                                                 id="job-arguments-value"
-                                                 value={args[i] ? args[i]["value"] : ''}
-                                                 placeholder="value"
-                                                 onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                                   id="job-arguments-value"
+                                                   value={args[i] ? args[i]["value"] : ''}
+                                                   placeholder="value"
+                                                   onChange={this.onChangeArgument.bind(this, i, 'value')}
+                                                   onFocus={this.addRow.bind(this)}/>
                                     </div>
                                 );
                             })
                         }
                     </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-primary pull-left" onClick={this.addRow.bind(this)}>Add arguments</button>
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>
+                        {del}
                     </div>
                 </form>
             </div>
         );
     }
 }
+
+JobForm.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};
 
 export { JobForm };
 export default validation(strategy)(JobForm);
