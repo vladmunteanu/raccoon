@@ -62,7 +62,7 @@ class NotificationItem extends React.Component {
         if (data.code >= 500) return 'Something is broken. The team will investigate this error.';
         else if (data.code >= 300) return 'The request was invalid or cannot be otherwise served';
         else if (data.code >= 200) {
-            let r = data.resource.match(/\/api\/v1\/(.*)\/(.*)/);
+            let r = data.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
             let model = r[1], id = r[2];
             let verb = data.verb.toUpperCase();
 

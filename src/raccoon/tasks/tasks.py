@@ -66,9 +66,10 @@ class JenkinsJobWatcherTask(Task):
 
         status = response.get('result') or 'STARTED'
         broadcast({
-            'verb': 'put',
+            'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
             'data': {
+                'id': id,
                 'status': status,
                 'started_at': response.get('timestamp'),
                 'estimated_duration': response.get('estimatedDuration'),
@@ -107,9 +108,10 @@ class JenkinsQueueWatcherTask(Task):
         )
 
         broadcast({
-            'verb': 'put',
+            'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
             'data': {
+                'id': id,
                 'status': 'PENDING',
                 'why': response.get('why'),
                 'response': response,

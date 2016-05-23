@@ -91,6 +91,13 @@ class JenkinsInterface(BaseInterface):
         task.tasks = [chain_task.id, chain_task.parent.id]
         yield task.save()
 
+        # broadcast
+        # TODO (alexm): do something with this hack
+        request.requestId = None
+        request.verb = 'post'
+        request.resource = '/api/v1/tasks/'
+        request.broadcast(task.get_dict())
+
         raise ReplyError(201)
 
     # CELERY task

@@ -28,6 +28,20 @@ class BaseStore extends EventEmitter {
             this.emitChange();
         });
 
+        AppDispatcher.registerOnce('PATCH ' + this.baseuri, payload => {
+            this.instances = this.instances.map(instance => {
+                if (instance.id === payload.data.id) {
+                    Object.keys(payload.data).forEach((key) => {
+                       instance[key] = payload.data[key];
+                    });
+                    return instance;
+                } else {
+                    return instance;
+                }
+            });
+            this.emitChange();
+        });
+
         AppDispatcher.registerOnce('POST ' + this.baseuri, payload => {
             this.instances.push(payload.data);
             this.emitChange();

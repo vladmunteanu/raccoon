@@ -8,7 +8,9 @@ class Taskbar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            tasks: TaskStore.all,
+        };
         this._onChange = this._onChange.bind(this);
     }
 
@@ -23,10 +25,14 @@ class Taskbar extends React.Component {
         TaskStore.removeListener(this._onChange);
     }
 
-    _onChange() {}
+    _onChange() {
+        this.setState({
+            tasks: TaskStore.all,
+        });
+    }
 
     render() {
-        console.log('Taskbar.render');
+        console.log(['Taskbar.render', this.state.tasks]);
         return (
             <nav className="slidemenu slidemenu-vertical slidemenu-right" id="taskbar">
                 {/* show tabs */}
@@ -38,7 +44,11 @@ class Taskbar extends React.Component {
                 <div className="tab-content">
                     <div role="tabpanel" className="tab-pane active" id="taskbar-running">
                         <div className="list-group">
-                            <TaskItem title="Applogic" />
+                            {
+                                this.state.tasks.map((data) => {
+                                    return <TaskItem data={data} />;
+                                })
+                            }
                         </div>
                     </div>
                     <div role="tabpanel" className="tab-pane" id="taskbar-history">
