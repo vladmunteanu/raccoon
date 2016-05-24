@@ -48,7 +48,17 @@ class JenkinsInterface(BaseInterface):
         )
 
     @gen.coroutine
-    def build(self, request, flow, *args, **kwargs):
+    def build(self, *args, **kwargs):
+        log.info(['alexm: Jenkins.build', args, kwargs])
+        yield self.trigger(*args, **kwargs)
+
+    @gen.coroutine
+    def install(self, *args, **kwargs):
+        log.info(['alexm: Jenkins.install', args, kwargs])
+        yield self.trigger(*args, **kwargs)
+
+    @gen.coroutine
+    def trigger(self, request, flow, *args, **kwargs):
         """
         :param kwargs: parameter for jenkins job
         :return: Build information

@@ -1,12 +1,19 @@
 import React from 'react';
+import TimeAgo from 'react-timeago'
+
+// stores
 import BaseAddon from './BaseAddon.react';
 import BuildStore from '../../stores/BuildStore';
+import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
+
 import Utils from '../../utils/Utils';
+
 
 function getLocalState(projectId, envId) {
     return {
         builds: BuildStore.filter(projectId),
+        project: ProjectStore.getById(projectId),
         environment: EnvironmentStore.getById(envId),
         selectedBuild: null,
     }
@@ -17,29 +24,40 @@ class SelectBuildAddon extends BaseAddon {
         super(props);
         this.state = getLocalState(this.props.context.project, this.props.context.environment);
         this._onChange = this._onChange.bind(this);
+
+        if (this.state.environment) {
+            this.updateContext('environment', this.state.environment.label || this.state.environment.name);
+        }
     }
 
     componentDidMount() {
         BuildStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
     }
 
     componentWillUnmount() {
         BuildStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
     }
 
     _onChange() {
         let state = getLocalState(this.props.context.project, this.props.context.environment);
-        this.updateContext('environment', state.environment.name);
         this.setState(state);
+
+        if (this.state.environment) {
+            this.updateContext('environment', this.state.environment.label || this.state.environment.name);
+        }
     }
     
     _onBuildSelect(buildId, event) {
         let build = BuildStore.getById(buildId);
         this.state.selectedBuild = build;
         this.updateContext('branch', build.branch);
-        this.updateContext('version', build.version);
+
+        // TODO (alexm): remove hardcoded version
+        this.updateContext('version', '4.7.0-4673');//build.version);
         this.setState(this.state);
     }
 
@@ -75,20 +93,28 @@ class SelectBuildAddon extends BaseAddon {
                 </div>
             );
         }
+
         return (
             <div className="row">
                 <div className="col-lg-6 col-md-6 col-sm-6">
                     <h3 className="text-center">Select a build</h3>
                     <div className="list-group" style={{height: 400, overflow: "auto"}}>
                     {
-                        this.state.builds.map(build => {
-                            let date = new Date(build.date_added);
-                            let formatted = date.toISOString();
+                        this.state.builds.sort((a, b) => {return b.date_added - a.date_added}).map(build => {
                             return (
                                 <a href="javascript: void(0)"
                                    onClick={this._onBuildSelect.bind(this, build.id)}
                                    className="list-group-item">
-                                    {build.branch} - {formatted} - {build.version}
+                                    {build.version}
+                                    <small className="pull-right">
+                                        <TimeAgo
+                                        date={build.date_added * 1000}
+                                        minPeriod={60}
+                                        formatter={Utils.timeAgoFormatter}
+                                        />
+                                    </small>
+                                    <br />
+                                    {build.branch}
                                 </a>
                             );
                         })

@@ -1,22 +1,10 @@
 import React from 'react'
 import TimeAgo from 'react-timeago'
 
-let UNITS = {
-    seconds: 's', minute:   'm', hour:  'h',
-    day:     'd', week:     'w', month: 'mon',
-    year:    'y',
-};
+import Utils from '../utils/Utils';
+
 
 class TaskItem extends React.Component {
-    formatter(value, unit, suffix, epochSeconds) {
-        if (value <= 60 && unit.indexOf('second') == 0) return 'now';
-        else {
-            unit = UNITS[unit];
-        }
-
-        return `${value}${unit} ${suffix}`;
-    }
-
     render() {
         let now = new Date().getTime();
         let started_at = this.props.data.started_at || 0;
@@ -40,7 +28,7 @@ class TaskItem extends React.Component {
                         <TimeAgo
                             date={this.props.data.date_added * 1000}
                             minPeriod={60}
-                            formatter={this.formatter}
+                            formatter={Utils.timeAgoFormatter}
                             />
                     </span>
                 </div>

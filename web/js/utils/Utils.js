@@ -3,6 +3,12 @@
 import crypto from 'crypto';
 
 
+let UNITS = {
+    seconds: 's', minute:   'm', hour:  'h',
+    day:     'd', week:     'w', month: 'mon',
+    year:    'y',
+};
+
 class Utils {
 
     /**
@@ -21,6 +27,15 @@ class Utils {
 
     static gravatarUrl(email) {
         return 'https://secure.gravatar.com/avatar/' + this.md5(email) + '?d=mm';
+    }
+
+    static timeAgoFormatter(value, unit, suffix, epochSeconds) {
+        if (value <= 60 && unit.indexOf('second') == 0) return 'now';
+        else {
+            unit = UNITS[unit];
+        }
+
+        return `${value}${unit} ${suffix}`;
     }
 }
 

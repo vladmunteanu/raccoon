@@ -59,7 +59,7 @@ class JenkinsStore extends BaseStore {
         console.log("Triggered install", args);
         connector.send({
             verb: 'post',
-            resource: this.baseuri + 'build',
+            resource: this.baseuri + 'install',
             body: args,
         }, payload => {
             console.log("Installed");
