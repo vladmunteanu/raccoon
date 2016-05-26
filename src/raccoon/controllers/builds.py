@@ -7,8 +7,8 @@ from tornado import gen
 from raccoon.controllers.base import BaseController
 from raccoon.models import Build, Project
 from raccoon.interfaces.github import GitHubInterface
-
 from raccoon.utils.decorators import authenticated
+
 
 log = logging.getLogger(__name__)
 

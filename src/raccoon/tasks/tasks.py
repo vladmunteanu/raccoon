@@ -50,6 +50,14 @@ def fetch(url, method='GET', body=None, headers=None):
     return (body, headers)
 
 
+class Test(Task):
+    def run(self, *args, **kwargs):
+        return True
+
+    def on_success(self, retval, task_id, *args, **kwargs):
+        print (['bbbbbbbbbb', retval, task_id, args, kwargs])
+
+
 class JenkinsJobWatcherTask(Task):
     def __init__(self):
         self.max_retries = None
@@ -131,6 +139,7 @@ class JenkinsQueueWatcherTask(Task):
         print (['done: @@@@@@@', build_url, task_id, args, kwargs])
 
 
+test = celery.tasks[Test.name]
 jenkins_queue_watcher = celery.tasks[JenkinsQueueWatcherTask.name]
 jenkins_job_watcher = celery.tasks[JenkinsJobWatcherTask.name]
 
