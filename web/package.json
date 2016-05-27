@@ -23,7 +23,6 @@
     "react-addons-update": "^15.1.0",
     "react-dom": "^15.0.1",
     "react-router": "^2.2.2",
-    "react-tag-input": "^3.0.1",
     "react-tap-event-plugin": "^1.0.0",
     "react-timeago": "^3.0.0",
     "react-validation-mixin": "^5.3.4"
