@@ -2,6 +2,7 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
+var ReactTags = require('react-tag-input').WithContext;
 
 import FlowStore from '../../stores/FlowStore';
 import JobStore from '../../stores/JobStore';
@@ -9,16 +10,15 @@ import Addons from '../addons/Addons'
 
 
 function getLocalState() {
-    let localState = {
+    return {
         jobs: JobStore.all,
         addons: Addons.all,
         flow: {
             name: '',
             steps: [],
             job: ''
-        }
+        },
     };
-    return localState;
 }
 
 class FlowForm extends React.Component {
@@ -130,7 +130,7 @@ class FlowForm extends React.Component {
                             <option value='' disabled={true}>-- select an option --</option>
                             {
                                 this.state.addons.map(addon => {
-                                    return <option value={addon}>{addon}</option>
+                                    return <option value={addon}>{addon}</option>;
                                 })
                             }
                         </select>
@@ -142,9 +142,12 @@ class FlowForm extends React.Component {
                             <h4>Added addons</h4>
                             {
                                     steps.map(addon => {
-                                        return <span className="tag label label-info">{addon}<span data-role="remove">
-                                </span>
-                            </span>
+                                        return (
+                                            <span className="tag label label-info">
+                                                {addon}
+                                                <span data-role="remove" />
+                                            </span>
+                                        );
                                     })
                                 }
                         </div>
