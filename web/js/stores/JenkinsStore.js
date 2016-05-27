@@ -1,5 +1,4 @@
 import React from 'react';
-import FluxStore from 'flux';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Connector from '../utils/Connector';
@@ -7,8 +6,6 @@ import Connector from '../utils/Connector';
 import BaseStore from './BaseStore';
 import BuildStore from './BuildStore';
 
-import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 let jenkinsStore = null;
 
