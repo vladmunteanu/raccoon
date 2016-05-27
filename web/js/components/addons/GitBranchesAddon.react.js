@@ -10,14 +10,18 @@ class GitBranchesAddon extends BaseAddon {
     constructor(props) {
         super(props);
 
+        let project = ProjectStore.getById(this.addon_context.project);
         this.state = {
-            project: ProjectStore.getById(this.addon_context.project),
+            project: project,
             action: ActionStore.getById(this.addon_context.action),
             branches: GitHubStore.branches,
             branch: '',
+            version: project ? project.version : '1.0.0',
         };
 
         this._onChange = this._onChange.bind(this);
+        this._onChangeVersion = this._onChangeVersion.bind(this);
+        this._onChangeBranch = this._onChangeBranch.bind(this);
     }
 
     componentDidMount() {
@@ -37,10 +41,12 @@ class GitBranchesAddon extends BaseAddon {
     }
 
     _updateState() {
+        let project = ProjectStore.getById(this.addon_context.project);
         this.setState({
-            project: ProjectStore.getById(this.addon_context.project),
+            project: project,
             action: ActionStore.getById(this.addon_context.action),
             branches: GitHubStore.branches,
+            version: project ? project.version : '1.0.0',
         });
     }
 
@@ -48,25 +54,37 @@ class GitBranchesAddon extends BaseAddon {
         this._updateState();
     }
 
+    _onChangeVersion(event) {
+        this.state.version = event.target.value;
+        this.setState(this.state);
+        this.updateContext('version', event.target.value);
+    }
+
     _onChangeBranch(event) {
         this.state.branch = event.target.value;
         this.setState(this.state);
         this.updateContext('branch', event.target.value);
-        this.updateContext('version', '1.2.3');
     }
 
     render() {
+
         return (
-            <div className="form-group">
-                <h5>Select your branch</h5>
-                <select className="form-control" value={this.state.branch} id="project-branches" onChange={this._onChangeBranch.bind(this)}>
-                    <option key="" disabled>-- select an option --</option>
-                    {
-                        this.state.branches.map(branch => {
-                            return <option key={branch.name} value={branch.name}>{branch.name}</option>
-                        })
-                    }
-                </select>
+            <div>
+                <div className="form-group">
+                    <label for="build-version">Build version</label>
+                    <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} />
+                </div>
+                <div className="form-group">
+                    <label for="build-branches">Select your branch</label>
+                    <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
+                        <option key="" disabled>-- select an option --</option>
+                        {
+                            this.state.branches.map(branch => {
+                                return <option key={branch.name} value={branch.name}>{branch.name}</option>
+                            })
+                        }
+                    </select>
+                </div>
             </div>
         );
     }

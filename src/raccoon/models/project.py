@@ -11,7 +11,7 @@ class Project(BaseModel):
     name = StringField(required=True, unique=True)
     label = StringField(required=True, unique=True)
     repo_url = URLField(required=True)
-    build_nr = IntField(default=1)
+    version = StringField(default='1.0.0')
     connector = ReferenceField(reference_document_type=Connector, required=True)
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 

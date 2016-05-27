@@ -57,11 +57,16 @@ class JenkinsInterface(BaseInterface):
     def build_callback(cls, request, task, response):
         project_id = task.context.get('project')
         branch_name = task.context.get('branch')
+        version = task.context.get('version')
 
         # get project
         project = yield Project.objects.get(id=project_id)
         if not project:
             raise ReplyError(404)
+
+        # save latest version
+        project.version = version
+        yield project.save()
 
         # connect to github
         yield project.load_references()
@@ -72,6 +77,7 @@ class JenkinsInterface(BaseInterface):
         changelog = []
         for item in commits:
             changelog.append({
+                'sha': item['sha'],
                 'message': item['commit']['message'],
                 'date': item['commit']['committer']['date'],
                 'url': item['html_url'],
