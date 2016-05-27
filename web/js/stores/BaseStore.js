@@ -9,11 +9,16 @@ import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 
+const MAX_LISTENERS = 100;
+
 class BaseStore extends EventEmitter {
     constructor() {
         super();
         this.baseuri = null;
         this.instances = [];
+
+        // increase listeners limit
+        this.setMaxListeners(MAX_LISTENERS);
     }
 
     registerActions() {
