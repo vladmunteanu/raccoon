@@ -59,6 +59,9 @@ class Task(BaseModel):
         :param func: function
         :return: None
         """
+        if not func:
+            return
+
         class_name = func.__qualname__.split('.')[0]
         self.callback_details = {
             'module_name': func.__module__,

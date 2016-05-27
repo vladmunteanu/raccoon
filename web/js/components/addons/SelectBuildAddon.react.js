@@ -55,9 +55,7 @@ class SelectBuildAddon extends BaseAddon {
         let build = BuildStore.getById(buildId);
         this.state.selectedBuild = build;
         this.updateContext('branch', build.branch);
-
-        // TODO (alexm): remove hardcoded version
-        this.updateContext('version', '4.7.0-4673');//build.version);
+        this.updateContext('version', build.version);
         this.setState(this.state);
     }
 
