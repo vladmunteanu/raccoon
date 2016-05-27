@@ -68,7 +68,7 @@ class SelectBuildAddon extends BaseAddon {
                         {
                             this.state.selectedBuild.changelog.map(commit => {
                                 return (
-                                    <li className="media">
+                                    <li key={`commit-${commit.sha}`} className="media">
                                         <div className="media-left">
                                             <img src={Utils.gravatarUrl(commit.author.email)}
                                                  title={commit.author.name}
