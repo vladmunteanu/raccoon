@@ -65,7 +65,7 @@ class MenuItem extends React.Component {
                 {
                     this.props.actions.map((item) => {
                         return (
-                            <li>
+                            <li key={`menu-item-link-${item.id}`}>
                                 <Link to={'/action/' + item.id}>
                                     {item.label}
                                 </Link>

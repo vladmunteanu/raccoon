@@ -11,7 +11,7 @@ class CardMenu extends React.Component {
                 <ul className="dropdown-menu">
                     {
                         this.props.actions.map(action => {
-                            return <li>
+                            return <li key={`card-link-${action.id}-${this.props.project}-${this.props.environment}`}>
                                 <Link to={`/action/${action.id}/card/${this.props.project}/${this.props.environment}`}>
                                     {action.label}
                                 </Link>

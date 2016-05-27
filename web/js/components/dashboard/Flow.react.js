@@ -140,7 +140,13 @@ class Flow extends React.Component {
                 <ol className="breadcrumb steps">
                     {
                         flow.steps.map(function (step, index) {
-                            return (<li className={step_index == index ? "active": ""}>Step #{index}</li>);
+                            return (
+                                <li
+                                    key={`flow-step-${index}`}
+                                    className={step_index == index ? "active": ""}>
+                                        Step #{index}
+                                </li>
+                            );
                         })
                     }
                 </ol>

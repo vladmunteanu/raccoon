@@ -47,12 +47,12 @@ class CardsView extends React.Component {
                     this.state.projects.map(project => {
                         if (project.visible) {
                             return (
-                                <div className="container-fluid grid-list">
+                                <div key={`section-${project.id}`} className="container-fluid grid-list">
                                     {
                                         this.state.environments.map(environment => {
                                             if (environment.visible) {
                                                 return <GridItem
-                                                    key={project.id + '-' + environment.id}
+                                                    key={`card-${project.id}-${environment.id}`}
                                                     project={project}
                                                     environment={environment}/>;
                                             }
