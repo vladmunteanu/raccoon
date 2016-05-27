@@ -37,6 +37,11 @@ export class TaskItem extends React.Component {
     }
 
     render() {
+        if (!this.state.project) {
+            // loading
+            return <div></div>;
+        }
+        
         let data = this.props.data;
         let now = new Date().getTime();
         let started_at = data.started_at || 0;
