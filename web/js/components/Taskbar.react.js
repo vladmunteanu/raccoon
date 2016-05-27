@@ -1,11 +1,8 @@
 import React from 'react';
 
-import TaskItem from './TaskItem.react';
+import {TaskItem, READY_STATES, UNREADY_STATES} from './TaskItem.react';
 import TaskStore from '../stores/TaskStore';
 
-
-let READY_STATES = new Set(['FAILURE', 'REVOKED', 'SUCCESS']);
-let UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED']);
 
 class Taskbar extends React.Component {
 
