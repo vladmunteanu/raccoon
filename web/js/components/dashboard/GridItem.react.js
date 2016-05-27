@@ -1,4 +1,5 @@
 import React from 'react'
+import TimeAgo from 'react-timeago'
 
 import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
@@ -52,48 +53,11 @@ class GridItem extends React.Component {
         let state = getLocalState(this.props.project, this.props.environment);
         this.setState(state);
     }
-
-    _onSelectBuild(id, event) {
-        this.state.installedBuild = BuildStore.getById(id);
-        this.setState(this.state);
-    }
-
+    
     render() {
-        let buildsDropdown = (<div></div>);
         let installedBuild = null;
-        if (this.state.builds.length)
-            installedBuild = this.state.builds[0];
         if (this.state.installedBuild)
             installedBuild = this.state.installedBuild;
-
-        if (installedBuild)
-            buildsDropdown = (
-                <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <h4 className="list-group-item-heading environment">
-                            {installedBuild.version}-{this.props.project.build_nr}
-                            <span className="caret" />
-                        </h4>
-                        <h5 className="branch">{installedBuild.branch}</h5>
-                    </button>
-                    <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        {
-                            this.state.builds.map(build => {
-                                return (
-                                    <li onClick={this._onSelectBuild.bind(this, build.id)}>
-                                        <a href="#">
-                                            <h4 className="list-group-item-heading environment">
-                                                {build.version}
-                                            </h4>
-                                            <h5 className="branch">{build.branch}</h5>
-                                        </a>
-                                    </li>
-                                )
-                            })
-                        }
-                    </ul>
-                </div>
-            );
 
         let content = (<div className="content"><h4 className="text-center">No builds for this project!</h4></div>);
         if (this.state.builds.length)
@@ -102,38 +66,17 @@ class GridItem extends React.Component {
             content = (
                 <div className="content">
                     <div>
-                        <ul className="media-list">
-                            {
-                                this.state.installedBuild.changelog.map(commit => {
-                                    return (
-                                        <li className="media">
-                                            <div className="media-left">
-                                                <img src={Utils.gravatarUrl(commit.author.email)}
-                                                     title={commit.author.name}
-                                                     className="img-circle"
-                                                     data-toggle="tooltip"
-                                                     data-placement="bottom"
-                                                     data-html="true"
-                                                     data-original-title="Alexandru Mihai<br/>23-05-2015 2:00 PM"
-                                                />
-                                            </div>
-                                            <div className="media-body">
-                                                {commit.message}
-                                            </div>
-                                        </li>
-                                    )
-                                })
-                            }
-                        </ul>
+                        {installedBuild.version}
+                        <small className="pull-right">
+                            <TimeAgo
+                                date={installedBuild.date_added * 1000}
+                                minPeriod={60}
+                                formatter={Utils.timeAgoFormatter}
+                            />
+                        </small>
+                        <br />
+                        {installedBuild.branch}
                     </div>
-                </div>
-            );
-
-        let footer = (<div></div>);
-        if (this.state.builds.length)
-            footer = (
-                <div className="footer">
-                    <button className="btn btn-xs btn-primary pull-right">Install</button>
                 </div>
             );
 
@@ -148,10 +91,8 @@ class GridItem extends React.Component {
                                   environment={this.props.environment.id}
                                   actions={cardActions} />
                     </div>
-                    {buildsDropdown}
                 </div>
                 {content}
-                {footer}
             </div>
         );
     }

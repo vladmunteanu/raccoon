@@ -138,13 +138,15 @@ class FlowForm extends React.Component {
                             onClick={this.addAddon}>
                             Add
                         </button>
-                        <div>
+                        <div className="bootstrap-tagsinput">
                             <h4>Added addons</h4>
                             {
-                                steps.map(addon => {
-                                    return <p>{addon}</p>
-                                })
-                            }
+                                    steps.map(addon => {
+                                        return <span className="tag label label-info">{addon}<span data-role="remove">
+                                </span>
+                            </span>
+                                    })
+                                }
                         </div>
                     </div>
                     <div className="form-group">

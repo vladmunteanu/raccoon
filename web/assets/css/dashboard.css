@@ -119,13 +119,11 @@ body {
 }
 
 .box {
-    height: 370px !important;
     margin: 15px 10px 0px 0px;
 }
 
 .box, .box .build-details {
     width: 330px;
-    height: 350px;
     background: #fff;
     position: relative;
     border-radius: 5px;
@@ -224,7 +222,6 @@ body {
 }
 
 .box .build-details {
-    height: 278px;
     position: absolute;
     margin-left: -10px;
     margin-top: -284px;

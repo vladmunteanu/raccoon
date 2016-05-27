@@ -202,25 +202,27 @@ class JobForm extends React.Component {
                             Array(this.state.rowCount).fill(null).map((_, i) => {
                                 return (
                                     <div className="form-inline" key={'job-arguments-' + i}>
-                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                            <input type="text" className="form-control" style={{ width: 44 + '%' }}
                                                    id="job-arguments-name"
                                                    value={args[i] ? args[i]["name"]: ''}
                                                    placeholder="name"
                                                    onChange={this.onChangeArgument.bind(this, i, 'name')}/>
-                                            <input type="text" className="form-control" style={{ width: 50 + '%' }}
+                                            <input type="text" className="form-control" style={{ width: 45 + '%' }}
                                                    id="job-arguments-value"
                                                    value={args[i] ? args[i]["value"] : ''}
                                                    placeholder="value"
-                                                   onChange={this.onChangeArgument.bind(this, i, 'value')}
-                                                   onFocus={this.addRow.bind(this)}/>
+                                                   onChange={this.onChangeArgument.bind(this, i, 'value')}/>
+                                            <button className="btn btn-info btn-add" type="button" onClick={this.addRow.bind(this)}>
+                                                <span className="glyphicon glyphicon-plus"> </span>
+                                            </button>
                                     </div>
                                 );
                             })
                         }
                     </div>
                     <div className="form-group">
-                        <input type="submit" value="Save" className="btn btn-info pull-right"/>
                         {del}
+                        <input type="submit" value="Save" className="btn btn-info pull-right"/>
                     </div>
                 </form>
             </div>

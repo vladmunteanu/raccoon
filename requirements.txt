@@ -4,3 +4,4 @@ motorengine
 requests
 websocket-client==0.37.0
 celery==3.1.23
+requests==2.10.0
