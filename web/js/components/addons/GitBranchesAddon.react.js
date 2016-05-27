@@ -48,6 +48,8 @@ class GitBranchesAddon extends BaseAddon {
             branches: GitHubStore.branches,
             version: project ? project.version : '1.0.0',
         });
+
+        this.updateContext('version', this.state.version);
     }
 
     _onChange() {
