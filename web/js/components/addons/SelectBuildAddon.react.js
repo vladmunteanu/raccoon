@@ -77,7 +77,7 @@ class SelectBuildAddon extends BaseAddon {
                                                  data-toggle="tooltip"
                                                  data-placement="bottom"
                                                  data-html="true"
-                                                 data-original-title="Alexandru Mihai<br/>23-05-2015 2:00 PM"
+                                                 data-original-title={commit.author.name}
                                             />
                                         </div>
                                         <div className="media-body">
@@ -100,9 +100,11 @@ class SelectBuildAddon extends BaseAddon {
                     {
                         this.state.builds.sort((a, b) => {return b.date_added - a.date_added}).map(build => {
                             return (
-                                <a href="javascript: void(0)"
-                                   onClick={this._onBuildSelect.bind(this, build.id)}
-                                   className="list-group-item">
+                                <a
+                                    key={`build-${build.version}`}
+                                    href="javascript: void(0)"
+                                    onClick={this._onBuildSelect.bind(this, build.id)}
+                                    className="list-group-item">
                                     {build.version}
                                     <small className="pull-right">
                                         <TimeAgo
