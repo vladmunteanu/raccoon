@@ -92,10 +92,15 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             e.requestId = requestId
             e.verb = verb
             e.resource = resource
+
+            # log error
+            if e.code >= 300:
+                log.error('Internal server error', exc_info=True)
             self.write_message(str(e))
         except Exception:
             ex = ReplyError(500, requestId=requestId, verb=verb, resource=resource)
             self.write_message(str(ex))
+            log.error('Internal server error', exc_info=True)
 
     @gen.coroutine
     def on_close(self):

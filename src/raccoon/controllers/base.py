@@ -20,12 +20,12 @@ class BaseController(object):
     @classmethod
     @authenticated
     @gen.coroutine
-    def get(cls, request, id=None, *args, **kwargs):
+    def get(cls, request, pk=None, *args, **kwargs):
         if not cls.model:
             raise ReplyError(501)
 
-        if id:
-            response = yield cls.model.objects.get(id=id)
+        if pk:
+            response = yield cls.model.objects.get(id=pk)
             if not response:
                 raise ReplyError(404)
 
@@ -66,14 +66,14 @@ class BaseController(object):
     @classmethod
     @authenticated
     @gen.coroutine
-    def put(cls, request, id, *args, **kwargs):
+    def put(cls, request, pk, *args, **kwargs):
         if not cls.model:
             raise ReplyError(404)
 
-        if not id:
+        if not pk:
             raise ReplyError(400)
 
-        instance = yield cls.model.objects.get(id=id)
+        instance = yield cls.model.objects.get(id=pk)
         if not instance:
             raise ReplyError(404)
 
@@ -107,14 +107,14 @@ class BaseController(object):
     @classmethod
     @authenticated
     @gen.coroutine
-    def delete(cls, request, id):
+    def delete(cls, request, pk):
         if not cls.model:
             raise ReplyError(404)
 
         if not id:
             raise ReplyError(400)
 
-        instance = yield cls.model.objects.get(id=id)
+        instance = yield cls.model.objects.get(id=pk)
 
         if not instance:
             raise ReplyError(404)

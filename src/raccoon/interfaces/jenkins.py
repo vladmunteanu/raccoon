@@ -6,9 +6,9 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 
 from .base import BaseInterface
-from raccoon.models import Task
+from raccoon.models import Task, Build, Project
 from raccoon.utils.exceptions import ReplyError
-from raccoon.tasks import tasks
+from raccoon.interfaces.github import GitHubInterface
 
 
 log = logging.getLogger(__name__)
@@ -30,6 +30,7 @@ class JenkinsInterface(BaseInterface):
     """
     curl -vkX POST 'https://%USER%:%TOKEN%@%HOST%/job/%JOB_NAME%/buildWithParameters/api/json?%PARAMS%'
     """
+    tasks = None
 
     def __init__(self, connector):
         super().__init__(connector)
@@ -49,16 +50,56 @@ class JenkinsInterface(BaseInterface):
 
     @gen.coroutine
     def build(self, *args, **kwargs):
-        log.info(['alexm: Jenkins.build', args, kwargs])
-        yield self.trigger(*args, **kwargs)
+        yield self.trigger(callback_method=self.build_callback, *args, **kwargs)
+
+    @classmethod
+    @gen.coroutine
+    def build_callback(cls, request, task, response):
+        project_id = task.context.get('project')
+        branch_name = task.context.get('branch')
+
+        # get project
+        project = yield Project.objects.get(id=project_id)
+        if not project:
+            raise ReplyError(404)
+
+        # connect to github
+        yield project.load_references()
+        github = GitHubInterface(project.connector)
+
+        # get commits and create changelog
+        commits = yield github.commits(project=project, branch=branch_name)
+        changelog = []
+        for item in commits:
+            changelog.append({
+                'message': item['commit']['message'],
+                'date': item['commit']['committer']['date'],
+                'url': item['html_url'],
+                'author': {
+                    'name': item['commit']['committer']['name'],
+                    'email': item['commit']['committer']['email'],
+                }
+            })
+
+        # create build
+        build = Build(
+            project=project._id,
+            branch=branch_name,
+            version='{}-{}'.format(task.context.get('version'), task._id),
+            changelog=changelog,
+        )
+        yield build.save()
+
+        request.verb = 'post'
+        request.resource = '/api/v1/builds/'
+        request.broadcast(build.get_dict())
 
     @gen.coroutine
     def install(self, *args, **kwargs):
-        log.info(['alexm: Jenkins.install', args, kwargs])
         yield self.trigger(*args, **kwargs)
 
     @gen.coroutine
-    def trigger(self, request, flow, *args, **kwargs):
+    def trigger(self, request, flow, callback_method=None, *args, **kwargs):
         """
         :param kwargs: parameter for jenkins job
         :return: Build information
@@ -93,10 +134,20 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
-        task = yield Task(user=request.user, job=flow.job, context=kwargs).save()
+        task = Task(
+            user=request.user,
+            job=flow.job,
+            context=kwargs,
+        )
+        task.add_callback(callback_method)
+        yield task.save()
+
         chain = \
-            tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
-            tasks.jenkins_job_watcher.s(id=task._id, api_url=self.api_url)
+            self.tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
+            self.tasks.jenkins_job_watcher.s(
+                id=task._id,
+                api_url=self.api_url,
+            )
         chain_task = chain.delay()
 
         task.tasks = [chain_task.id, chain_task.parent.id]
@@ -104,30 +155,12 @@ class JenkinsInterface(BaseInterface):
 
         # broadcast
         # TODO (alexm): do something with this hack
-        request.requestId = None
+        request.requestId = 'notification'
         request.verb = 'post'
         request.resource = '/api/v1/tasks/'
         request.broadcast(task.get_dict())
 
         raise ReplyError(201)
-
-    # CELERY task
-    # @gen.coroutine
-    # def queue_info(self, url, *args, **kwargs):
-    #     """
-    #     :param url: URL for the queued task
-    #     :return: information about the task that will be executed
-    #     """
-    #     parsed_url = urlparse(url)
-    #     path = '{}/api/json'.format(parsed_url.path.strip('/'))
-    #     url = urljoin(self.api_url, path)
-    #
-    #     response, headers = yield self.fetch(
-    #         method='GET',
-    #         url=url,
-    #     )
-    #
-    #     raise gen.Return(response)
 
     @gen.coroutine
     def jobs(self, *args, **kwargs):
@@ -166,3 +199,4 @@ class JenkinsInterface(BaseInterface):
 
     def __getattr__(self, method):
         return lambda *args, **kwargs: self.call(method, *args, **kwargs)
+

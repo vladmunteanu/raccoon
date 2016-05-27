@@ -20,7 +20,7 @@ class AuthController(BaseController):
 
     @classmethod
     @gen.coroutine
-    def get(cls, request, id=None, *args, **kwargs):
+    def get(cls, request, pk=None, *args, **kwargs):
         raise ReplyError(501)
 
     @classmethod

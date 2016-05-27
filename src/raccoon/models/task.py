@@ -1,11 +1,15 @@
 from __future__ import absolute_import
 
+import logging
+
 from celery.result import AsyncResult
 from motorengine import StringField, ListField, DateTimeField, ReferenceField
 
 from raccoon.models import BaseModel, Job, User, Project, Environment
 from raccoon.utils.dbfields import DictField
 
+
+log = logging.getLogger(__name__)
 
 class Task(BaseModel):
     __collection__ = 'tasks'
@@ -16,6 +20,7 @@ class Task(BaseModel):
     project = ReferenceField(reference_document_type=Project)
     environment = ReferenceField(reference_document_type=Environment)
     context = DictField()
+    callback_details = DictField(default={})
     date_added = DateTimeField(auto_now_on_insert=True)
 
     @property
@@ -31,3 +36,32 @@ class Task(BaseModel):
         result = super().get_dict()
         result['status'] = self.status
         return result
+
+    @property
+    def callback(self):
+        """
+        :return: deserialized function
+        """
+        module_name = self.callback_details.get('module_name')
+        class_name = self.callback_details.get('class_name')
+        method_name = self.callback_details.get('method_name')
+
+        func = None
+        if module_name and class_name and method_name:
+            i = __import__(module_name, fromlist=[class_name])
+            class_ = getattr(i, class_name)
+            func = getattr(class_, method_name, None)
+
+        return func
+
+    def add_callback(self, func):
+        """
+        :param func: function
+        :return: None
+        """
+        class_name = func.__qualname__.split('.')[0]
+        self.callback_details = {
+            'module_name': func.__module__,
+            'class_name': class_name,
+            'method_name': func.__name__,
+        }

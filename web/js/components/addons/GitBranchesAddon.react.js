@@ -52,6 +52,7 @@ class GitBranchesAddon extends BaseAddon {
         this.state.branch = event.target.value;
         this.setState(this.state);
         this.updateContext('branch', event.target.value);
+        this.updateContext('version', '1.2.3');
     }
 
     render() {

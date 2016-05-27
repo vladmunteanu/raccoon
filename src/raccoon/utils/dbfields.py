@@ -7,7 +7,7 @@ class DictField(BaseField):
     """
 
     def validate(self, value):
-        return isinstance(value, dict)
+        return isinstance(value, (dict, type(None)))
 
     def to_son(self, value):
         return value

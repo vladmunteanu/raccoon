@@ -42,7 +42,7 @@ class Request(object):
         }
 
     @gen.coroutine
-    def send(self, response):
+    def send(self, response=None):
         data = self.serialize(response)
         self.socket.write_message(json.dumps(data, default=json_serial))
 

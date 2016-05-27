@@ -2,14 +2,17 @@ from __future__ import absolute_import
 
 import json
 import requests
+import sys
 from urllib.parse import urlparse, urljoin
 
 from celery import Celery, Task
+from celery.states import READY_STATES
 from celery.utils.log import get_task_logger
 from websocket import create_connection
 
 from settings import DB
-from raccoon.utils.utils import json_serial
+from raccoon.utils.utils import json_serial, to_celery_status
+from raccoon.interfaces.jenkins import JenkinsInterface
 
 
 log = get_task_logger(__name__)
@@ -22,21 +25,34 @@ connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
 celery = Celery('tasks', broker=connection_string, backend=connection_string)
 ws = None
 
-def broadcast(data):
+def get_ws():
     global ws
 
     try:
         if not ws:
-            ws = create_connection('ws://localhost:8888/websocket')
+            ws = create_connection('ws://0.0.0.0:8888/websocket')
         else:
             try:
                 ws.ping()
                 ws.ping()
             except BrokenPipeError:
-                ws = create_connection('ws://localhost:8888/websocket')
+                ws = create_connection('ws://0.0.0.0:8888/websocket')
     except ConnectionRefusedError:
         log.error('Connection to raccoon server refused!', exc_info=True)
 
+    return ws
+
+def send(verb, resource, headers=None, body=None):
+    ws = get_ws()
+    ws.send(json.dumps({
+        'verb': verb,
+        'resource': resource,
+        'headers': headers or {},
+        'body': body or {},
+    }, default=json_serial))
+
+def broadcast(data):
+    ws = get_ws()
     ws.send(json.dumps({
         'verb': 'post',
         'resource': '/api/v1/notifications/broadcast',
@@ -50,18 +66,16 @@ def fetch(url, method='GET', body=None, headers=None):
     return (body, headers)
 
 
-class Test(Task):
-    def run(self, *args, **kwargs):
-        return True
 
-    def on_success(self, retval, task_id, *args, **kwargs):
-        print (['bbbbbbbbbb', retval, task_id, args, kwargs])
-
-
-class JenkinsJobWatcherTask(Task):
+class BaseTask(Task):
     def __init__(self):
         self.max_retries = None
 
+    def on_retry(self, exc, task_id, args, kwargs, einfo):
+        self.update_state(task_id=task_id, state='PENDING')
+
+
+class JenkinsJobWatcherTask(BaseTask):
     def run(self, url, id, api_url, *args, **kwargs):
         parsed_url = urlparse(url)
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
@@ -73,6 +87,8 @@ class JenkinsJobWatcherTask(Task):
         )
 
         status = response.get('result') or 'STARTED'
+        status = to_celery_status(status)
+
         broadcast({
             'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
@@ -85,26 +101,28 @@ class JenkinsJobWatcherTask(Task):
             }
         })
 
-        # change status from ABORTED to REVOKED
-        status = 'REVOKED' if status == 'ABORTED' else status
-
-        if status in ('SUCCESS', 'REVOKED', 'FAILURE'):
-            return status
+        if status in READY_STATES:
+            return {
+                'id': id,
+                'status': status,
+                'response': response,
+            }
 
         raise self.retry(countdown=5, max_retries=None)
 
-    def on_retry(self, exc, task_id, args, kwargs, einfo):
-        self.update_state(task_id=task_id, state='PENDING')
+    def on_success(self, retval, task_id, args, kwargs):
+        # update status in case of REVOKED
+        self.update_state(task_id=task_id, state=retval.get('status'))
 
-    def on_success(self, status, task_id, *args, **kwargs):
-        self.update_state(task_id=task_id, state=status)
-        print (['done: @@@@@@@', status, task_id, args, kwargs])
+        # notify backend that <task_id> finished
+        send(
+            verb='PUT',
+            resource='/api/v1/tasks/{}'.format(retval.get('id')),
+            body=retval.get('response'),
+        )
 
 
-class JenkinsQueueWatcherTask(Task):
-    def __init__(self):
-        self.max_retries = None
-
+class JenkinsQueueWatcherTask(BaseTask):
     def run(self, url, id, api_url, *args, **kwargs):
         parsed_url = urlparse(url)
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
@@ -132,16 +150,12 @@ class JenkinsQueueWatcherTask(Task):
 
         raise self.retry(countdown=5, max_retries=None)
 
-    def on_retry(self, exc, task_id, args, kwargs, einfo):
-        self.update_state(task_id=task_id, state='PENDING')
-
-    def on_success(self, build_url, task_id, *args, **kwargs):
-        print (['done: @@@@@@@', build_url, task_id, args, kwargs])
 
 
-test = celery.tasks[Test.name]
 jenkins_queue_watcher = celery.tasks[JenkinsQueueWatcherTask.name]
 jenkins_job_watcher = celery.tasks[JenkinsJobWatcherTask.name]
+
+JenkinsInterface.tasks = sys.modules[__name__]
 
 
 if __name__ == '__main__':
