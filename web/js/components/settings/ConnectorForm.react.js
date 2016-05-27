@@ -2,21 +2,26 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
+import AceEditor from 'react-ace';
+import brace from 'brace';
+
+import 'brace/mode/json';
+import 'brace/theme/tomorrow';
 
 import ConnectorStore from '../../stores/connectors/Connectors'; // !important for register
 import localConf from '../../config/Config'
 import RaccoonApp from '../RaccoonApp.react';
 let ConnectorType = localConf.CONNECTOR_TYPE;
 
+
 function getLocalState() {
-    let localState = {
+    return {
         connector: {
             name: '',
             type: '',
             config: ''
         }
     };
-    return localState;
 }
 
 class ConnectorForm extends React.Component {
@@ -27,7 +32,7 @@ class ConnectorForm extends React.Component {
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Connector name'),
             type: Joi.any().disallow(null, '').required().label('Type'),
-            config: Joi.object().required().label('Config')
+            config: Joi.any().required().label('Config')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -51,7 +56,7 @@ class ConnectorForm extends React.Component {
             this.state.connector.type = event.target.value;
             this.state.connector.config = JSON.stringify(ConnectorType[event.target.value], undefined, 4);
         } else if (name == 'config') {
-            this.state.connector.config = event.target.value;
+            this.state.connector.config = event;
         } else {
             this.state.connector[name] = event.target.value;
         }
@@ -83,11 +88,18 @@ class ConnectorForm extends React.Component {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                ConnectorStore.create({
-                    name: this.state.connector.name,
-                    type: this.state.connector.type,
-                    config: JSON.parse(this.state.connector.config)
-                });
+                let config = this.state.connector.config;
+                try {
+                    config = typeof config !== 'object' ? JSON.parse(config) : config;
+                    ConnectorStore.create({
+                        name: this.state.connector.name,
+                        type: this.state.connector.type,
+                        config: config,
+                    });
+                }
+                catch (err) {
+                    error = err;
+                }
             }
         });
     }
@@ -104,8 +116,19 @@ class ConnectorForm extends React.Component {
         let config = connector.config;
         let del;
 
+        // format config json
+        if (typeof config !== 'string') {
+            config = JSON.stringify(config, undefined, 4);
+        }
+
         if (this.formName === 'Update connector') {
-            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
+            del = (
+                <button
+                    type="button"
+                    className="btn btn-danger pull-left"
+                    onClick={this.onDelete.bind(this)}>
+                    Delete
+                </button>
             );
         }
 
@@ -137,11 +160,16 @@ class ConnectorForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-config" className="control-label">Config</label>
-                        <textarea type="text" rows="10" className="form-control"
-                                  id="connector-config" value={config}
-                                  onChange={this.onFormChange.bind(this, 'config')}
-                                  onBlur={this.props.handleValidation('config')}/>
-                         {this.renderHelpText(this.props.getValidationMessages('config'))}
+                        <AceEditor
+                            mode="json"
+                            theme="tomorrow"
+                            name={`config-${connector.id}`}
+                            fontSize={12}
+                            height="10em"
+                            value={config}
+                            onChange={this.onFormChange.bind(this, 'config')}
+                          />
+                        {this.renderHelpText(this.props.getValidationMessages('config'))}
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

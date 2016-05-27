@@ -40,11 +40,18 @@ class ConnectorUpdateForm extends ConnectorForm {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                ConnectorStore.updateById(this.state.connector.id, {
-                    name: this.state.connector.name,
-                    type: this.state.connector.type,
-                    config: JSON.parse(this.state.connector.config)
-                });
+                let config = this.state.connector.config;
+                try {
+                    config = typeof config !== 'object' ? JSON.parse(config) : config;
+                    ConnectorStore.updateById(this.state.connector.id, {
+                        name: this.state.connector.name,
+                        type: this.state.connector.type,
+                        config: config
+                    });
+                }
+                catch (err) {
+                    error = err;
+                }
             }
         });
     }
