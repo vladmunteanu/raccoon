@@ -5,12 +5,14 @@ import requests
 from urllib.parse import urlparse, urljoin
 
 from celery import Celery, Task
+from celery.utils.log import get_task_logger
 from websocket import create_connection
 
 from settings import DB
 from raccoon.utils.utils import json_serial
 
 
+log = get_task_logger(__name__)
 connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
     scheme=DB['scheme'],
     host=DB['host'],
@@ -23,8 +25,17 @@ ws = None
 def broadcast(data):
     global ws
 
-    if not ws:
-        ws = create_connection('ws://localhost:8888/websocket')
+    try:
+        if not ws:
+            ws = create_connection('ws://localhost:8888/websocket')
+        else:
+            try:
+                ws.ping()
+                ws.ping()
+            except BrokenPipeError:
+                ws = create_connection('ws://localhost:8888/websocket')
+    except ConnectionRefusedError:
+        log.error('Connection to raccoon server refused!', exc_info=True)
 
     ws.send(json.dumps({
         'verb': 'post',
@@ -37,6 +48,14 @@ def fetch(url, method='GET', body=None, headers=None):
     body = r.json()
     headers = r.headers
     return (body, headers)
+
+
+class Test(Task):
+    def run(self, *args, **kwargs):
+        return True
+
+    def on_success(self, retval, task_id, *args, **kwargs):
+        print (['bbbbbbbbbb', retval, task_id, args, kwargs])
 
 
 class JenkinsJobWatcherTask(Task):
@@ -55,9 +74,10 @@ class JenkinsJobWatcherTask(Task):
 
         status = response.get('result') or 'STARTED'
         broadcast({
-            'verb': 'put',
+            'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
             'data': {
+                'id': id,
                 'status': status,
                 'started_at': response.get('timestamp'),
                 'estimated_duration': response.get('estimatedDuration'),
@@ -68,7 +88,7 @@ class JenkinsJobWatcherTask(Task):
         # change status from ABORTED to REVOKED
         status = 'REVOKED' if status == 'ABORTED' else status
 
-        if status in ('SUCCESS', 'ABORTED', 'FAILURE'):
+        if status in ('SUCCESS', 'REVOKED', 'FAILURE'):
             return status
 
         raise self.retry(countdown=5, max_retries=None)
@@ -96,9 +116,10 @@ class JenkinsQueueWatcherTask(Task):
         )
 
         broadcast({
-            'verb': 'put',
+            'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
             'data': {
+                'id': id,
                 'status': 'PENDING',
                 'why': response.get('why'),
                 'response': response,
@@ -118,6 +139,7 @@ class JenkinsQueueWatcherTask(Task):
         print (['done: @@@@@@@', build_url, task_id, args, kwargs])
 
 
+test = celery.tasks[Test.name]
 jenkins_queue_watcher = celery.tasks[JenkinsQueueWatcherTask.name]
 jenkins_job_watcher = celery.tasks[JenkinsJobWatcherTask.name]
 

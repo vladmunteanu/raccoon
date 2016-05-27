@@ -8,7 +8,6 @@ from tornado import gen
 from .base import BaseInterface
 from raccoon.models import Task
 from raccoon.utils.exceptions import ReplyError
-from raccoon.utils.utils import sleep
 from raccoon.tasks import tasks
 
 
@@ -49,7 +48,17 @@ class JenkinsInterface(BaseInterface):
         )
 
     @gen.coroutine
-    def build(self, flow, *args, **kwargs):
+    def build(self, *args, **kwargs):
+        log.info(['alexm: Jenkins.build', args, kwargs])
+        yield self.trigger(*args, **kwargs)
+
+    @gen.coroutine
+    def install(self, *args, **kwargs):
+        log.info(['alexm: Jenkins.install', args, kwargs])
+        yield self.trigger(*args, **kwargs)
+
+    @gen.coroutine
+    def trigger(self, request, flow, *args, **kwargs):
         """
         :param kwargs: parameter for jenkins job
         :return: Build information
@@ -63,7 +72,8 @@ class JenkinsInterface(BaseInterface):
         # create arguments
         arguments = {}
         for argument in flow.job.arguments:
-            value = argument['value']
+            # convert argument to string b/c json decode might return int
+            value = str(argument['value'])
             if value.startswith('$'):
                 value = kwargs.get(value[1:]) if kwargs.get(value[1:]) else value
             arguments[argument['name']] = value
@@ -83,7 +93,7 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
-        task = yield Task().save()
+        task = yield Task(user=request.user, job=flow.job, context=kwargs).save()
         chain = \
             tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
             tasks.jenkins_job_watcher.s(id=task._id, api_url=self.api_url)
@@ -91,6 +101,13 @@ class JenkinsInterface(BaseInterface):
 
         task.tasks = [chain_task.id, chain_task.parent.id]
         yield task.save()
+
+        # broadcast
+        # TODO (alexm): do something with this hack
+        request.requestId = None
+        request.verb = 'post'
+        request.resource = '/api/v1/tasks/'
+        request.broadcast(task.get_dict())
 
         raise ReplyError(201)
 

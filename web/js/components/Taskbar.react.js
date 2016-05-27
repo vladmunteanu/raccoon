@@ -1,21 +1,36 @@
 import React from 'react';
 
 import TaskItem from './TaskItem.react';
+import TaskStore from '../stores/TaskStore';
 
+
+let READY_STATES = new Set(['FAILURE', 'REVOKED', 'SUCCESS']);
+let UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED']);
 
 class Taskbar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            tasks: TaskStore.all,
+        };
         this._onChange = this._onChange.bind(this);
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        TaskStore.addListener(this._onChange);
+        TaskStore.fetchAll();
+    }
 
-    componentWillUnmount() {}
+    componentWillUnmount() {
+        TaskStore.removeListener(this._onChange);
+    }
 
-    _onChange() {}
+    _onChange() {
+        this.setState({
+            tasks: TaskStore.all,
+        });
+    }
 
     render() {
         return (
@@ -29,11 +44,25 @@ class Taskbar extends React.Component {
                 <div className="tab-content">
                     <div role="tabpanel" className="tab-pane active" id="taskbar-running">
                         <div className="list-group">
-                            <TaskItem title="Applogic" />
+                            {
+                                this.state.tasks.sort((a, b) => {return b.date_added - a.date_added;}).map((data) => {
+                                    if (UNREADY_STATES.has(data.status)) {
+                                        return <TaskItem key={data.id} data={data}/>;
+                                    }
+                                })
+                            }
                         </div>
                     </div>
                     <div role="tabpanel" className="tab-pane" id="taskbar-history">
-                        <p>Nothing to show here.</p>
+                        <div className="list-group">
+                            {
+                                this.state.tasks.sort((a, b) => {return b.date_added - a.date_added;}).map((data) => {
+                                    if (READY_STATES.has(data.status)) {
+                                        return <TaskItem key={data.id} data={data}/>;
+                                    }
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
             </nav>

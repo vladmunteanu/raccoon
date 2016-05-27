@@ -24,7 +24,7 @@ class GitHubStore extends BaseStore {
     }
 
     get branches() {
-        return this._branches;
+        return this._branches || [];
     }
 
     fetchBranches(project_id) {
