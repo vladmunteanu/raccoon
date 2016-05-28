@@ -78,10 +78,8 @@ export class TaskItem extends React.Component {
         let progressStyle = {width: progress + '%'};
         if (UNREADY_STATES.has(data.status)) {
             progressBar = (
-                <div className="progress">
-                    <div className="progress-bar progress-bar-value" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100" style={progressStyle}>
-                        <span className="sr-only">{progress}%</span>
-                    </div>
+                <div className="materialize-progress">
+                    <div className={data.status == 'PENDING' ? 'indeterminate' : 'determinate'} style={progressStyle}/>
                 </div>
             );
         }
