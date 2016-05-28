@@ -4,6 +4,8 @@ import TimeAgo from 'react-timeago'
 // stores
 import ProjectStore from '../stores/ProjectStore';
 
+import RaccoonApp from './RaccoonApp.react';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import Utils from '../utils/Utils';
 
 
@@ -11,9 +13,13 @@ export const READY_STATES = new Set(['FAILURE', 'REVOKED', 'SUCCESS']);
 export const UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED']);
 
 function getLocalState(projectId) {
-    return {
-        'project': ProjectStore.getById(projectId)
-    }
+    let localState = {
+        local: {
+            project: ProjectStore.getById(projectId),
+        }
+    };
+
+    return RaccoonApp.getState(localState)
 }
 
 export class TaskItem extends React.Component {
@@ -21,6 +27,7 @@ export class TaskItem extends React.Component {
         super(props, context);
         this.state = getLocalState(this.props.data.context.project);
         this._onChange = this._onChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     componentDidMount() {
@@ -36,8 +43,25 @@ export class TaskItem extends React.Component {
         this.setState(state);
     }
 
+    handleCancel() {
+        let build_number = this.props.data.response.number;
+        if (build_number) {
+            AppDispatcher.dispatch({
+                action: this.props.data.connector_type,
+                data: {
+                    method: 'stop',
+                    args: {
+                        id: this.props.data.id,
+                        job: this.props.data.job,
+                        build_number: build_number,
+                    },
+                }
+            });
+        }
+    }
+
     render() {
-        if (!this.state.project) {
+        if (!this.state.local.project || !this.state.user) {
             // loading
             return <div></div>;
         }
@@ -46,18 +70,12 @@ export class TaskItem extends React.Component {
         let now = new Date().getTime();
         let started_at = data.started_at || 0;
         let estimated_duration = data.estimated_duration || 0;
-
         let duration = now - started_at;
-        let progress = Math.round(duration * 100 / estimated_duration);
-        if (data.status == 'SUCCESS') {
-            progress = 100;
-        }
+        let progress = data.status == 'SUCCESS' ? 100 : Math.round(duration * 100 / estimated_duration);
 
-        let progressStyle = {
-            width: progress + '%'
-        };
-
+        // progress bar
         let progressBar;
+        let progressStyle = {width: progress + '%'};
         if (UNREADY_STATES.has(data.status)) {
             progressBar = (
                 <div className="progress">
@@ -68,12 +86,29 @@ export class TaskItem extends React.Component {
             );
         }
 
+        // cancel button
+        let cancelButton;
+        let build_number = data.response ? data.response.number : null;
+        if (
+            build_number &&
+            data.status != 'PENDING' &&
+            data.user == this.state.user.id &&
+            UNREADY_STATES.has(data.status)
+        ) {
+            cancelButton = (
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.handleCancel}>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            );
+        }
+
         return (
             <div className="list-group-item">
                 <div className="list-group-item-heading">
                     <span className="title">
-                        {this.state.project.label || this.state.project.name}
+                        {this.state.local.project.label || this.state.local.project.name}
                     </span>
+                    { cancelButton }
                     <span className="time pull-right">
                         <TimeAgo
                             date={data.date_added * 1000}
@@ -92,5 +127,3 @@ export class TaskItem extends React.Component {
         );
     }
 }
-
-//export default TaskItem;

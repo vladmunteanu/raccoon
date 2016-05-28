@@ -28,7 +28,6 @@ class JenkinsStore extends BaseStore {
         AppDispatcher.registerOnce('jenkins', payload => {
             let method_name = payload.data['method'];
             let args = payload.data['args'];
-
             this[method_name](args);
         });
     }
@@ -55,6 +54,18 @@ class JenkinsStore extends BaseStore {
             body: args,
         }, payload => {
             console.log("Installed");
+            this.emitChange();
+        });
+    }
+
+    stop(args) {
+        let connector = new Connector();
+        connector.send({
+            verb: 'post',
+            resource: this.baseuri + 'stop',
+            body: args,
+        }, payload => {
+            console.log("Stopped");
             this.emitChange();
         });
     }

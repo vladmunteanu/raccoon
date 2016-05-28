@@ -15,9 +15,9 @@ class Task(BaseModel):
     __collection__ = 'tasks'
 
     tasks = ListField(StringField())
-    user = ReferenceField(reference_document_type=User)
+    user = ReferenceField(reference_document_type=User, required=True)
+    connector_type = StringField(required=True)
     job = ReferenceField(reference_document_type=Job)
-    project = ReferenceField(reference_document_type=Project)
     environment = ReferenceField(reference_document_type=Environment)
     context = DictField()
     callback_details = DictField(default={})

@@ -53,14 +53,14 @@ class NotificationItem extends React.Component {
 
     getType(data) {
         if (data.code >= 500) return ['danger', 'Oh snap'];
-        else if (data.code >= 300) return ['warning', 'Warning'];
+        else if (data.code >= 400) return ['warning', 'Warning'];
         else if (data.code >= 200) return ['success', 'Well done'];
         return ['info', 'Heads up'];
     }
 
     getMessage(data) {
         if (data.code >= 500) return 'Something is broken. The team will investigate this error.';
-        else if (data.code >= 300) return 'The request was invalid or cannot be otherwise served';
+        else if (data.code >= 400) return 'The request was invalid or cannot be otherwise served';
         else if (data.code >= 200) {
             let r = data.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
             let model = r[1], id = r[2];

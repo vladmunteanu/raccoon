@@ -94,8 +94,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             e.resource = resource
 
             # log error
-            if e.code >= 300:
-                log.error('Internal server error', exc_info=True)
+            if e.code >= 400:
+                log.error('Possible error detected', exc_info=True)
             self.write_message(str(e))
         except Exception:
             ex = ReplyError(500, requestId=requestId, verb=verb, resource=resource)

@@ -4,7 +4,10 @@ import logging
 import json
 
 from tornado import gen
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
+
+from raccoon.utils.exceptions import ReplyError
+
 
 log = logging.getLogger(__name__)
 
@@ -15,23 +18,31 @@ class BaseInterface(object):
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', body=None, headers=None):
-        log.info(['******', url])
-
+    def fetch(self, url, method='GET', body=None, headers=None, follow_redirects=True):
         body = body or 'no body' if method.upper() == 'POST' else None
-        response = yield self.HTTPClient.fetch(HTTPRequest(
-            url=url,
-            method=method,
-            body=body,
-            headers=headers,
-            use_gzip=True,
-            validate_cert=False,
-        ))
+        log.info(['BaseInterface.fetch', method, url])
 
-        body = response.body
-        headers = response.headers
-        content_type = headers.get('Content-Type')
-        if content_type and 'application/json' in content_type:
-            body = json.loads(response.body.decode('utf-8'))
+        try:
+            response = yield self.HTTPClient.fetch(HTTPRequest(
+                url=url,
+                method=method,
+                body=body,
+                headers=headers,
+                follow_redirects=follow_redirects,
+                use_gzip=True,
+                validate_cert=False,
+            ))
+        except HTTPError as exc:
+            raise ReplyError(exc.code, exc.message)
+        except Exception as exc:
+            log.error(exc)
+            raise ReplyError(500, exc.message)
+        else:
+            body = response.body
+            headers = response.headers
 
-        raise gen.Return((body, headers))
+            content_type = headers.get('Content-Type')
+            if content_type and 'application/json' in content_type:
+                body = json.loads(response.body.decode('utf-8'))
+
+            raise gen.Return((body, headers))

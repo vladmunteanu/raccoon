@@ -15,14 +15,14 @@ log = logging.getLogger(__name__)
 
 URL_END = '/api/json'
 URLS = {
-    'build': 'job/{job_name}/build' + URL_END,
-    'build_with_params': 'job/{job_name}/buildWithParameters' + URL_END,
-    'build_stop': 'job/{job_name}/{build_number}/stop' + URL_END,
-    'build_info': 'job/{job_name}/{build_number}' + URL_END,
-    'build_output': 'job/{job_name}/{build_number}/consoleText' + URL_END,
-    'build_last': 'job/{job_name}/lastBuild' + URL_END,
-    'queue_info': 'queue/item/{queue_number}' + URL_END,
-    'jobs': '' + URL_END,
+    'build': ('POST', 'job/{job_name}/build' + URL_END),
+    'build_with_params': ('POST', 'job/{job_name}/buildWithParameters' + URL_END),
+    'stop': ('POST', 'job/{job_name}/{build_number}/stop' + URL_END),
+    'build_info': ('GET', 'job/{job_name}/{build_number}' + URL_END),
+    'build_output': ('GET', 'job/{job_name}/{build_number}/consoleText' + URL_END),
+    'build_last': ('GET', 'job/{job_name}/lastBuild' + URL_END),
+    'queue_info': ('GET', 'queue/item/{queue_number}' + URL_END),
+    'jobs': ('GET', URL_END),
 }
 
 
@@ -110,9 +110,9 @@ class JenkinsInterface(BaseInterface):
         :param kwargs: parameter for jenkins job
         :return: Build information
         """
-        path = URLS.get('build')
+        verb, path = URLS.get('build')
         if kwargs:
-            path = URLS.get('build_with_params')
+            verb, path = URLS.get('build_with_params')
 
         job_name = flow.job.job
 
@@ -133,7 +133,7 @@ class JenkinsInterface(BaseInterface):
         url = '{}?{}'.format(url, query)
 
         body, headers = yield self.fetch(
-            method='POST',
+            method=verb,
             url=url,
         )
 
@@ -142,6 +142,7 @@ class JenkinsInterface(BaseInterface):
 
         task = Task(
             user=request.user,
+            connector_type='jenkins',
             job=flow.job,
             context=kwargs,
         )
@@ -181,24 +182,27 @@ class JenkinsInterface(BaseInterface):
         raise gen.Return(response['jobs'])
 
     @gen.coroutine
-    def call(self, method, flow=None, *args, **kwargs):
+    def call(self, method, flow=None, job=None, *args, **kwargs):
         if method not in URLS:
             raise ReplyError(404)
 
         # select job from flow method
         if flow:
             job_name = flow.job.job
+        if job:
+            job_name = job.job
 
         # select path
-        path = URLS.get(method)
+        verb, path = URLS.get(method)
         url = urljoin(self.api_url, path).format(
             job_name=job_name,
             **kwargs
         )
 
         response, headers = yield self.fetch(
-            method='GET',
+            method=verb,
             url=url,
+            follow_redirects=False,
         )
 
         raise gen.Return(response)
