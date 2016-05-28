@@ -44,7 +44,7 @@ export class TaskItem extends React.Component {
     }
 
     handleCancel() {
-        let build_number = this.props.data.response.number;
+        let build_number = this.props.data.response ? this.props.data.response.number : null;
         if (build_number) {
             AppDispatcher.dispatch({
                 action: this.props.data.connector_type,
@@ -100,13 +100,23 @@ export class TaskItem extends React.Component {
             );
         }
 
+        // add gray style to old tasks
+        let taskClass = '';
+        if (now - data.date_added * 1000 > 3600000 * 3) {
+            taskClass = 'old';
+        }
+
         return (
-            <div className="list-group-item">
+            <div className={`list-group-item ${taskClass}`}>
                 <div className="list-group-item-heading">
                     <span className="title">
                         {this.state.local.project.label || this.state.local.project.name}
                     </span>
                     { cancelButton }
+                </div>
+                <p className="list-group-item-text">
+                    { data.context.branch }<br />
+                    { data.status }
                     <span className="time pull-right">
                         <TimeAgo
                             date={data.date_added * 1000}
@@ -114,10 +124,6 @@ export class TaskItem extends React.Component {
                             formatter={Utils.timeAgoFormatter}
                             />
                     </span>
-                </div>
-                <p className="list-group-item-text">
-                    { data.context.branch }<br />
-                    { data.status }
                 </p>
 
                 { progressBar }
