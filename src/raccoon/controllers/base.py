@@ -111,7 +111,7 @@ class BaseController(object):
         if not cls.model:
             raise ReplyError(404)
 
-        if not id:
+        if not pk:
             raise ReplyError(400)
 
         instance = yield cls.model.objects.get(id=pk)
@@ -128,4 +128,4 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        request.broadcast(id)
+        request.broadcast(pk)

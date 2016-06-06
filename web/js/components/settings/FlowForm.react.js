@@ -2,7 +2,6 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
-var ReactTags = require('react-tag-input').WithContext;
 
 import FlowStore from '../../stores/FlowStore';
 import JobStore from '../../stores/JobStore';
