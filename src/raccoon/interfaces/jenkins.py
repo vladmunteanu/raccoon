@@ -6,7 +6,7 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 
 from .base import BaseInterface
-from raccoon.models import Task, Build, Project
+from raccoon.models import Task, Build, Project, Environment, Install
 from raccoon.utils.exceptions import ReplyError
 from raccoon.interfaces.github import GitHubInterface
 
@@ -102,7 +102,36 @@ class JenkinsInterface(BaseInterface):
 
     @gen.coroutine
     def install(self, *args, **kwargs):
-        yield self.trigger(*args, **kwargs)
+        yield self.trigger(callback_method=self.install_callback, *args, **kwargs)
+
+    @classmethod
+    @gen.coroutine
+    def install_callback(cls, request, task, response):
+        project_id = task.context.get('project')
+        build_id = task.context.get('build')
+        env_id = task.context.get('environment')
+
+        # get project
+        project = yield Project.objects.get(id=project_id)
+        if not project:
+            raise ReplyError(404)
+
+        # get build
+        build = yield Build.objects.get(id=build_id)
+        if not build:
+            raise ReplyError(404)
+
+        # get env
+        env = yield Environment.objects.get(name=env_id)
+        if not env:
+            raise ReplyError(404)
+
+        install = Install(build=build, project=project, environment=env)
+        yield install.save()
+
+        request.verb = 'post'
+        request.resource = '/api/v1/installs/'
+        request.broadcast(install.get_dict())
 
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
@@ -171,11 +200,11 @@ class JenkinsInterface(BaseInterface):
 
     @gen.coroutine
     def jobs(self, *args, **kwargs):
-        path = URLS.get('jobs')
+        verb, path = URLS.get('jobs')
         url = urljoin(self.api_url, path)
 
         response, headers = yield self.fetch(
-            method='GET',
+            method=verb,
             url=url,
         )
 
