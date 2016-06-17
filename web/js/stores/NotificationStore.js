@@ -55,7 +55,7 @@ class NotificationStore extends BaseStore {
         while (notif) {
             let r = notif.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
             let model = r[1], id = r[2];
-            let key = `HTTP-${notif.code}-${notif.verb.toUpperCase()}-${model}}`;
+            let key = `HTTP-${notif.code}-${notif.verb.toUpperCase()}-${model}`;
             notificationSystem.addNotification({
                 message: key,
                 level: 'info',
