@@ -91,7 +91,7 @@ class JenkinsInterface(BaseInterface):
         build = Build(
             project=project._id,
             branch=branch_name,
-            version='{}-{}'.format(version, task._id),
+            version='{}-{}'.format(version, str(task._id)[-6:]),
             changelog=changelog,
         )
         yield build.save()
