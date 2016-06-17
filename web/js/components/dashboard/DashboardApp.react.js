@@ -1,9 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
+import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
+import NotificationStore from '../../stores/NotificationStore';
 import AuthStore from '../../stores/AuthStore';
 import ActionStore from '../../stores/ActionStore';
 
@@ -28,6 +30,8 @@ class DashboardApp extends React.Component {
         ActionStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
+        NotificationStore.addListener(this._onChange);
+        this._notificationSystem = this.refs.notificationSystem;
     }
 
     componentWillUnmount() {
@@ -35,11 +39,14 @@ class DashboardApp extends React.Component {
         ActionStore.removeListener(this._onChange);
         ProjectStore.removeListener(this._onChange);
         EnvironmentStore.removeListener(this._onChange);
+        NotificationStore.removeListener(this._onChange);
     }
 
     _onChange() {
         let state = RaccoonApp.getState();
         this.setState(state);
+
+        NotificationStore.display(this._notificationSystem);
     }
 
     render() {
@@ -55,7 +62,7 @@ class DashboardApp extends React.Component {
                         <Topbar />
                         <Taskbar />
 
-                        <Notification />
+                        <NotificationSystem ref="notificationSystem" />
 
                         <div className="content">
                             {this.props.children}

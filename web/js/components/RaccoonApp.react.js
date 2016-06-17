@@ -49,6 +49,7 @@ function getRaccoonState() {
 class RaccoonApp extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
     /**
