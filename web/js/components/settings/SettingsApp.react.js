@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, Link, History } from 'react-router';
+import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
 
@@ -53,6 +53,8 @@ class SettingsApp extends React.Component {
         UserStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
+        NotificationStore.addListener(this._onChange);
+        this._notificationSystem = this.refs.notificationSystem;
     }
 
     componentWillUnmount() {
@@ -64,16 +66,17 @@ class SettingsApp extends React.Component {
         UserStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
+        NotificationStore.removeListener(this._onChange);
     }
 
     _onChange() {
         let state = getLocalState();
         this.setState(state);
+
+        NotificationStore.display(this._notificationSystem);
     }
 
     render() {
-        let error_message = '';
-
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -90,7 +93,9 @@ class SettingsApp extends React.Component {
                     <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
                         <Topbar />
                         <Taskbar />
-                        <Notification />
+
+                        <NotificationSystem ref="notificationSystem" />
+
                         <div className="content">
                             {this.props.children}
                         </div>

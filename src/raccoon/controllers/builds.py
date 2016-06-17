@@ -28,7 +28,7 @@ class BuildsController(BaseController):
         # get project
         project = yield Project.objects.get(id=project_id)
         if not project:
-            raise ReplyError(404)
+            raise ReplyError(400)
 
         # connect to github
         yield project.load_references()
