@@ -40,8 +40,8 @@ class Connector {
             this.ws = new WebSocket(config.WS_URL);
             this.ws.onopen = Connector.onOpen;
             this.ws.onmessage = Connector.onMessage;
-            //this.ws.onclose = Connector.onClose;
-            // this.ws.onerror = Connector.onError;
+            this.ws.onclose = Connector.onClose;
+            this.ws.onerror = Connector.onError;
 
             console.log("Socket connected!");
         }
@@ -60,6 +60,18 @@ class Connector {
             });
             connector.pendingRequests = [];
         }
+    }
+
+    static onClose() {
+        connector.ws = null;
+        this.connected = false;
+        console.log("Connection closed!");
+    }
+
+    static onError() {
+        connector.ws = null;
+        this.connected = false;
+        console.log("Connection error!");
     }
 
     /**
@@ -101,7 +113,7 @@ class Connector {
      * @returns request.requestId
      */
     send(request, callback) {
-        if(this.ws && ~[2,3].indexOf(this.ws.readyState)) {
+        if(this.ws && ~[2,3].indexOf(this.ws.readyState) || !this.ws) {
             this.connected = false;
             this.connect();
         }
