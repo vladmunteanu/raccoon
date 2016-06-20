@@ -5,7 +5,7 @@ from urllib.parse import urlencode, urlparse, urljoin
 
 from tornado import gen
 
-from .base import BaseInterface
+from .base import BaseInterface, REGISTERED
 from raccoon.models import Task, Build, Project, Environment, Install
 from raccoon.utils.exceptions import ReplyError
 from raccoon.interfaces.github import GitHubInterface
@@ -68,24 +68,11 @@ class JenkinsInterface(BaseInterface):
         project.version = version
         yield project.save()
 
-        # connect to github
+        # load project references
         yield project.load_references()
-        github = GitHubInterface(project.connector)
 
         # get commits and create changelog
-        commits = yield github.commits(project=project, branch=branch_name)
-        changelog = []
-        for item in commits:
-            changelog.append({
-                'sha': item['sha'],
-                'message': item['commit']['message'],
-                'date': item['commit']['committer']['date'],
-                'url': item['html_url'],
-                'author': {
-                    'name': item['commit']['committer']['name'],
-                    'email': item['commit']['committer']['email'],
-                }
-            })
+        changelog = yield project.connector.interface.commits(project=project, branch=branch_name)
 
         # create build
         build = Build(
@@ -239,3 +226,5 @@ class JenkinsInterface(BaseInterface):
     def __getattr__(self, method):
         return lambda *args, **kwargs: self.call(method, *args, **kwargs)
 
+
+REGISTERED['jenkins'] = JenkinsInterface

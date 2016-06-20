@@ -17,6 +17,9 @@ class Project(BaseModel):
 
     @property
     def repo_name(self):
+        """
+        :return: string like "<username>/<repo>"
+        """
         name = urlparse(self.repo_url).path.strip('/')
         return name
 
@@ -29,6 +32,9 @@ class Project(BaseModel):
         # GitHub api url is different than GitHub Enterprise
         if parse.hostname == 'github.com':
             netloc = 'api.github.com'
+            path = ''
+        elif parse.hostname == 'bitbucket.org':
+            netloc = 'api.bitbucket.org'
             path = ''
 
         url = '{scheme}://{netloc}/{path}'.format(
