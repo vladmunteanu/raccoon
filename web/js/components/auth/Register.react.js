@@ -2,9 +2,9 @@ import React from 'react'
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
+import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
-import Notification from '../Notification.react';
 
 import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
@@ -65,6 +65,7 @@ class Register extends React.Component {
     componentDidMount() {
         AuthStore.addListener(this._onChange);
         NotificationStore.addListener(this._onChange);
+        this._notificationSystem = this.refs.notificationSystem;
     }
 
     componentWillUnmount() {
@@ -78,6 +79,8 @@ class Register extends React.Component {
             RaccoonApp.fetchAll(); // fetch all everything at login
             this.context.router.push('/');
         }
+
+        NotificationStore.display(this._notificationSystem);
     }
 
     onFormChange(name, event) {
@@ -90,10 +93,7 @@ class Register extends React.Component {
         return (
             <div className="row">
                 <div className="col-sm-offset-4 col-md-offset-4">
-                    {/* show notifications */}
-                    <div style={{marginTop: 31 + 'px'}}>
-                      <Notification />
-                    </div>
+                    <NotificationSystem ref="notificationSystem" />
 
                     <div className="container">
                         <h3>Register</h3>

@@ -13,6 +13,7 @@
     "classnames": "^2.2.3",
     "events": "^1.1.0",
     "flux": "^2.1.1",
+    "i18n-react": "^0.2.0",
     "joi": "^7.2.3",
     "joi-validation-strategy": "^0.3.3",
     "jwt-decode": "^1.4.0",

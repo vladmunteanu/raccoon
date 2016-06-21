@@ -7,7 +7,6 @@ import RaccoonApp from '../RaccoonApp.react';
 import Sidebar from './Sidebar.react';
 import Topbar from './../Topbar.react';
 import Taskbar from './../Taskbar.react';
-import Notification from '../Notification.react';
 
 // stores
 import ActionStore from '../../stores/ActionStore';
