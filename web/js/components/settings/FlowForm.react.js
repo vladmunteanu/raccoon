@@ -2,6 +2,7 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
+import Select from 'react-select';
 
 import FlowStore from '../../stores/FlowStore';
 import JobStore from '../../stores/JobStore';
@@ -73,11 +74,18 @@ class FlowForm extends React.Component {
     }
 
     _getDataForRender() {
+        console.log("8888888", this.state.flow);
         return this.state.flow;
     }
 
     addAddon(event) {
-        this.state.flow.steps.push(this.refs.selectAddon.getDOMNode().value);
+        console.log("000000000", event);
+        if (event) {
+            this.state.flow.steps = event.split(',');
+        }else{
+            this.state.flow.steps = [];
+        };
+        console.log("222222222", this.state.flow.steps);
         this.setState(this.state);
     }
 
@@ -90,6 +98,7 @@ class FlowForm extends React.Component {
                     steps: this.state.flow.steps,
                     job: this.state.flow.job
                 });
+                console.log("333333333", this.state.flow.steps);
             }
         });
     }
@@ -105,12 +114,16 @@ class FlowForm extends React.Component {
         let steps = flow.steps;
         let jobId = flow.job;
         let del;
+        let options = [];
+        for (let key in this.state.addons)
+            options.push({'value': this.state.addons[key], 'label': this.state.addons[key]})
+
 
         if (this.formName === 'Update flow') {
             del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
             );
         }
-
+        console.log("777777777", steps);
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
@@ -125,31 +138,15 @@ class FlowForm extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="flow-addon" className="control-label">Addons</label><br/>
-                        <select className="form-control" id="flow-addon" ref="selectAddon">
-                            <option value='' disabled={true}>-- select an option --</option>
-                            {
-                                this.state.addons.map(addon => {
-                                    return <option value={addon}>{addon}</option>;
-                                })
-                            }
-                        </select>
-                        <button className="btn btn-info pull-right"
-                            onClick={this.addAddon}>
-                            Add
-                        </button>
-                        <div className="bootstrap-tagsinput">
-                            <h4>Added addons</h4>
-                            {
-                                    steps.map(addon => {
-                                        return (
-                                            <span className="tag label label-info">
-                                                {addon}
-                                                <span data-role="remove" />
-                                            </span>
-                                        );
-                                    })
-                                }
-                        </div>
+                        <Select id="select-multi" ref="selectAddon"
+                                value={steps}
+                                options={options}
+                                onChange={this.addAddon}
+                                multi={true}
+                                joinValues={true}
+                                delimiter=","
+                                simpleValue={true}>
+                        </Select>
                     </div>
                     <div className="form-group">
                         <label htmlFor="flow-job" className="control-label">Job</label><br/>
