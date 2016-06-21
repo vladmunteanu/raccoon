@@ -33,6 +33,7 @@ class Router(object):
 
         # interfaces
         (r'^/api/v1/github(/?(?P<method>[a-zA-Z\_]*))/?$', GitHubController),
+        (r'^/api/v1/bitbucket(/?(?P<method>[a-zA-Z\_]*))/?$', BitbucketController),
         (r'^/api/v1/jenkins(/?(?P<method>[a-zA-Z\_]*))/?$', JenkinsController),
     ]
 

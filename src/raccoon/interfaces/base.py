@@ -11,6 +11,8 @@ from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
+REGISTERED = {}
+
 class BaseInterface(object):
 
     def __init__(self, connector):
@@ -18,7 +20,7 @@ class BaseInterface(object):
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', body=None, headers=None, follow_redirects=True):
+    def fetch(self, url, method='GET', body=None, headers=None, follow_redirects=True, auth_username=None, auth_password=None):
         body = body or 'no body' if method.upper() == 'POST' else None
         log.info(['BaseInterface.fetch', method, url])
 
@@ -31,6 +33,8 @@ class BaseInterface(object):
                 follow_redirects=follow_redirects,
                 use_gzip=True,
                 validate_cert=False,
+                auth_username=auth_username,
+                auth_password=auth_password,
             ))
         except HTTPError as exc:
             raise ReplyError(exc.code, exc.message)

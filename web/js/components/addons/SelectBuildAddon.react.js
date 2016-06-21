@@ -26,7 +26,7 @@ class SelectBuildAddon extends BaseAddon {
         this._onChange = this._onChange.bind(this);
 
         if (this.state.environment) {
-            this.updateContext('environment', this.state.environment.label || this.state.environment.name);
+            this.updateContext('environment', this.state.environment.name);
         }
     }
 
@@ -54,6 +54,7 @@ class SelectBuildAddon extends BaseAddon {
     _onBuildSelect(buildId, event) {
         let build = BuildStore.getById(buildId);
         this.state.selectedBuild = build;
+        this.updateContext('build', build.id);
         this.updateContext('branch', build.branch);
         this.updateContext('version', build.version);
         this.setState(this.state);

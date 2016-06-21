@@ -22,7 +22,7 @@ class BaseController(object):
     @gen.coroutine
     def get(cls, request, pk=None, *args, **kwargs):
         if not cls.model:
-            raise ReplyError(501)
+            raise ReplyError(404)
 
         if pk:
             response = yield cls.model.objects.get(id=pk)

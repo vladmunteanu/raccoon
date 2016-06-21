@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from motorengine import StringField, DateTimeField
 from raccoon.models import BaseModel
 from raccoon.utils.dbfields import DictField
+from raccoon.interfaces.base import REGISTERED
 
 
 class Connector(BaseModel):
@@ -13,3 +14,7 @@ class Connector(BaseModel):
     config = DictField()
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
+    @property
+    def interface(self):
+        obj = REGISTERED[self.type]
+        return obj(connector=self)

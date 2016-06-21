@@ -23,6 +23,8 @@ class InstallStore extends BaseStore {
         // set base URI for resources
         this.baseuri = "/api/v1/installs/";
 
+        //register BaseStore actions
+        this.registerActions();
     }
 
     getLatestInstall(project, env) {
@@ -30,10 +32,7 @@ class InstallStore extends BaseStore {
             return install.project == project.id && install.environment == env.id;
         });
 
-        installs.sort(function(a, b) {
-            var x = a.date_added; var y = b.date_added;
-            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-        });
+        installs.sort((a, b) => {return b.date_added - a.date_added});
 
         if (installs.length > 0)
             return installs[0];

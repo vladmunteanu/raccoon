@@ -20,6 +20,7 @@ from .tasks import *
 from .notifications import *
 
 from .github import *
+from .bitbucket import *
 from .jenkins import *
 
 
