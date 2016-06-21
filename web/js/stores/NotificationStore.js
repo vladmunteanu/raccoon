@@ -22,16 +22,19 @@ T.setTexts({
     HTTP_200_PUT_projects: 'Project *{who}* was updated',
     HTTP_200_POST_projects: 'Project *{who}* was created',
     HTTP_200_DELETE_projects: 'Project was deleted',
+    HTTP_404_GET_projects: 'Project not found',
 
     // environments
     HTTP_200_PUT_environments: 'Environment *{who}* was updated',
     HTTP_200_POST_environments: 'Environment *{who}* was created',
     HTTP_200_DELETE_environments: 'Environment was deleted',
+    HTTP_404_GET_environments: 'Environment not found',
 
     // jobs
     HTTP_200_PUT_jobs: 'Job *{who}* was updated',
     HTTP_200_POST_jobs: 'Job *{who}* was created',
     HTTP_200_DELETE_jobs: 'Job was deleted',
+    HTTP_404_GET_jobs: 'Job not found',
     HTTP_201_POST_jenkins: 'Your task just started',
     HTTP_302_POST_jenkins: 'Your task was aborted',
 
@@ -39,16 +42,22 @@ T.setTexts({
     HTTP_200_PUT_flows: 'Flow *{who}* was updated',
     HTTP_200_POST_flows: 'Flow *{who}* was created',
     HTTP_200_DELETE_flows: 'Flow was deleted',
+    HTTP_404_GET_flows: 'Flow not found',
 
     // actions
     HTTP_200_PUT_actions: 'Action *{who}* was updated',
     HTTP_200_POST_actions: 'Action *{who}* was created',
     HTTP_200_DELETE_actions: 'Action was deleted',
+    HTTP_404_GET_actions: 'Action not found',
 
     // connectors
     HTTP_200_PUT_connectors: 'Connector *{who}* was updated',
     HTTP_200_POST_connectors: 'Connector *{who}* was created',
     HTTP_200_DELETE_connectors: 'Connector was deleted',
+    HTTP_404_GET_connectors: 'Connector not found',
+
+    // default
+    HTTP_500: 'During your action we encountered _Internal Server Error_. We\'re working on it asap.',
 });
 
 
@@ -91,7 +100,7 @@ class NotificationStore extends BaseStore {
     }
 
     getLevelAndTitle(code) {
-        if (code >= 500) return ['danger', 'Oh snap'];
+        if (code >= 500) return ['error', 'Oh snap'];
         else if (code >= 400) return ['warning', 'Warning'];
         else if (code >= 300) return ['info', 'Heads up'];
         else if (code >= 200) return ['success', 'Well done'];
@@ -104,10 +113,13 @@ class NotificationStore extends BaseStore {
         while (notif) {
             let data = notif.data || {};
             let [level, title] = this.getLevelAndTitle(notif.code);
+            let key = 'HTTP_500';
 
-            let r = notif.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
-            let model = r[1], id = r[2];
-            let key = `HTTP_${notif.code}_${notif.verb.toUpperCase()}_${model}`;
+            if (notif.code != 500) {
+                let r = notif.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
+                let model = r[1], id = r[2];
+                key = `HTTP_${notif.code}_${notif.verb.toUpperCase()}_${model}`;
+            }
 
             notificationSystem.addNotification({
                 level: level,
