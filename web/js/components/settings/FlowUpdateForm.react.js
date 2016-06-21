@@ -33,7 +33,6 @@ class FlowUpdateForm extends FlowForm {
             this.props.clearValidations();
             let state = getLocalState(nextProps.params.id);
             this.setState(state);
-            console.log("77777777", this.state.flow.steps);
         }
     }
 
@@ -41,7 +40,6 @@ class FlowUpdateForm extends FlowForm {
         let state = getLocalState();
         state.flow = FlowStore.getById(this.props.params.id);
         this.setState(state);
-        console.log("66666666", this.state.flow.steps);
     }
 
     onSubmit(event) {
@@ -55,12 +53,10 @@ class FlowUpdateForm extends FlowForm {
                 });
             }
         });
-        console.log("333333333", this.state.flow);
     }
 
     _getDataForRender() {
         this.state.flow = FlowStore.getById(this.props.params.id);
-        console.log("55555555", this.state.flow);
         if(!this.state.flow) {
             this.state.flow = {
                 name: '',

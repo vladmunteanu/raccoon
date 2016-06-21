@@ -74,18 +74,15 @@ class FlowForm extends React.Component {
     }
 
     _getDataForRender() {
-        console.log("8888888", this.state.flow);
         return this.state.flow;
     }
 
     addAddon(event) {
-        console.log("000000000", event);
         if (event) {
             this.state.flow.steps = event.split(',');
         }else{
             this.state.flow.steps = [];
         };
-        console.log("222222222", this.state.flow.steps);
         this.setState(this.state);
     }
 
@@ -98,7 +95,6 @@ class FlowForm extends React.Component {
                     steps: this.state.flow.steps,
                     job: this.state.flow.job
                 });
-                console.log("333333333", this.state.flow.steps);
             }
         });
     }
@@ -123,7 +119,6 @@ class FlowForm extends React.Component {
             del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
             );
         }
-        console.log("777777777", steps);
         return (
             <div className="container">
                 <h3>{this.formName}</h3>
