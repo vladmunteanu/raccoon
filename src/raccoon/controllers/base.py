@@ -80,7 +80,7 @@ class BaseController(object):
         yield instance.load_references()
 
         for key, value in kwargs.items():
-            if value and hasattr(instance, key):
+            if hasattr(instance, key):
                 # !important
                 # Make value = ObjectId(value) if field is a reference field
                 field = instance.get_field_by_db_name(key)
