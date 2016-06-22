@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router';
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
@@ -91,45 +92,56 @@ class Register extends React.Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-sm-offset-4 col-md-offset-4">
-                    <NotificationSystem ref="notificationSystem" />
+            <div className="auth vertical-center gradient-background">
+                <NotificationSystem ref="notificationSystem" />
 
-                    <div className="container">
-                        <h3>Register</h3>
-                        <form onSubmit={this.register} className="form-horizontal col-sm-4">
-                            <div className="form-group">
-                                <label htmlFor="fullname" className="control-label">Full name</label>
-                                <input type="text" className="form-control"
-                                    id="fullname" placeholder="Full name"
-                                    value={this.state.name}
-                                    onChange={this.onFormChange.bind(this, 'name')}
-                                    onBlur={this.props.handleValidation('name')}/>
-                                {this.renderHelpText(this.props.getValidationMessages('name'))}
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="email" className="control-label">Email</label>
-                                <input type="text" className="form-control"
-                                    id="email" placeholder="Email"
-                                    value={this.state.email}
-                                    onChange={this.onFormChange.bind(this, 'email')}
-                                    onBlur={this.props.handleValidation('email')}/>
-                                {this.renderHelpText(this.props.getValidationMessages('email'))}
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="password" className="control-label">Password</label>
-                                <input type="password" className="form-control"
-                                    id="password" placeholder="Password"
-                                    value={this.state.password}
-                                    onChange={this.onFormChange.bind(this, 'password')}
-                                    onBlur={this.props.handleValidation('password')}/>
-                                {this.renderHelpText(this.props.getValidationMessages('password'))}
-                            </div>
-                            <div className="form-group">
-                                <input type="submit" value="Register" className="btn btn-info pull-right"/>
-                            </div>
-                        </form>
+                <div className="container">
+                    <div className="logo text-center">
+                        <img src="/static/assets/img/raccoon-white.png" />
+                        <span>Raccoon</span>
                     </div>
+
+                    <form onSubmit={this.register} className="form-horizontal">
+                        <hr />
+                        <div className="form-group">
+                            <label htmlFor="fullname" className="control-label">FULL NAME</label>
+                            <input type="text" className="form-control"
+                                id="fullname" placeholder="John Doe"
+                                value={this.state.name}
+                                onChange={this.onFormChange.bind(this, 'name')}
+                                onBlur={this.props.handleValidation('name')}/>
+                            {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        </div>
+
+                        <hr />
+                        <div className="form-group">
+                            <label htmlFor="email" className="control-label">EMAIL ADDRESS</label>
+                            <input type="text" className="form-control"
+                                id="email" placeholder="john.doe@example.com"
+                                value={this.state.email}
+                                onChange={this.onFormChange.bind(this, 'email')}
+                                onBlur={this.props.handleValidation('email')}/>
+                            {this.renderHelpText(this.props.getValidationMessages('email'))}
+                        </div>
+
+                        <hr />
+                        <div className="form-group">
+                            <label htmlFor="password" className="control-label">PASSWORD</label>
+                            <input type="password" className="form-control"
+                                id="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
+                                value={this.state.password}
+                                onChange={this.onFormChange.bind(this, 'password')}
+                                onBlur={this.props.handleValidation('password')}/>
+                            {this.renderHelpText(this.props.getValidationMessages('password'))}
+                        </div>
+                        
+                        <br />
+                        <div className="form-group">
+                            <Link to="/login">Already have an account?</Link>
+                            <input type="submit" value="Register" className="btn btn-info pull-right"/>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         );
