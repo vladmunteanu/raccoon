@@ -27,9 +27,11 @@ class Application(tornado.web.Application):
     """
     def __init__(self):
         handlers = [
-            (r'/websocket', ApiWebSocketHandler),
-            (r'/static/(.*)', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
-            (r'/(.*)', WebHandler),
+            (r'^/websocket/?', ApiWebSocketHandler),
+            (r'^/static/(.*)/?', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
+
+            # web handler should be last because it's regex is generic
+            (r'^/(.*)/?', WebHandler),
         ]
         tornado.web.Application.__init__(self, handlers, **APP)
 
@@ -40,7 +42,7 @@ def main():
     app = Application()
     app.listen(PORT)
 
-    # Connect to Mongo Server
+    # Connect to MongoDB Server
     io_loop = tornado.ioloop.IOLoop.instance()
     connect(DB['name'], host=DB['host'], port=DB['port'], io_loop=io_loop)
 
