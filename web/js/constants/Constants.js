@@ -32,5 +32,7 @@ export default {
         BUILD_STOP: null,
         BUILD_INFO: null,
         BUILD_OUTPUT: null,
+
+        TASKBAR_TOGGLE_VISIBLE: null,
     })
 };

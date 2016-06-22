@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router'
 
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import Loader from '../components/Loader.react';
+import Constants from '../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
 
 class Topbar extends React.Component {
 
-    toggleTasks(event) {
-        $('#taskbar').toggleClass('slidemenu-open');
-        //event.stopPropagation();
-        //event.nativeEvent.stopImmediatePropagation();
+    toggleTasks() {
+        AppDispatcher.dispatch({
+            action: ActionTypes.TASKBAR_TOGGLE_VISIBLE
+        })
     }
 
     render() {
@@ -34,7 +37,7 @@ class Topbar extends React.Component {
                             <li><Link to="/settings">Settings</Link></li>
                             <li><a href="javascript: void(0);">Help</a></li>
                             <li><Link to="/logout">Log Out</Link></li>
-                            <li><Link to="#" className="btn-tasks" onClick={this.toggleTasks}><i className="fa fa-tasks" /></Link></li>
+                            <li><a href="javascript: void(0);" className="btn-tasks" onClick={this.toggleTasks.bind(this)}><i className="fa fa-tasks" /></a></li>
                         </ul>
                     </div>
                 </div>

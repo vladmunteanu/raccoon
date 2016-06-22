@@ -1,7 +1,12 @@
 import React from 'react';
 
-import {TaskItem, READY_STATES, UNREADY_STATES} from './TaskItem.react';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import TaskStore from '../stores/TaskStore';
+import Constants from '../constants/Constants';
+let ActionTypes = Constants.ActionTypes;
+
+import {TaskItem, READY_STATES, UNREADY_STATES} from './TaskItem.react';
+
 
 
 class Taskbar extends React.Component {
@@ -12,6 +17,11 @@ class Taskbar extends React.Component {
             tasks: TaskStore.all,
         };
         this._onChange = this._onChange.bind(this);
+
+        // register for taskbar toggle event and display
+        AppDispatcher.registerOnce(ActionTypes.TASKBAR_TOGGLE_VISIBLE, _ => {
+            $('#taskbar').toggleClass('slidemenu-open');
+        });
     }
 
     componentDidMount() {
