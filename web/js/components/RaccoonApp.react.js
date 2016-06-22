@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
@@ -109,7 +109,7 @@ class RaccoonApp extends React.Component {
 
     render() {
         return (
-            <Router history={hashHistory}>
+            <Router history={browserHistory}>
                 <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
                     <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />

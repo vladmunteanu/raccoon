@@ -27,9 +27,9 @@ class Application(tornado.web.Application):
     """
     def __init__(self):
         handlers = [
-            (r'/', WebHandler),
             (r'/websocket', ApiWebSocketHandler),
             (r'/static/(.*)', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
+            (r'/(.*)', WebHandler),
         ]
         tornado.web.Application.__init__(self, handlers, **APP)
 

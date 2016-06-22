@@ -23,10 +23,10 @@ class Topbar extends React.Component {
                             <span className="icon-bar" />
                             <span className="icon-bar" />
                         </button>
-                        <a className="navbar-brand" href="#">
+                        <Link to="/" className="navbar-brand">
                             <img src="/static/assets/img/raccoon.png" className="pull-left" style={{ opacity: .6, marginTop: -10 + 'px', width: 50 +'px' }} />
                             <span style={{ marginLeft: 10 + 'px' }}>Raccoon</span>
-                        </a>
+                        </Link>
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">
