@@ -134,7 +134,7 @@ class Register extends React.Component {
                                 onBlur={this.props.handleValidation('password')}/>
                             {this.renderHelpText(this.props.getValidationMessages('password'))}
                         </div>
-                        
+
                         <br />
                         <div className="form-group">
                             <Link to="/login">Already have an account?</Link>
