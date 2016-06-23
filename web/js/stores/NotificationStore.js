@@ -16,6 +16,7 @@ T.setTexts({
     //auth
     HTTP_200_POST_auth: 'Hi there, welcome back! :)',
     HTTP_404_POST_auth: 'Invalid credentials',
+    HTTP_200_POST_me: 'Welcome to Raccoon!',
     HTTP_409_POST_me: 'Email address is already associated with an account!',
 
     // projects
