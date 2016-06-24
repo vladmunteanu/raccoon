@@ -69,7 +69,7 @@ class GridItem extends React.Component {
                         {installedBuild.version}
                         <small className="pull-right">
                             <TimeAgo
-                                date={installedBuild.date_added * 1000}
+                                date={this.state.install.date_added * 1000}
                                 minPeriod={60}
                                 formatter={Utils.timeAgoFormatter}
                             />
