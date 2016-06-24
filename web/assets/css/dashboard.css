@@ -285,3 +285,7 @@ body {
         border: 0;
     }
 }
+
+.close {
+    font-weight: 300;
+}
