@@ -59,24 +59,22 @@ class GridItem extends React.Component {
         if (this.state.installedBuild)
             installedBuild = this.state.installedBuild;
 
-        let content = (<div className="content"><h4 className="text-center">No builds for this project!</h4></div>);
+        let content = (<h5 className="text-center">No builds for this project!</h5>);
         if (this.state.builds.length)
-            content = (<div className="content"><h4 className="text-center">No build is installed!</h4></div>);
+            content = (<h5 className="text-center">No build is installed!</h5>);
         if (this.state.installedBuild)
             content = (
-                <div className="content">
-                    <div>
-                        {installedBuild.version}
-                        <small className="pull-right">
-                            <TimeAgo
-                                date={this.state.install.date_added * 1000}
-                                minPeriod={60}
-                                formatter={Utils.timeAgoFormatter}
-                            />
-                        </small>
-                        <br />
-                        {installedBuild.branch}
-                    </div>
+                <div>
+                    {installedBuild.version}
+                    <small className="pull-right">
+                        <TimeAgo
+                            date={this.state.install.date_added * 1000}
+                            minPeriod={60}
+                            formatter={Utils.timeAgoFormatter}
+                        />
+                    </small>
+                    <br />
+                    {installedBuild.branch}
                 </div>
             );
 
@@ -92,7 +90,9 @@ class GridItem extends React.Component {
                                   actions={cardActions} />
                     </div>
                 </div>
-                {content}
+                <div className="content">
+                    {content}
+                </div>
             </div>
         );
     }
