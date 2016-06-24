@@ -59,6 +59,7 @@ T.setTexts({
 
     // default
     HTTP_500: 'During your action we encountered _Internal Server Error_. We\'re working on it asap.',
+    HTTP_401: 'You are not authorized to do this action. Please contact your administrator.',
 });
 
 
@@ -114,12 +115,12 @@ class NotificationStore extends BaseStore {
         while (notif) {
             let data = notif.data || {};
             let [level, title] = this.getLevelAndTitle(notif.code);
-            let key = 'HTTP_500';
+            let r = notif.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
+            let model = r[1], id = r[2];
+            let key = `HTTP_${notif.code}_${notif.verb.toUpperCase()}_${model}`;
 
-            if (notif.code != 500) {
-                let r = notif.resource.match(/\/api\/v1\/([\w-]+)[\/]?([\w-]+)?/);
-                let model = r[1], id = r[2];
-                key = `HTTP_${notif.code}_${notif.verb.toUpperCase()}_${model}`;
+            if (notif.code == 401 || notif.code == 500) {
+                key = `HTTP_${notif.code}`;
             }
 
             notificationSystem.addNotification({

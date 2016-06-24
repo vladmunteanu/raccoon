@@ -37,7 +37,10 @@ class UsersController(BaseController):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
-        token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
+        token = jwt.encode({
+            'id': str(user._id),
+            'role': user.role,
+        }, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
 
 

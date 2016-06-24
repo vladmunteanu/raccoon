@@ -6,7 +6,7 @@ from tornado import gen
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from bson.objectid import ObjectId
 
-from raccoon.utils.decorators import authenticated
+from raccoon.utils.decorators import authenticated, isAdmin
 from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
@@ -64,6 +64,7 @@ class BaseController(object):
         request.broadcast(response.get_dict())
 
     @classmethod
+    @isAdmin
     @authenticated
     @gen.coroutine
     def put(cls, request, pk, *args, **kwargs):
@@ -105,6 +106,7 @@ class BaseController(object):
         raise ReplyError(501)
 
     @classmethod
+    @isAdmin
     @authenticated
     @gen.coroutine
     def delete(cls, request, pk):

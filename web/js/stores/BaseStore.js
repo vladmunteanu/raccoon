@@ -23,14 +23,16 @@ class BaseStore extends EventEmitter {
 
     registerActions() {
         AppDispatcher.registerOnce('PUT ' + this.baseuri, payload => {
-            this.instances = this.instances.map(instance => {
-                if (instance.id === payload.data.id) {
-                    return payload.data;
-                } else {
-                    return instance;
-                }
-            });
-            this.emitChange();
+            if (payload.code == 200) {
+                this.instances = this.instances.map(instance => {
+                    if (instance.id === payload.data.id) {
+                        return payload.data;
+                    } else {
+                        return instance;
+                    }
+                });
+                this.emitChange();
+            }
         });
 
         AppDispatcher.registerOnce('PATCH ' + this.baseuri, payload => {

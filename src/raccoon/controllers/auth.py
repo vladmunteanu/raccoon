@@ -34,7 +34,10 @@ class AuthController(BaseController):
         if not user:
             raise ReplyError(404, 'Invalid email or password')
 
-        token = jwt.encode({'id': str(user._id)}, SECRET, algorithm='HS256')
+        token = jwt.encode({
+            'id': str(user._id),
+            'role': user.role,
+        }, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
 
     @classmethod

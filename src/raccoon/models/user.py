@@ -12,6 +12,7 @@ class User(BaseModel):
     email = EmailField(required=True, unique=True)
     username = StringField()
     password = StringField(required=True)
+    role = StringField(default='user')
     rights = ListField(ReferenceField(reference_document_type=Right))
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
