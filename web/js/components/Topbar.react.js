@@ -1,12 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router'
 
+import AuthStore from '../stores/AuthStore';
+import RaccoonApp from './RaccoonApp.react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Loader from '../components/Loader.react';
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
 class Topbar extends React.Component {
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = RaccoonApp.getState();
+        this._onChange = this._onChange.bind(this);
+        this.toggleTasks = this.toggleTasks.bind(this);
+    }
+
+    componentDidMount() {
+        AuthStore.addListener(this._onChange);
+    }
+
+    componentWillUnmount() {
+        AuthStore.removeListener(this._onChange);
+    }
+
+    _onChange() {
+        let state = RaccoonApp.getState();
+        this.setState(state);
+    }
 
     toggleTasks() {
         AppDispatcher.dispatch({
@@ -15,6 +37,11 @@ class Topbar extends React.Component {
     }
 
     render() {
+        let settingsButton;
+        if (this.state.user && this.state.user.role == 'admin') {
+            settingsButton = <li><Link to="/settings">Settings</Link></li>;
+        }
+
         return (
             <nav className="navbar navbar-default">
                 <Loader />
@@ -34,10 +61,10 @@ class Topbar extends React.Component {
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">
                             <li><Link to="/">Dashboard</Link></li>
-                            <li><Link to="/settings">Settings</Link></li>
+                            { settingsButton }
                             <li><a href="javascript: void(0);">Help</a></li>
                             <li><Link to="/logout">Log Out</Link></li>
-                            <li><a href="javascript: void(0);" className="btn-tasks" onClick={this.toggleTasks.bind(this)}><i className="fa fa-tasks" /></a></li>
+                            <li><a href="javascript: void(0);" className="btn-tasks" onClick={this.toggleTasks}><i className="fa fa-tasks" /></a></li>
                         </ul>
                     </div>
                 </div>

@@ -63,6 +63,17 @@ class RaccoonApp extends React.Component {
         callback();
     }
 
+    /**
+     * Middleware that checks if user is admin; if not redirect to /login
+     */
+    requireAdmin(nextState, replaceState, callback) {
+        if (AuthStore.role != 'admin') {
+            replaceState({nextPathname: nextState.location.pathname}, '/login');
+        }
+
+        callback();
+    }
+
     static getState(state) {
         var globalState = getRaccoonState();
 
@@ -110,7 +121,7 @@ class RaccoonApp extends React.Component {
     render() {
         return (
             <Router history={browserHistory}>
-                <Route path="/settings" component={SettingsApp} onEnter={this.requireAuth}>
+                <Route path="/settings" component={SettingsApp} onEnter={this.requireAdmin}>
                     <Route path="action/new" component={ActionForm} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={ActionUpdateForm} onEnter={this.requireAuth} />
                     <Route path="connector/new" component={ConnectorForm} onEnter={this.requireAuth} />

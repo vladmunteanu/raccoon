@@ -109,6 +109,16 @@ class AuthStore extends BaseStore {
         return id
     }
 
+    get role() {
+        let role = 'user';
+        try {
+            role = jwt_decode(this.token).role;
+        } catch (e) {
+
+        }
+        return role;
+    }
+
     get token() {
         return localStorage.getItem('token');
     }
