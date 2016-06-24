@@ -10,7 +10,7 @@ class Topbar extends React.Component {
 
     toggleTasks() {
         AppDispatcher.dispatch({
-            action: ActionTypes.TASKBAR_TOGGLE_VISIBLE
+            action: ActionTypes.TASKBAR_TOGGLE
         })
     }
 

@@ -130,6 +130,9 @@ class Flow extends React.Component {
                     args: last_context,
                 }
             });
+            AppDispatcher.dispatch({
+                action: ActionTypes.TASKBAR_SHOW
+            });
             return (<div></div>);
         }
 

@@ -33,6 +33,8 @@ export default {
         BUILD_INFO: null,
         BUILD_OUTPUT: null,
 
-        TASKBAR_TOGGLE_VISIBLE: null,
+        // tasks
+        TASKBAR_TOGGLE: null,
+        TASKBAR_SHOW: null
     })
 };

@@ -19,8 +19,11 @@ class Taskbar extends React.Component {
         this._onChange = this._onChange.bind(this);
 
         // register for taskbar toggle event and display
-        AppDispatcher.registerOnce(ActionTypes.TASKBAR_TOGGLE_VISIBLE, _ => {
+        AppDispatcher.registerOnce(ActionTypes.TASKBAR_TOGGLE, _ => {
             $('#taskbar').toggleClass('slidemenu-open');
+        });
+        AppDispatcher.registerOnce(ActionTypes.TASKBAR_SHOW, _ => {
+            $('#taskbar').addClass('slidemenu-open');
         });
     }
 
