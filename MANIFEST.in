@@ -1,0 +1,6 @@
+include requirements.txt README.md server.py
+include sys/bin/*
+include web/index.html
+include web/package.json
+recursive-include web *
+prune web/node_modules
