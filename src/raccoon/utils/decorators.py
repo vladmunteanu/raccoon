@@ -5,6 +5,7 @@ from settings import SECRET
 from raccoon.models import User
 from raccoon.utils.exceptions import ReplyError
 
+
 def authenticated(method):
     """Decorate methods with this to require that the user be logged in."""
 
@@ -32,6 +33,7 @@ def authenticated(method):
         raise gen.Return(result)
     return wrapper
 
+
 def isAdmin(method):
     """Decorate methods with this to require that the user is admin."""
 
@@ -54,5 +56,3 @@ def isAdmin(method):
         result = yield method(cls, request, *args, **kwargs)
         raise gen.Return(result)
     return wrapper
-
-

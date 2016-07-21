@@ -12,6 +12,7 @@ from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
+
 class TasksController(BaseController):
     """
     Tasks Controller

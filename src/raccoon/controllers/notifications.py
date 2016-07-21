@@ -9,6 +9,7 @@ from raccoon.controllers.base import BaseController
 
 log = logging.getLogger(__name__)
 
+
 class NotificationsController(BaseController):
     """
         Notifications Controller

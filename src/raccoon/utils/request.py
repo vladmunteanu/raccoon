@@ -9,6 +9,7 @@ from raccoon.utils.utils import json_serial
 log = logging.getLogger(__name__)
 CLIENT_CONNECTIONS = {}
 
+
 class Request(object):
     def __init__(self, idx, verb, resource, token, data, socket, *args, **kwargs):
         self.requestId = idx

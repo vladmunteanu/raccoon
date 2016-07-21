@@ -8,9 +8,10 @@ from raccoon.controllers.base import BaseController
 from raccoon.models import Build, Project
 from raccoon.interfaces.github import GitHubInterface
 from raccoon.utils.decorators import authenticated
-
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
+
 
 class BuildsController(BaseController):
     """

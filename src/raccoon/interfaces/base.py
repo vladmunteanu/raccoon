@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 
 REGISTERED = {}
 
+
 class BaseInterface(object):
 
     def __init__(self, connector):

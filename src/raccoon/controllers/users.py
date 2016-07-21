@@ -13,6 +13,7 @@ from settings import SECRET
 
 log = logging.getLogger(__name__)
 
+
 class UsersController(BaseController):
     """
     Users Controller
