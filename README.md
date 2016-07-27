@@ -41,4 +41,10 @@ pip install -r requirements.txt
 cd web && npm install
 ```
 
+Add executables files to where they belong:
+```
+ln -s path-to-raccoon-repo/sys/bin/raccoon path-to-your-env/bin/raccoon
+ln -s path-to-raccoon-repo/sys/bin/raccoonshell path-to-your-env/bin/raccoonshell
+```
+
 Start server with ```npm start```
