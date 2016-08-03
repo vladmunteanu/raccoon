@@ -8,7 +8,6 @@ from tornado import gen
 from .base import BaseInterface, REGISTERED
 from raccoon.models import Task, Build, Project, Environment, Install
 from raccoon.utils.exceptions import ReplyError
-from raccoon.interfaces.github import GitHubInterface
 
 
 log = logging.getLogger(__name__)
@@ -72,7 +71,8 @@ class JenkinsInterface(BaseInterface):
         yield project.load_references()
 
         # get commits and create changelog
-        changelog = yield project.connector.interface.commits(project=project, branch=branch_name)
+        changelog = yield project.connector.interface.commits(project=project,
+                                                              branch=branch_name)
 
         # create build
         build = Build(
@@ -89,7 +89,8 @@ class JenkinsInterface(BaseInterface):
 
     @gen.coroutine
     def install(self, *args, **kwargs):
-        yield self.trigger(callback_method=self.install_callback, *args, **kwargs)
+        yield self.trigger(callback_method=self.install_callback,
+                           *args, **kwargs)
 
     @classmethod
     @gen.coroutine
@@ -165,12 +166,12 @@ class JenkinsInterface(BaseInterface):
         task.add_callback(callback_method)
         yield task.save()
 
-        chain = \
-            self.tasks.jenkins_queue_watcher.s(id=task._id, api_url=self.api_url, url=queue_url) | \
-            self.tasks.jenkins_job_watcher.s(
-                id=task._id,
-                api_url=self.api_url,
-            )
+        chain = self.tasks.jenkins_queue_watcher.s(id=task._id,
+                                                   api_url=self.api_url,
+                                                   url=queue_url)
+        chain = chain | self.tasks.jenkins_job_watcher.s(id=task._id,
+                                                         api_url=self.api_url)
+
         chain_task = chain.delay()
 
         task.tasks = [chain_task.id, chain_task.parent.id]
@@ -203,6 +204,7 @@ class JenkinsInterface(BaseInterface):
             raise ReplyError(404)
 
         # select job from flow method
+        job_name = None
         if flow:
             job_name = flow.job.job
         if job:

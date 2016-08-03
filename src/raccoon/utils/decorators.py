@@ -2,8 +2,9 @@ import jwt
 from tornado import gen
 
 from settings import SECRET
-from raccoon.models import User
-from raccoon.utils.exceptions import ReplyError
+from ..models import User
+from .exceptions import ReplyError
+
 
 def authenticated(method):
     """Decorate methods with this to require that the user be logged in."""
@@ -17,14 +18,14 @@ def authenticated(method):
             raise ReplyError(401)
 
         try:
-            userData = jwt.decode(request.token, SECRET, algorithms=['HS256'])
+            user_data = jwt.decode(request.token, SECRET, algorithms=['HS256'])
         except jwt.exceptions.DecodeError:
             raise ReplyError(400)
 
-        if 'id' not in userData:
+        if 'id' not in user_data:
             raise ReplyError(401)
 
-        request.user = yield User.objects.get(userData['id'])
+        request.user = yield User.objects.get(user_data['id'])
         if not request.user:
             raise ReplyError(401)
 
@@ -32,7 +33,8 @@ def authenticated(method):
         raise gen.Return(result)
     return wrapper
 
-def isAdmin(method):
+
+def is_admin(method):
     """Decorate methods with this to require that the user is admin."""
 
     @gen.coroutine
@@ -44,15 +46,13 @@ def isAdmin(method):
             raise ReplyError(401)
 
         try:
-            userData = jwt.decode(request.token, SECRET, algorithms=['HS256'])
+            user_data = jwt.decode(request.token, SECRET, algorithms=['HS256'])
         except jwt.exceptions.DecodeError:
             raise ReplyError(400)
 
-        if userData.get('role') != 'admin':
+        if user_data.get('role') != 'admin':
             raise ReplyError(401)
 
         result = yield method(cls, request, *args, **kwargs)
         raise gen.Return(result)
     return wrapper
-
-

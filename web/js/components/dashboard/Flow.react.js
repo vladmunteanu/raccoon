@@ -28,7 +28,7 @@ function getLocalState(actionId, projectId=null, envId=null) {
         flow: flow,
         job: job,
         connector: connector,
-        step: 0,
+        step: 0
     };
 
     return RaccoonApp.getState(localState);

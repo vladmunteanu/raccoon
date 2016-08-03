@@ -24,6 +24,5 @@ from .bitbucket import *
 from .jenkins import *
 
 
-
 # Import all submodules
 # import_submodules(globals(), __name__, __path__)

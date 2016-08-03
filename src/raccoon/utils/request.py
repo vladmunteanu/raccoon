@@ -9,8 +9,10 @@ from raccoon.utils.utils import json_serial
 log = logging.getLogger(__name__)
 CLIENT_CONNECTIONS = {}
 
+
 class Request(object):
-    def __init__(self, idx, verb, resource, token, data, socket, *args, **kwargs):
+    def __init__(self, idx, verb, resource, token,
+                 data, socket, *args, **kwargs):
         self.requestId = idx
         self.verb = verb
         self.resource = resource
@@ -50,5 +52,8 @@ class Request(object):
         data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
-            data['requestId'] = self.requestId if self.socket and connection_id == self.socket.connection_id else 'notification'
+            if self.socket and connection_id == self.socket.connection_id:
+                data['requestId'] = self.requestId
+            else:
+                data['requestId'] = 'notification'
             socket.write_message(json.dumps(data, default=json_serial))

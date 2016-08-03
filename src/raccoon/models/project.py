@@ -2,8 +2,9 @@ from __future__ import absolute_import
 
 from urllib.parse import urlparse
 
-from motorengine import StringField, DateTimeField, URLField, ReferenceField, IntField
-from raccoon.models import BaseModel, Connector
+from motorengine import StringField, DateTimeField, URLField, ReferenceField
+from . import BaseModel, Connector
+
 
 class Project(BaseModel):
     __collection__ = 'projects'

@@ -4,12 +4,11 @@ import logging
 import json
 from tornado import gen
 
-import tornado.web
 import tornado.websocket
 
-from raccoon.urls import Router
-from raccoon.utils.request import Request, CLIENT_CONNECTIONS
-from raccoon.utils.exceptions import ReplyError
+from ..urls import Router
+from ..utils.request import Request, CLIENT_CONNECTIONS
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +32,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     @gen.coroutine
     def open(self):
-        global CLIENT_CONNECTIONS
         # save all connections to use in broadcast
         CLIENT_CONNECTIONS[self.connection_id] = self
         log.info(['WebSocket opened', CLIENT_CONNECTIONS.keys()])
@@ -58,10 +56,10 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         body = jdata.get('body', {})
         args = jdata.get('args', {})
         verb = jdata.get('verb').lower()
-        requestId = jdata.get('requestId')
+        request_id = jdata.get('requestId')
 
-        authHeader = jdata.get('headers', {}).get('Authorization', '')
-        parts = authHeader.split('Bearer ')
+        auth_header = jdata.get('headers', {}).get('Authorization', '')
+        parts = auth_header.split('Bearer ')
         token = None
         if len(parts) == 2:
             token = parts[1]
@@ -80,7 +78,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             else:
                 params.update(args)
             req = Request(
-                idx=requestId,
+                idx=request_id,
                 verb=verb,
                 resource=resource,
                 token=token,
@@ -89,7 +87,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             )
             yield method(req, **params)
         except ReplyError as e:
-            e.requestId = requestId
+            e.requestId = request_id
             e.verb = verb
             e.resource = resource
 
@@ -98,13 +96,13 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 log.error('Possible error detected', exc_info=True)
             self.write_message(str(e))
         except Exception:
-            ex = ReplyError(500, requestId=requestId, verb=verb, resource=resource)
+            ex = ReplyError(500, request_id=request_id,
+                            verb=verb, resource=resource)
             self.write_message(str(ex))
             log.error('Internal server error', exc_info=True)
 
     @gen.coroutine
     def on_close(self):
-        global CLIENT_CONNECTIONS
         # remove connection after user disconnected
         CLIENT_CONNECTIONS.pop(self.connection_id, None)
         log.info(['WebSocket closed', CLIENT_CONNECTIONS.keys()])

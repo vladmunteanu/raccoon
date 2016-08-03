@@ -8,6 +8,7 @@ from .base import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 
+
 class GitHubInterface(BaseInterface):
 
     @gen.coroutine

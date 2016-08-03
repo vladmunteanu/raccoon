@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 
 REGISTERED = {}
 
+
 class BaseInterface(object):
 
     def __init__(self, connector):
@@ -20,7 +21,8 @@ class BaseInterface(object):
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', body=None, headers=None, follow_redirects=True, auth_username=None, auth_password=None):
+    def fetch(self, url, method='GET', body=None, headers=None,
+              follow_redirects=True, auth_username=None, auth_password=None):
         body = body or 'no body' if method.upper() == 'POST' else None
         log.info(['BaseInterface.fetch', method, url])
 
@@ -37,10 +39,10 @@ class BaseInterface(object):
                 auth_password=auth_password,
             ))
         except HTTPError as exc:
-            raise ReplyError(exc.code, exc.message)
+            raise ReplyError(exc.code, str(exc))
         except Exception as exc:
             log.error(exc)
-            raise ReplyError(500, exc.message)
+            raise ReplyError(500, str(exc))
         else:
             body = response.body
             headers = response.headers

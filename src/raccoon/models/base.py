@@ -1,4 +1,5 @@
 from copy import deepcopy
+
 from motorengine import Document
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 

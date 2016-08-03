@@ -1,16 +1,17 @@
 from __future__ import absolute_import
 
 import logging
+
 from tornado import gen
 
-from raccoon.interfaces.bitbucket import BitbucketInterface
-from raccoon.controllers.base import BaseController
-from raccoon.models import Action, Project
-from raccoon.utils.decorators import authenticated
-from raccoon.utils.exceptions import ReplyError
-from settings import SECRET
+from ..interfaces.bitbucket import BitbucketInterface
+from .base import BaseController
+from ..models import Project
+from ..utils.decorators import authenticated
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
+
 
 class BitbucketController(BaseController):
     """

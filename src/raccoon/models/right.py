@@ -9,5 +9,3 @@ class Right(BaseModel):
 
     name = StringField(required=True, unique=True)
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
-
-

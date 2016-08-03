@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import re
 
 from .controllers import *
-from raccoon.utils.exceptions import ReplyError
+from .utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
