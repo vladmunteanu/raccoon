@@ -71,14 +71,13 @@ class JenkinsInterface(BaseInterface):
         yield project.load_references()
 
         # get commits and create changelog
-        changelog = yield project.connector.interface.commits(project=project,
-                                                              branch=branch_name)
+        changelog = yield project.connector.interface.commits(project=project, branch=branch_name)
 
         # create build
         build = Build(
-            project=project._id,
+            project=project.project_id,
             branch=branch_name,
-            version='{}-{}'.format(version, str(task._id)[-6:]),
+            version='{}-{}'.format(version, str(task.task_id)[-6:]),
             changelog=changelog,
         )
         yield build.save()
@@ -139,7 +138,7 @@ class JenkinsInterface(BaseInterface):
             # convert argument to string b/c json decode might return int
             value = str(argument['value'])
             if value.startswith('$'):
-                value = kwargs.get(value[1:]) if kwargs.get(value[1:]) else value
+                value = kwargs.get(value[1:], value)
             arguments[argument['name']] = value
 
         # create url with params
@@ -166,10 +165,10 @@ class JenkinsInterface(BaseInterface):
         task.add_callback(callback_method)
         yield task.save()
 
-        chain = self.tasks.jenkins_queue_watcher.s(id=task._id,
+        chain = self.tasks.jenkins_queue_watcher.s(id=task.task_id,
                                                    api_url=self.api_url,
                                                    url=queue_url)
-        chain = chain | self.tasks.jenkins_job_watcher.s(id=task._id,
+        chain = chain | self.tasks.jenkins_job_watcher.s(id=task.task_id,
                                                          api_url=self.api_url)
 
         chain_task = chain.delay()

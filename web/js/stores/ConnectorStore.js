@@ -34,8 +34,11 @@ class ConnectorStore extends BaseStore {
         });
     }
 
-    register(name, publicMethods) {
-        connectorTypes[name] = publicMethods;
+    register(name, store, publicMethods) {
+        connectorTypes[name] = {
+            store: store,
+            methods: publicMethods
+        };
     }
 
     get types() {

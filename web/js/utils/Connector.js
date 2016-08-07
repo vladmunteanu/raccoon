@@ -90,7 +90,7 @@ class Connector {
         // dispatch message
         message.action = Constants.ActionTypes.ERROR;
 
-        if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
+        if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource')) {
             let matches = message.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
             let res = matches && matches[1];
 
@@ -149,10 +149,10 @@ class Connector {
      * @param id
      */
     stopRequest(id) {
+        // TODO: shouldn't this remove the associated callback?
         this.ws.close();
         this.connect();
     }
 }
 
 export default Connector;
-

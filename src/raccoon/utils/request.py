@@ -4,7 +4,7 @@ import json
 import logging
 from tornado import gen
 
-from raccoon.utils.utils import json_serial
+from .utils import json_serial
 
 log = logging.getLogger(__name__)
 CLIENT_CONNECTIONS = {}

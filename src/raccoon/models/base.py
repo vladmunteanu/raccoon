@@ -17,7 +17,7 @@ class BaseModel(Document):
     @classmethod
     def get_field_names(cls, unique=False):
         if unique:
-            [k for (k, v) in cls._fields.items() if v.unique]
+            return [k for (k, v) in cls._fields.items() if v.unique]
         return cls._fields.keys()
 
     @classmethod

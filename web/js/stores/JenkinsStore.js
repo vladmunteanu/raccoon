@@ -8,6 +8,8 @@ import BuildStore from './BuildStore';
 
 
 let jenkinsStore = null;
+let updateCounter = 0;
+let waitingForData = false;
 
 class JenkinsStore extends BaseStore {
 
@@ -26,8 +28,8 @@ class JenkinsStore extends BaseStore {
 
         // register gui related actions
         AppDispatcher.registerOnce('jenkins', payload => {
-            let method_name = payload.data['method'];
-            let args = payload.data['args'];
+            let method_name = payload.data.method;
+            let args = payload.data.args;
             this[method_name](args);
         });
     }
@@ -71,13 +73,17 @@ class JenkinsStore extends BaseStore {
     }
 
     get jobs() {
-        if (this.jobInstances.length == 0) {
+        if (this.jobInstances.length == 0 && !waitingForData) {
             let connector = new Connector();
+            waitingForData = true;
             connector.send({
                 verb: 'get',
                 resource: this.baseuri + 'jobs'
             }, payload => {
+                console.log(updateCounter, " received jobs: ", payload.data);
+                updateCounter += 1;
                 this.jobs = payload.data;
+                waitingForData = false;
             });
         }
         return this.jobInstances || [];

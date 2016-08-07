@@ -33,7 +33,8 @@ class TasksController(BaseController):
             return
 
         if task.status in EXCEPTION_STATES:
-            log.info('Task %s finished with status %s', task._id, task.status)
+            log.info('Task %s finished with status %s',
+                     task.task_id, task.status)
             return
 
         yield callback_method(request=request, task=task, response=kwargs)

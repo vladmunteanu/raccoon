@@ -39,9 +39,7 @@ class Flow extends React.Component {
     constructor(props) {
         super(props);
         this.step = 0;
-        this.state = getLocalState(this.props.params.id,
-            this.props.params.project,
-            this.props.params.env);
+        this.state = getLocalState(this.props.params.id, this.props.params.project, this.props.params.env);
         this._onChange = this._onChange.bind(this);
         this._handleBack = this._handleBack.bind(this);
         this._handleNext = this._handleNext.bind(this);

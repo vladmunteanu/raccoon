@@ -76,6 +76,7 @@ class MenuItem extends React.Component {
             </ul>
         ): '';
 
+        // js is cool, but this makes it a bit hard to read
         var link = !!this.props.link ? (
             <Link to={this.props.link}
                   onMouseEnter={this.handleMouseEnter.bind(this)}
