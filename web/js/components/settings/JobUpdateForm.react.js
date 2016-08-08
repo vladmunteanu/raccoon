@@ -11,11 +11,15 @@ import { JobForm } from './JobForm.react.js';
 function getLocalState(jobId) {
     let localState = {
         connectors: ConnectorStore.all,
+        connectorTypes: ConnectorStore.types,
         jobs: JenkinsStore.jobs,
         job: JobStore.getById(jobId),
         rowCount: 0
     };
-    if (localState.job){
+    if (localState.job) {
+        let connector = ConnectorStore.getById(localState.job.connector);
+        localState.job.store = localState.connectorTypes[connector.type].store;
+        localState.job.jobValues = localState.job.store.jobValues();
         localState.rowCount = localState.job.arguments.length;
     }
     return localState;
@@ -65,7 +69,8 @@ class JobUpdateForm extends JobForm {
                 connector: '',
                 action_type: '',
                 job: '',
-                arguments: []
+                arguments: [],
+                jobValues: []
             }
         }
         return this.state.job;

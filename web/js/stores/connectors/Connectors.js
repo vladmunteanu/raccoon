@@ -2,7 +2,7 @@ import ConnectorStore from '../../stores/ConnectorStore';
 import GiHubStore from '../../stores/GitHubStore';
 import BitbucketStore from '../../stores/BitbucketStore';
 import JenkinsStore from '../../stores/JenkinsStore';
-//import SaltStore from '../../stores/SaltStore';
+import SaltStore from '../../stores/SaltStore';
 /*
 * Maps connector types, to their action types.
 */
@@ -25,7 +25,7 @@ ConnectorStore.register('jenkins', JenkinsStore, [
     {id: 'config', label: 'Config'}
 ]);
 
-ConnectorStore.register('salt', null, [
+ConnectorStore.register('salt', SaltStore, [
     {id: 'build', label: 'Build'},
     {id: 'install', label: 'Install'}
 ]);

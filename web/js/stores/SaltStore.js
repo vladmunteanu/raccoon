@@ -22,3 +22,5 @@ class SaltStore extends BaseStore {
         
     }
 }
+
+export default new SaltStore();
