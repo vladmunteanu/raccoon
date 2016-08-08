@@ -1,11 +1,7 @@
 import React from 'react';
-import FluxStore from 'flux';
-import assign from 'object-assign';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import Connector from '../utils/Connector';
 import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;

@@ -11,8 +11,6 @@ import MenuItem from './../MenuItem.react.js';
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
-import Util from '../../utils/Utils';
-
 
 class Sidebar extends React.Component {
     render() {

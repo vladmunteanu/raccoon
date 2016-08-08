@@ -15,7 +15,7 @@ function getLocalState(projectId, envId) {
         builds: BuildStore.filter(projectId),
         project: ProjectStore.getById(projectId),
         environment: EnvironmentStore.getById(envId),
-        selectedBuild: null,
+        selectedBuild: null
     }
 }
 

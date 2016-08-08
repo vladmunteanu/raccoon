@@ -6,7 +6,6 @@ import T from 'i18n-react';
 import BaseStore from './BaseStore';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import Connector from '../utils/Connector';
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
@@ -110,6 +109,9 @@ class NotificationStore extends BaseStore {
     }
 
     display(notificationSystem) {
+        /*
+            
+         */
         // Consume each notification and add it into notification system
         let notif = this.pop();
         while (notif) {

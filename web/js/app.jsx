@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom'
 
-import Connector from './utils/Connector';
+import WebSocketConnection from './utils/WebSocketConnection';
 import RaccoonApp from './components/RaccoonApp.react';
 
-let connector = new Connector();
+let wsConnection = new WebSocketConnection();
 
 // Render RaccoonApp Controller View
 render(

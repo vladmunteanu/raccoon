@@ -2,11 +2,9 @@ import React from 'react';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import JobStore from '../../stores/JobStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
-import RaccoonApp from '../RaccoonApp.react';
 import { JobForm } from './JobForm.react.js';
 
 

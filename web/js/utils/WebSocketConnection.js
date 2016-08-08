@@ -12,7 +12,7 @@ let ActionTypes = Constants.ActionTypes;
 
 let connector = null;
 
-class Connector {
+class WebSocketConnection {
 
     /**
      * Creates connector instance.
@@ -38,10 +38,10 @@ class Connector {
     connect() {
         if (!this.ws) {
             this.ws = new WebSocket(config.WS_URL);
-            this.ws.onopen = Connector.onOpen;
-            this.ws.onmessage = Connector.onMessage;
-            this.ws.onclose = Connector.onClose;
-            this.ws.onerror = Connector.onError;
+            this.ws.onopen = WebSocketConnection.onOpen;
+            this.ws.onmessage = WebSocketConnection.onMessage;
+            this.ws.onclose = WebSocketConnection.onClose;
+            this.ws.onerror = WebSocketConnection.onError;
 
             console.log("Socket connected!");
         }
@@ -155,4 +155,4 @@ class Connector {
     }
 }
 
-export default Connector;
+export default WebSocketConnection;

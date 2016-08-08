@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router';
-import ProjectStore from '../../stores/ProjectStore';
-import EnvironmentStore from '../../stores/EnvironmentStore';
 
 import UserProfile from './../UserProfile.react.js';
 import MenuItem from './../MenuItem.react.js';

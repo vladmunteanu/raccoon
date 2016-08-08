@@ -7,7 +7,6 @@ import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import AuthStore from '../../stores/AuthStore';
 import NotificationStore from '../../stores/NotificationStore';
 

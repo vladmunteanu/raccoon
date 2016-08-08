@@ -4,7 +4,7 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-import Connector from '../utils/Connector';
+import WebSocketConnection from '../utils/WebSocketConnection';
 import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
@@ -88,9 +88,9 @@ class BaseStore extends EventEmitter {
     }
 
     fetchAll() {
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
 
-        connector.send({
+        wsConnection.send({
             verb: 'get',
             resource: this.baseuri
         }, payload => {
@@ -110,9 +110,9 @@ class BaseStore extends EventEmitter {
     }
 
     updateById(id, data) {
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
 
-        connector.send({
+        wsConnection.send({
             verb: 'put',
             resource: this.baseuri + id,
             body: data
@@ -130,8 +130,8 @@ class BaseStore extends EventEmitter {
     }
 
     create(data) {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'post',
             resource: this.baseuri,
             body: data
@@ -142,11 +142,15 @@ class BaseStore extends EventEmitter {
     }
     
     deleteByid(id) {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'delete',
             resource: this.baseuri + id
         });
+    }
+
+    jobValues() {
+        return [];
     }
 
 }

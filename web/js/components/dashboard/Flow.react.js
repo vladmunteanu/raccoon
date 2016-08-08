@@ -112,7 +112,7 @@ class Flow extends React.Component {
             action: this.state.action.id,
             project: this.state.project || this.state.action.project,
             environment: this.state.environment || this.state.action.environment,
-            flow: this.state.action.flow,
+            flow: this.state.action.flow
         };
 
         if (LastStepAddon) {
@@ -125,7 +125,7 @@ class Flow extends React.Component {
                 action: this.state.connector.type,
                 data: {
                     method: this.state.job.action_type,
-                    args: last_context,
+                    args: last_context
                 }
             });
             AppDispatcher.dispatch({

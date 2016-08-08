@@ -7,22 +7,23 @@ import Autocomplete from 'react-autocomplete';
 import JobStore from '../../stores/JobStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
-import RaccoonApp from '../RaccoonApp.react';
 
 
 function getLocalState() {
     let localState = {
         connectors: ConnectorStore.all,
+        connectorTypes: ConnectorStore.types,
         job: {
             name: '',
             connector: '',
             connector_name: '',
             job: '',
-            arguments: []
+            arguments: [],
+            store: null,
+            jobValues: []
         },
         rowCount: 1,
-        jobName: '',
-        jobValues: []
+        jobName: ''
     };
     return localState;
 }
@@ -60,8 +61,12 @@ class JobForm extends React.Component {
 
     _onChange() {
         let state = getLocalState();
-        // copy the job
+        // keep the job
         state.job = this.state.job;
+        // update job values, if store is set
+        if (state.job.store) {
+            state.job.jobValues = state.job.store.jobValues();
+        }
         // set the number of arguments that should be displayed
         state.rowCount = state.job.arguments.length || 1;
         this.setState(state);
@@ -75,7 +80,9 @@ class JobForm extends React.Component {
                 return connector.id == event.target.value;
             })[0];
             if (connector) {
-                console.log(["xxxxx", connector]);
+                // get the associated store
+                this.state.job.store = this.state.connectorTypes[connector.type].store;
+                this.state.job.jobValues = this.state.job.store.jobValues();
             }
         }
         this.setState(this.state);
@@ -150,8 +157,6 @@ class JobForm extends React.Component {
         let connectorInfo = ConnectorStore.types[connectorType] || [];
         let del;
 
-        console.log(["yyyyyy", connectorInfo]);
-
         if (this.formName === 'Update job') {
             del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
             );
@@ -200,7 +205,7 @@ class JobForm extends React.Component {
                         <label htmlFor="job-job" className="control-label">Job</label>
                         <br/>
                         <Autocomplete
-                            value={this.state.jobName}
+                            value={this.state.job.job}
                             wrapperStyle={{
                                 width: "100%",
                                 display: "inline-block"
@@ -212,17 +217,19 @@ class JobForm extends React.Component {
                                     width: '100%'
                                 }
                             }}
-                            items={this.state.jobValues}
-                            getItemValue={(item) => item}
+                            items={this.state.job.jobValues}
+                            getItemValue={(item) => item.name}
                             shouldItemRender={(item, value) => {
                                 return item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
                             }}
                             sortItems={(a, b, value) => {
-                                return (a.name.toLowerCase().indexOf(value.toLowerCase()) > b.name.toLowerCase().indexOf(value.toLowerCase()) ? 1: -1)
+                                return (
+                                    a.name.toLowerCase().indexOf(value.toLowerCase()) >
+                                    b.name.toLowerCase().indexOf(value.toLowerCase()) ? 1 : -1
+                                )
                             }}
-                            onChange={(event, value) => this.setState({jobName:  value })}
-                            onSelect={value => this.setState({jobName: value })}
-
+                            onChange={this.onFormChange.bind(this, 'job')}
+                            onSelect={value => this.onFormChange.apply(this, ['job', {target: {value: value}}])}
 
                             renderItem={(item, isHighlighted) => (
                                 <div

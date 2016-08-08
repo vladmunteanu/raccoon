@@ -3,14 +3,12 @@ import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 import AceEditor from 'react-ace';
-import brace from 'brace';
 
 import 'brace/mode/json';
 import 'brace/theme/tomorrow';
 
 import ConnectorStore from '../../stores/connectors/Connectors'; // !important for register
 import localConf from '../../config/Config'
-import RaccoonApp from '../RaccoonApp.react';
 let ConnectorType = localConf.CONNECTOR_TYPE;
 
 
@@ -94,7 +92,7 @@ class ConnectorForm extends React.Component {
                     ConnectorStore.create({
                         name: this.state.connector.name,
                         type: this.state.connector.type,
-                        config: config,
+                        config: config
                     });
                 }
                 catch (err) {

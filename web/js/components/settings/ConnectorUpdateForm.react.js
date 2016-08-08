@@ -5,7 +5,8 @@ import strategy from 'joi-validation-strategy';
 import ConnectorStore from '../../stores/ConnectorStore';
 import { ConnectorForm } from './ConnectorForm.react';
 import localConf from '../../config/Config'
-import RaccoonApp from '../RaccoonApp.react';
+
+
 let ConnectorType = localConf.CONNECTOR_TYPE;
 
 function getLocalState(connectorId) {

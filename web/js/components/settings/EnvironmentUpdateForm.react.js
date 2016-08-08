@@ -2,9 +2,7 @@ import React from 'react';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import EnvironmentStore from '../../stores/EnvironmentStore';
-import RaccoonApp from '../RaccoonApp.react';
 import { EnvironmentForm } from './EnvironmentForm.react';
 
 

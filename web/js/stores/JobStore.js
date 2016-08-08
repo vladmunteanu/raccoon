@@ -1,10 +1,6 @@
 import React from 'react';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
 import BaseStore from './BaseStore';
-import Connector from '../utils/Connector';
-import AuthStore from './AuthStore';
 
 let jobStore = null;
 

@@ -2,10 +2,6 @@ import React from 'react'
 import { Link } from 'react-router';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import RaccoonApp from './RaccoonApp.react.js';
-import Util from '../utils/Utils';
-
-import ProjectStore from '../stores/ProjectStore';
 
 
 class MenuItem extends React.Component {
