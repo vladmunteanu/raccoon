@@ -22,7 +22,8 @@ class BaseInterface(object):
 
     @gen.coroutine
     def fetch(self, url, method='GET', body=None, headers=None,
-              follow_redirects=True, auth_username=None, auth_password=None):
+              follow_redirects=True, auth_username=None, auth_password=None,
+              timeout=15):
         body = body or 'no body' if method.upper() == 'POST' else None
         log.info(['BaseInterface.fetch', method, url])
 
@@ -37,6 +38,7 @@ class BaseInterface(object):
                 validate_cert=False,
                 auth_username=auth_username,
                 auth_password=auth_password,
+                request_timeout=timeout
             ))
         except HTTPError as exc:
             raise ReplyError(exc.code, str(exc))
