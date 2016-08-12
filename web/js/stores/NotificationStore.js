@@ -38,6 +38,9 @@ T.setTexts({
     HTTP_201_POST_jenkins: 'Your task just started',
     HTTP_302_POST_jenkins: 'Your task was aborted',
 
+    // salt
+    HTTP_200_POST_salt: 'Salt command executed successfully',
+
     // flows
     HTTP_200_PUT_flows: 'Flow *{who}* was updated',
     HTTP_200_POST_flows: 'Flow *{who}* was created',
@@ -58,7 +61,7 @@ T.setTexts({
 
     // default
     HTTP_500: 'During your action we encountered _Internal Server Error_. We\'re working on it asap.',
-    HTTP_401: 'You are not authorized to do this action. Please contact your administrator.',
+    HTTP_401: 'You are not authorized to do this action. Please contact your administrator.'
 });
 
 
@@ -84,7 +87,7 @@ class NotificationStore extends BaseStore {
         // ignore:
         // - 200 OK GET messages
         if (message.code == 200 && message.verb.toUpperCase() == 'GET')
-            return ;
+            return;
 
         this.instances = this.instances || [];
         this.instances.push(message);
@@ -109,9 +112,6 @@ class NotificationStore extends BaseStore {
     }
 
     display(notificationSystem) {
-        /*
-            
-         */
         // Consume each notification and add it into notification system
         let notif = this.pop();
         while (notif) {
@@ -129,7 +129,7 @@ class NotificationStore extends BaseStore {
                 level: level,
                 position: 'br',
                 title: title,
-                message: T.translate(key, { who: data.name }),
+                message: T.translate(key, { who: data.name })
             });
 
             notif = this.pop();

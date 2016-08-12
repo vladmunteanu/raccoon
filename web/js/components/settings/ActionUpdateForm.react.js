@@ -71,8 +71,7 @@ class ActionUpdateForm extends ActionForm {
                 placement: 'project',
                 project: '',
                 environment: '',
-                flow: '',
-
+                flow: ''
             }
         }
 
