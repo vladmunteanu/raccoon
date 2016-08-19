@@ -174,6 +174,9 @@ class EditConfigAddon extends BaseAddon {
      * Saves the modified local config.
      */
     handleSave() {
+        if (this.state.localConfig[this.state.localConfig.length - 1] != "\n") {
+            this.state.localConfig = "\n";
+        }
         SaltStore.setConfig(
             this.state.connectorId,
             this.state.project,

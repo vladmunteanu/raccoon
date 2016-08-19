@@ -17,7 +17,3 @@ class User(BaseModel):
     role = StringField(default='user')
     rights = ListField(ReferenceField(reference_document_type=Right))
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
-
-    @property
-    def user_id(self):
-        return self._id

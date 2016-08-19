@@ -107,11 +107,11 @@ class Flow extends React.Component {
         }
 
         let flow = this.state.flow;
-        let step_index = this.state.step;
+        let stepIndex = this.state.step;
         let LastStepAddon = this.refs[flow.id + '-LastStepAddon'];
 
         // create context
-        let last_context = {
+        let lastContext = {
             action: this.state.action.id,
             project: this.state.project || this.state.action.project,
             environment: this.state.environment || this.state.action.environment,
@@ -119,16 +119,16 @@ class Flow extends React.Component {
         };
 
         if (LastStepAddon) {
-            last_context = LastStepAddon.getContext();
+            lastContext = LastStepAddon.getContext();
         }
 
         // trigger action from FLOW
-        if (step_index > flow.steps.length - 1) {
+        if (stepIndex > flow.steps.length - 1) {
             AppDispatcher.dispatch({
                 action: this.state.connector.type,
                 data: {
                     method: this.state.job.action_type,
-                    args: last_context
+                    args: lastContext
                 }
             });
             AppDispatcher.dispatch({
@@ -137,23 +137,23 @@ class Flow extends React.Component {
             return (<div></div>);
         }
 
-        let StepAddon = Addons.getAddon(flow.steps[step_index]);
+        let StepAddon = Addons.getAddon(flow.steps[stepIndex]);
 
         return (
             <div>
 
                 {/* display the current step in the flow */}
                 <StepAddon
-                    key={flow.id + '-' + step_index}
+                    key={flow.id + '-' + stepIndex}
                     ref={flow.id + '-LastStepAddon'}
-                    name={"Addon cu numaru' " + step_index}
-                    context={last_context}
+                    name={"Addon cu numaru' " + stepIndex}
+                    context={lastContext}
                 />
 
                 <nav>
                     <ul className="pager">
                         <li className="previous">
-                            <button type="button" className={"btn btn-default " + (step_index ? "" : "disabled")} onClick={this._handleBack}>
+                            <button type="button" className={"btn btn-default " + (stepIndex ? "" : "disabled")} onClick={this._handleBack}>
                                 <span aria-hidden="true">&larr;</span> Back
                             </button>
                         </li>

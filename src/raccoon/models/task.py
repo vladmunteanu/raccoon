@@ -33,10 +33,6 @@ class Task(BaseModel):
 
         return 'SUCCESS'
 
-    @property
-    def task_id(self):
-        return self._id
-
     def get_dict(self):
         result = super().get_dict()
         result['status'] = self.status

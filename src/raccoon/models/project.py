@@ -17,10 +17,6 @@ class Project(BaseModel):
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
     @property
-    def project_id(self):
-        return self._id
-
-    @property
     def repo_name(self):
         """
         :return: string like "<username>/<repo>"

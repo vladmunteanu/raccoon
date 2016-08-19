@@ -6,7 +6,7 @@ import json
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
-from raccoon.utils.exceptions import ReplyError
+from ..utils.exceptions import ReplyError
 
 
 log = logging.getLogger(__name__)

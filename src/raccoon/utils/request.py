@@ -13,7 +13,7 @@ CLIENT_CONNECTIONS = {}
 class Request(object):
     def __init__(self, idx, verb, resource, token,
                  data, socket, *args, **kwargs):
-        self.requestId = idx
+        self.request_id = idx
         self.verb = verb
         self.resource = resource
         self.token = token
@@ -35,7 +35,7 @@ class Request(object):
 
     def serialize(self, data):
         return {
-            'requestId': self.requestId,
+            'requestId': self.request_id,
             'verb': self.verb,
             'resource': self.resource,
             'data': data,
@@ -53,7 +53,7 @@ class Request(object):
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
             if self.socket and connection_id == self.socket.connection_id:
-                data['requestId'] = self.requestId
+                data['requestId'] = self.request_id
             else:
                 data['requestId'] = 'notification'
             socket.write_message(json.dumps(data, default=json_serial))

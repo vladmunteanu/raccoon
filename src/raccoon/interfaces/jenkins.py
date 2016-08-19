@@ -6,8 +6,8 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 
 from .base import BaseInterface, REGISTERED
-from raccoon.models import Task, Build, Project, Environment, Install
-from raccoon.utils.exceptions import ReplyError
+from ..models import Task, Build, Project, Environment, Install
+from ..utils.exceptions import ReplyError
 
 
 log = logging.getLogger(__name__)
@@ -75,9 +75,9 @@ class JenkinsInterface(BaseInterface):
 
         # create build
         build = Build(
-            project=project.project_id,
+            project=project.pk,
             branch=branch_name,
-            version='{}-{}'.format(version, str(task.task_id)[-6:]),
+            version='{}-{}'.format(version, str(task.pk)[-6:]),
             changelog=changelog,
         )
         yield build.save()
@@ -165,10 +165,10 @@ class JenkinsInterface(BaseInterface):
         task.add_callback(callback_method)
         yield task.save()
 
-        chain = self.tasks.jenkins_queue_watcher.s(id=task.task_id,
+        chain = self.tasks.jenkins_queue_watcher.s(id=task.pk,
                                                    api_url=self.api_url,
                                                    url=queue_url)
-        chain = chain | self.tasks.jenkins_job_watcher.s(id=task.task_id,
+        chain = chain | self.tasks.jenkins_job_watcher.s(id=task.pk,
                                                          api_url=self.api_url)
 
         chain_task = chain.delay()
@@ -178,7 +178,7 @@ class JenkinsInterface(BaseInterface):
 
         # broadcast
         # TODO (alexm): do something with this hack
-        request.requestId = 'notification'
+        request.request_id = 'notification'
         request.verb = 'post'
         request.resource = '/api/v1/tasks/'
         request.broadcast(task.get_dict())

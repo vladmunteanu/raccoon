@@ -7,6 +7,10 @@ from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 class BaseModel(Document):
     ignore = []
 
+    @property
+    def pk(self):
+        return self._id
+
     def get_dict(self):
         result = deepcopy(super(Document, self).to_son())
         result['id'] = self._id

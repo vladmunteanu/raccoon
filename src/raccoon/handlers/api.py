@@ -87,7 +87,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             )
             yield method(req, **params)
         except ReplyError as e:
-            e.requestId = request_id
+            e.request_id = request_id
             e.verb = verb
             e.resource = resource
 

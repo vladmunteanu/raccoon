@@ -36,11 +36,11 @@ class AuthController(BaseController):
             raise ReplyError(404, 'Invalid email or password')
 
         token = jwt.encode({
-            'id': str(user.user_id),
+            'id': str(user.pk),
             'role': user.role,
         }, SECRET, algorithm='HS256')
         yield request.send({'token': token.decode('utf8'),
-                            'userId': str(user.user_id)})
+                            'userId': str(user.pk)})
 
     @classmethod
     @gen.coroutine
