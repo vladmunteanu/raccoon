@@ -4,8 +4,8 @@ import logging
 
 import jwt
 from tornado import gen
-from settings import SECRET
 
+from settings import SECRET
 from .base import BaseController
 from ..models import User
 from ..utils.exceptions import ReplyError
