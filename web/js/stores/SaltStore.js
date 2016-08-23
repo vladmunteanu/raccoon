@@ -18,6 +18,11 @@ class SaltStore extends BaseStore {
 
         this.baseuri = "/api/v1/salt/";
         this._conf = null;
+        this._saveInProgress = false;
+    }
+
+    isSaveInProgress()  {
+        return this._saveInProgress;
     }
 
     get config() {
@@ -38,6 +43,7 @@ class SaltStore extends BaseStore {
                 connectorId: connectorId
             }
         }, payload => {
+            console.log(payload);
             this._conf = payload.data.return[0];
             this.emitChange();
         });
@@ -45,6 +51,9 @@ class SaltStore extends BaseStore {
     
     setConfig(connectorId, project, environment, branch, configData) {
         let wsConnection = new WebSocketConnection();
+
+        this._saveInProgress = true;
+        this.emitChange();
 
         let mes = {
             verb: 'post',
@@ -60,8 +69,17 @@ class SaltStore extends BaseStore {
         };
 
         wsConnection.send(mes, payload => {
-            console.log("Saved config!");
-            console.log(payload);
+            if (payload.hasOwnProperty('code')) {
+                if (payload.code != 200) {
+                    console.log("Save config failed!");
+                }
+                else {
+                    console.log("Successfully saved config!")
+                }
+            }
+            console.log(["Save config result: ", payload]);
+            this._saveInProgress = false;
+            this.emitChange();
         }, true);
     }
 }

@@ -42,7 +42,8 @@ class EditConfigAddon extends BaseAddon {
             install: null,
             build: null,
             branch: null,
-            connectorId: null
+            connectorId: null,
+            saveInProgress: SaltStore.isSaveInProgress()
         };
 
         this._onChange = this._onChange.bind(this);
@@ -136,7 +137,8 @@ class EditConfigAddon extends BaseAddon {
             branch: branch,
             connectorId: connectorId,
             defaultConfig: defaultConfig,
-            localConfig: localConfig
+            localConfig: localConfig,
+            saveInProgress: SaltStore.isSaveInProgress()
         });
     }
 
@@ -243,7 +245,7 @@ class EditConfigAddon extends BaseAddon {
                 <br/>
                 <div className="row">
                     <div className="col-xs-6">
-                        <button type="button" className="btn btn-success" aria-label="Save" onClick={this.handleSave}>Save</button>
+                        <button type="button" className={"btn btn-success" + (this.state.saveInProgress ? " disabled" : "")} aria-label="Save" onClick={this.handleSave}>Save</button>
                     </div>
                 </div>
             </div>
