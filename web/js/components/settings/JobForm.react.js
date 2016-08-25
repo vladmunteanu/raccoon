@@ -14,6 +14,7 @@ function getLocalState() {
         connectors: ConnectorStore.all,
         connectorTypes: ConnectorStore.types,
         job: {
+            action_type: '',
             name: '',
             connector: '',
             connector_name: '',
@@ -176,7 +177,7 @@ class JobForm extends React.Component {
                     <div className="form-group">
                         <label htmlFor="connector-job" className="control-label">Connector</label>
                         <select className="form-control" id="connector-job"
-                                value={connectorId}
+                                value={job.connector}
                                 onChange={this.onFormChange.bind(this, 'connector')}>
                             <option value='' disabled={true}>-- select an option --</option>
                             {

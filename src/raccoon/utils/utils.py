@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import time
 
 from bson.objectid import ObjectId
-from celery.states import ALL_STATES
+from celery import states
 from tornado import gen
 from tornado.ioloop import IOLoop
 
@@ -26,12 +26,12 @@ def sleep(milliseconds):
 
 
 RACCOON_STATES = {
-    'ABORTED': 'REVOKED',
+    'ABORTED': states.REVOKED,
 }
 
 
 def to_celery_status(status):
     status = status.upper()
-    if status in ALL_STATES:
+    if status in states.ALL_STATES:
         return status
     return RACCOON_STATES.get(status)

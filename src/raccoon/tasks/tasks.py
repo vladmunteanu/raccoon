@@ -2,11 +2,11 @@ from __future__ import absolute_import
 
 import json
 import requests
+import traceback
 import sys
 from urllib.parse import urlparse, urljoin
 
-from celery import Celery, Task
-from celery.states import READY_STATES
+from celery import Celery, Task, states
 from celery.utils.log import get_task_logger
 from websocket import create_connection
 
@@ -65,6 +65,7 @@ def broadcast(data):
 
 def fetch(url, method='GET', body=None, headers=None):
     r = requests.get(url, verify=False)
+    print(r)
     body = r.json()
     headers = r.headers
     return body, headers
@@ -75,7 +76,7 @@ class BaseTask(Task):
         self.max_retries = None
 
     def on_retry(self, exc, task_id, args, kwargs, einfo):
-        self.update_state(task_id=task_id, state='PENDING')
+        self.update_state(task_id=task_id, state=states.PENDING)
 
 
 class JenkinsJobWatcherTask(BaseTask):
@@ -89,7 +90,7 @@ class JenkinsJobWatcherTask(BaseTask):
             url=url,
         )
 
-        status = response.get('result') or 'STARTED'
+        status = response.get('result') or states.STARTED
         status = to_celery_status(status)
 
         broadcast({
@@ -104,7 +105,7 @@ class JenkinsJobWatcherTask(BaseTask):
             }
         })
 
-        if status in READY_STATES:
+        if status in states.READY_STATES:
             return {
                 'id': id,
                 'status': status,
@@ -131,17 +132,21 @@ class JenkinsQueueWatcherTask(BaseTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        response, headers = fetch(
-            method='GET',
-            url=url,
-        )
+        try:
+            response, headers = fetch(
+                method='GET',
+                url=url,
+            )
+        except:
+            traceback.format_exc()
+            raise self.retry(countdown=5, max_retries=None)
 
         broadcast({
             'verb': 'patch',
             'resource': '/api/v1/tasks/{}'.format(id),
             'data': {
                 'id': id,
-                'status': 'PENDING',
+                'status': states.PENDING,
                 'why': response.get('why'),
                 'response': response,
             }
