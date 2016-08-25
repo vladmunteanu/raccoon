@@ -238,16 +238,6 @@ class JobForm extends React.Component {
                                 >{item.name}</div>
                             )}
                         />
-                        {/*<select className="form-control" id="job-job"
-                                 value={jobId}
-                                 onChange={this.onFormChange.bind(this, 'job')}>
-                             <option value='' disabled={true}>-- select an option --</option>
-                             {
-                                 this.state.jobs.map(job => {
-                                     return <option key={job.name} value={job.name}>{job.name}</option>
-                                 })
-                             }
-                        </select>*/}
                         {this.renderHelpText(this.props.getValidationMessages('job'))}
                     </div>
                     <div className="form-group">
