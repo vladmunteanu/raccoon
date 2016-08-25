@@ -47,4 +47,15 @@ ln -s path-to-raccoon-repo/sys/bin/raccoon path-to-your-env/bin/raccoon
 ln -s path-to-raccoon-repo/sys/bin/raccoonshell path-to-your-env/bin/raccoonshell
 ```
 
-Start server with ```npm start```
+Running
+-------
+Start server with:
+```
+npm start
+```
+
+Run celery with:
+```
+celery -A raccoon.tasks.tasks worker -l info --autoreload
+```
+
