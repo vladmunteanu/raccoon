@@ -22,7 +22,7 @@ from .notifications import *
 from .github import *
 from .bitbucket import *
 from .jenkins import *
-
+from .salt import SaltController
 
 
 # Import all submodules

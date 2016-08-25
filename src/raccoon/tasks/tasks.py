@@ -25,6 +25,7 @@ connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
 celery = Celery('tasks', broker=connection_string, backend=connection_string)
 ws = None
 
+
 def get_ws():
     global ws
 
@@ -42,29 +43,31 @@ def get_ws():
 
     return ws
 
+
 def send(verb, resource, headers=None, body=None):
-    ws = get_ws()
-    ws.send(json.dumps({
+    ws_connection = get_ws()
+    ws_connection.send(json.dumps({
         'verb': verb,
         'resource': resource,
         'headers': headers or {},
         'body': body or {},
     }, default=json_serial))
 
+
 def broadcast(data):
-    ws = get_ws()
-    ws.send(json.dumps({
+    ws_connection = get_ws()
+    ws_connection.send(json.dumps({
         'verb': 'post',
         'resource': '/api/v1/notifications/broadcast',
         'body': data,
     }, default=json_serial))
 
+
 def fetch(url, method='GET', body=None, headers=None):
     r = requests.get(url, verify=False)
     body = r.json()
     headers = r.headers
-    return (body, headers)
-
+    return body, headers
 
 
 class BaseTask(Task):
@@ -149,7 +152,6 @@ class JenkinsQueueWatcherTask(BaseTask):
             return build_url
 
         raise self.retry(countdown=5, max_retries=None)
-
 
 
 jenkins_queue_watcher = celery.tasks[JenkinsQueueWatcherTask.name]

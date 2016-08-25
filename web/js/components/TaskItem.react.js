@@ -15,7 +15,7 @@ export const UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED'
 function getLocalState(projectId) {
     let localState = {
         local: {
-            project: ProjectStore.getById(projectId),
+            project: ProjectStore.getById(projectId)
         }
     };
 
@@ -53,8 +53,8 @@ export class TaskItem extends React.Component {
                     args: {
                         id: this.props.data.id,
                         job: this.props.data.job,
-                        build_number: build_number,
-                    },
+                        build_number: build_number
+                    }
                 }
             });
         }

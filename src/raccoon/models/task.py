@@ -5,11 +5,12 @@ import logging
 from celery.result import AsyncResult
 from motorengine import StringField, ListField, DateTimeField, ReferenceField
 
-from raccoon.models import BaseModel, Job, User, Project, Environment
-from raccoon.utils.dbfields import DictField
+from . import BaseModel, Job, User, Environment
+from ..utils.dbfields import DictField
 
 
 log = logging.getLogger(__name__)
+
 
 class Task(BaseModel):
     __collection__ = 'tasks'

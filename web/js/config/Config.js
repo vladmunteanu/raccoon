@@ -5,7 +5,7 @@
 class Config {
 
     constructor () {
-        this.WS_URL = 'ws://localhost:8888/websocket';
+        this.WS_URL = 'ws://' + location.host + '/websocket';
         this.CONNECTOR_TYPE = {
             "git": {
                 "url": "insert git url",

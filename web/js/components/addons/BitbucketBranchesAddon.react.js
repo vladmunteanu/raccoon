@@ -6,6 +6,7 @@ import BitbucketStore from '../../stores/BitbucketStore';
 import ProjectStore from '../../stores/ProjectStore';
 import ActionStore from '../../stores/ActionStore';
 
+
 class BitbucketBranchesAddon extends BaseAddon {
     constructor(props) {
         super(props);
@@ -16,7 +17,7 @@ class BitbucketBranchesAddon extends BaseAddon {
             action: ActionStore.getById(this.addon_context.action),
             branches: BitbucketStore.branches,
             branch: '',
-            version: project ? project.version : '1.0.0',
+            version: project ? project.version : '1.0.0'
         };
 
         this._onChange = this._onChange.bind(this);
@@ -46,7 +47,7 @@ class BitbucketBranchesAddon extends BaseAddon {
             project: project,
             action: ActionStore.getById(this.addon_context.action),
             branches: BitbucketStore.branches,
-            version: project ? project.version : '1.0.0',
+            version: project ? project.version : '1.0.0'
         });
 
         this.updateContext('version', this.state.version);

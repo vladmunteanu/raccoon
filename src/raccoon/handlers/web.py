@@ -4,7 +4,6 @@ import logging
 
 import tornado.web
 
-
 log = logging.getLogger(__name__)
 
 

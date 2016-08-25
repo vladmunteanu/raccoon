@@ -17,7 +17,7 @@ function getLocalState() {
             name: '',
             steps: [],
             job: ''
-        },
+        }
     };
 }
 
@@ -80,9 +80,9 @@ class FlowForm extends React.Component {
     addAddon(event) {
         if (event) {
             this.state.flow.steps = event.split(',');
-        }else{
+        } else {
             this.state.flow.steps = [];
-        };
+        }
         this.setState(this.state);
     }
 
@@ -111,8 +111,12 @@ class FlowForm extends React.Component {
         let jobId = flow.job;
         let del;
         let options = [];
-        for (let key in this.state.addons)
-            options.push({'value': this.state.addons[key], 'label': this.state.addons[key]})
+        for (let key in this.state.addons) {
+            options.push({
+                'value': this.state.addons[key],
+                'label': this.state.addons[key]
+            })
+        }
 
 
         if (this.formName === 'Update flow') {
@@ -172,4 +176,3 @@ FlowForm.contextTypes = {
 
 export { FlowForm };
 export default validation(strategy)(FlowForm);
-

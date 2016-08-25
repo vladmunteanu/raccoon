@@ -1,5 +1,4 @@
 import React from 'react';
-import BaseStore from './BaseStore';
 
 let addonStore = null;
 

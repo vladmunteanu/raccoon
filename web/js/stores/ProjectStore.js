@@ -2,7 +2,6 @@ import React from 'react';
 import RaccoonApp from './../components/RaccoonApp.react.js';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
-import Connector from '../utils/Connector';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;

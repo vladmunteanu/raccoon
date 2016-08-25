@@ -12,7 +12,7 @@ let ActionTypes = Constants.ActionTypes;
 
 let connector = null;
 
-class Connector {
+class WebSocketConnection {
 
     /**
      * Creates connector instance.
@@ -30,6 +30,7 @@ class Connector {
         this.pendingRequests = [];
         this.pendingCallbacks = [];
         this.currentMessageId = 0;
+        this.uniqueRequests = {};
 
         this.ws = null;
         this.connect();
@@ -38,10 +39,10 @@ class Connector {
     connect() {
         if (!this.ws) {
             this.ws = new WebSocket(config.WS_URL);
-            this.ws.onopen = Connector.onOpen;
-            this.ws.onmessage = Connector.onMessage;
-            this.ws.onclose = Connector.onClose;
-            this.ws.onerror = Connector.onError;
+            this.ws.onopen = WebSocketConnection.onOpen;
+            this.ws.onmessage = WebSocketConnection.onMessage;
+            this.ws.onclose = WebSocketConnection.onClose;
+            this.ws.onerror = WebSocketConnection.onError;
 
             console.log("Socket connected!");
         }
@@ -83,36 +84,51 @@ class Connector {
     }
 
     /**
-     * Process the response of the backend server by running the assigned callback.
-     * @param message
+     * Processes a message and dispatches the appropriate payload.
+     * @param message:
      */
     processMessage(message) {
-        // dispatch message
-        message.action = Constants.ActionTypes.ERROR;
-
-        if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource') ) {
+        if (message.hasOwnProperty('verb') && message.hasOwnProperty('resource')) {
             let matches = message.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
             let res = matches && matches[1];
 
             message.action = message.verb.toUpperCase() + ' ' + res;
+            /**
+             * If the includeRequestId flag was true when the message was sent
+             * then we need to add the requestId in the payload
+             */
+            if (this.uniqueRequests[message.requestId]) {
+                message.action += ' ' + message.requestId;
+            }
+
             AppDispatcher.dispatch(message);
+
+            /**
+             * Delete the unique callback,
+             * and unregister it from the AppDispatcher
+             */
+            if (this.uniqueRequests[message.requestId]) {
+                AppDispatcher.unregister(this.uniqueRequests[message.requestId]);
+                delete this.uniqueRequests[message.requestId];
+            }
         }
 
-        // display notifications
+        // dispatch notifications
         if (message.hasOwnProperty('code') && message.requestId != 'notification') {
             message.action = ActionTypes.NOTIFICATION;
             AppDispatcher.dispatch(message);
         }
-
     }
 
     /**
      * Send the request to server. Add to pendingRequests if connection is not yet available.
-     * @param request
-     * @param callback
+     * @param request:
+     * @param callback: Callback function to register with AppDispatcher
+     * @param includeRequestId: Adds the requestId in the action, before registering to AppDispatcher.
+     *                          This is useful in case the same verb and resource are used for different purposes.
      * @returns request.requestId
      */
-    send(request, callback) {
+    send(request, callback, includeRequestId) {
         if(this.ws && ~[2,3].indexOf(this.ws.readyState) || !this.ws) {
             this.connected = false;
             this.connect();
@@ -131,8 +147,12 @@ class Connector {
             //registering actions (removing resource id and everything after the resource name)
             let matches = request.resource.match(/^(\/api\/v1\/[a-z0-9]*\/).*$/i);
             let res = matches && matches[1];
-            let action = request.verb.toUpperCase() + ' ' + res;
-            AppDispatcher.registerOnce(action, callback);
+            let action = request.verb.toUpperCase() + ' ' + res + (includeRequestId ? ' ' + request.requestId : '');
+            let registeredCallbackId = AppDispatcher.registerOnce(action, callback);
+
+            if (includeRequestId) {
+                this.uniqueRequests[request.requestId] = registeredCallbackId;
+            }
         }
 
         if (!this.connected) {
@@ -154,5 +174,4 @@ class Connector {
     }
 }
 
-export default Connector;
-
+export default WebSocketConnection;

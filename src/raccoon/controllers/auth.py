@@ -1,13 +1,14 @@
 from __future__ import absolute_import
 
-import jwt
 import logging
-from settings import SECRET
+
+import jwt
 from tornado import gen
 
-from raccoon.controllers.base import BaseController
-from raccoon.models import User
-from raccoon.utils.exceptions import ReplyError
+from settings import SECRET
+from .base import BaseController
+from ..models import User
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ class AuthController(BaseController):
 
     @classmethod
     @gen.coroutine
-    def post(cls, request, email, password, **kwargs):
+    def post(cls, request, email=None, password=None, **kwargs):
         if not email or not password:
             raise ReplyError(400, 'Invalid email or password')
 
@@ -35,10 +36,11 @@ class AuthController(BaseController):
             raise ReplyError(404, 'Invalid email or password')
 
         token = jwt.encode({
-            'id': str(user._id),
+            'id': str(user.pk),
             'role': user.role,
         }, SECRET, algorithm='HS256')
-        yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
+        yield request.send({'token': token.decode('utf8'),
+                            'userId': str(user.pk)})
 
     @classmethod
     @gen.coroutine

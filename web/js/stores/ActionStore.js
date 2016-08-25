@@ -1,10 +1,7 @@
 import React from 'react';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
 
 import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
-
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 

@@ -5,11 +5,11 @@ import jwt
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from tornado import gen
 
-from raccoon.controllers.base import BaseController
-from raccoon.models import User
-from raccoon.utils.decorators import authenticated
-from raccoon.utils.exceptions import ReplyError
 from settings import SECRET
+
+from .base import BaseController
+from ..models import User
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -39,10 +39,11 @@ class UsersController(BaseController):
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         token = jwt.encode({
-            'id': str(user._id),
+            'id': str(user.pk),
             'role': user.role,
         }, SECRET, algorithm='HS256')
-        yield request.send({'token': token.decode('utf8'), 'userId': str(user._id)})
+        yield request.send({'token': token.decode('utf8'),
+                            'userId': str(user.pk)})
 
 
 class MeController(UsersController):

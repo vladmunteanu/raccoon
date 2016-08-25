@@ -6,7 +6,7 @@ import json
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
-from raccoon.utils.exceptions import ReplyError
+from ..utils.exceptions import ReplyError
 
 
 log = logging.getLogger(__name__)
@@ -21,7 +21,9 @@ class BaseInterface(object):
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', body=None, headers=None, follow_redirects=True, auth_username=None, auth_password=None):
+    def fetch(self, url, method='GET', body=None, headers=None,
+              follow_redirects=True, auth_username=None, auth_password=None,
+              timeout=15):
         body = body or 'no body' if method.upper() == 'POST' else None
         log.info(['BaseInterface.fetch', method, url])
 
@@ -36,12 +38,13 @@ class BaseInterface(object):
                 validate_cert=False,
                 auth_username=auth_username,
                 auth_password=auth_password,
+                request_timeout=timeout
             ))
         except HTTPError as exc:
-            raise ReplyError(exc.code, exc.message)
+            raise ReplyError(exc.code, str(exc))
         except Exception as exc:
             log.error(exc)
-            raise ReplyError(500, exc.message)
+            raise ReplyError(500, str(exc))
         else:
             body = response.body
             headers = response.headers

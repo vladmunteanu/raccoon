@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
 from motorengine import StringField, ListField, DateTimeField, ReferenceField
-from raccoon.models import BaseModel, Connector
-from raccoon.utils.dbfields import DictField
+
+from . import BaseModel, Connector
+from ..utils.dbfields import DictField
 
 
 class Job(BaseModel):
@@ -14,5 +15,3 @@ class Job(BaseModel):
     job = StringField(required=True)
     arguments = ListField(DictField())
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
-
-

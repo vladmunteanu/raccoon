@@ -4,7 +4,6 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import RaccoonApp from '../RaccoonApp.react';
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
@@ -234,4 +233,3 @@ ActionForm.contextTypes = {
 
 export { ActionForm };
 export default validation(strategy)(ActionForm);
-

@@ -1,13 +1,14 @@
 import React from 'react';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import Connector from '../utils/Connector';
+import WebSocketConnection from '../utils/WebSocketConnection';
 
 import BaseStore from './BaseStore';
-import BuildStore from './BuildStore';
 
 
 let jenkinsStore = null;
+let updateCounter = 0;
+let waitingForData = false;
 
 class JenkinsStore extends BaseStore {
 
@@ -26,19 +27,19 @@ class JenkinsStore extends BaseStore {
 
         // register gui related actions
         AppDispatcher.registerOnce('jenkins', payload => {
-            let method_name = payload.data['method'];
-            let args = payload.data['args'];
+            let method_name = payload.data.method;
+            let args = payload.data.args;
             this[method_name](args);
         });
     }
 
     build(args) {
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
 
-        connector.send({
+        wsConnection.send({
             verb: 'post',
             resource: this.baseuri + 'build',
-            body: args,
+            body: args
         }, payload => {
             console.log("Builded");
             this.emitChange();
@@ -46,12 +47,12 @@ class JenkinsStore extends BaseStore {
     }
 
     install(args) {
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
         console.log("Triggered install", args);
-        connector.send({
+        wsConnection.send({
             verb: 'post',
             resource: this.baseuri + 'install',
-            body: args,
+            body: args
         }, payload => {
             console.log("Installed");
             this.emitChange();
@@ -59,11 +60,11 @@ class JenkinsStore extends BaseStore {
     }
 
     stop(args) {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'post',
             resource: this.baseuri + 'stop',
-            body: args,
+            body: args
         }, payload => {
             console.log("Stopped");
             this.emitChange();
@@ -71,13 +72,16 @@ class JenkinsStore extends BaseStore {
     }
 
     get jobs() {
-        if (this.jobInstances.length == 0) {
-            let connector = new Connector();
-            connector.send({
+        if (this.jobInstances.length == 0 && !waitingForData) {
+            let wsConnection = new WebSocketConnection();
+            waitingForData = true;
+            wsConnection.send({
                 verb: 'get',
                 resource: this.baseuri + 'jobs'
             }, payload => {
+                updateCounter += 1;
                 this.jobs = payload.data;
+                waitingForData = false;
             });
         }
         return this.jobInstances || [];
@@ -86,6 +90,10 @@ class JenkinsStore extends BaseStore {
     set jobs(data) {
         this.jobInstances = data || [];
         this.emitChange();
+    }
+
+    jobValues() {
+        return this.jobs;
     }
 }
 

@@ -17,7 +17,6 @@ from raccoon.handlers import WebHandler, ApiWebSocketHandler
 # !important tasks are imported and assigned to interfaces
 from raccoon.tasks import tasks
 
-
 log = logging.getLogger(__name__)
 
 

@@ -41,4 +41,21 @@ pip install -r requirements.txt
 cd web && npm install
 ```
 
-Start server with ```npm start```
+Add executables files to where they belong:
+```
+ln -s path-to-raccoon-repo/sys/bin/raccoon path-to-your-env/bin/raccoon
+ln -s path-to-raccoon-repo/sys/bin/raccoonshell path-to-your-env/bin/raccoonshell
+```
+
+Running
+-------
+Start server with:
+```
+npm start
+```
+
+Run celery with:
+```
+celery -A raccoon.tasks.tasks worker -l info --autoreload
+```
+

@@ -19,10 +19,11 @@ class ReplyError(Exception):
     API Reply Error Exception
     """
 
-    def __init__(self, code, message=None, requestId=None, verb=None, resource=None):
+    def __init__(self, code, message=None, request_id=None,
+                 verb=None, resource=None):
         self.code = code
         self.message = message
-        self.requestId = requestId
+        self.request_id = request_id
         self.verb = verb
         self.resource = resource
 
@@ -33,7 +34,7 @@ class ReplyError(Exception):
         response = {
             'code': self.code,
             'message': self.message,
-            'requestId': self.requestId,
+            'requestId': self.request_id,
             'verb': self.verb,
             'resource': self.resource,
         }

@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 import logging
 
-from raccoon.controllers.base import BaseController
-from raccoon.models import Environment
+from .base import BaseController
+from ..models import Environment
 
 log = logging.getLogger(__name__)
 

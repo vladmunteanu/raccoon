@@ -2,25 +2,28 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
+import Autocomplete from 'react-autocomplete';
 
 import JobStore from '../../stores/JobStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
-import RaccoonApp from '../RaccoonApp.react';
 
 
 function getLocalState() {
     let localState = {
         connectors: ConnectorStore.all,
-        jobs: JenkinsStore.jobs,
+        connectorTypes: ConnectorStore.types,
         job: {
             name: '',
             connector: '',
             connector_name: '',
             job: '',
-            arguments: []
+            arguments: [],
+            store: null,
+            jobValues: []
         },
-        rowCount: 1
+        rowCount: 1,
+        jobName: ''
     };
     return localState;
 }
@@ -31,6 +34,7 @@ class JobForm extends React.Component {
         super(props);
         this.formName = 'New job';
         this.state = getLocalState();
+
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Job name'),
             connector: Joi.any().disallow(null, '').required().label('Connector'),
@@ -38,6 +42,7 @@ class JobForm extends React.Component {
             job: Joi.string().disallow(null, '').required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
+
         this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
@@ -56,7 +61,13 @@ class JobForm extends React.Component {
 
     _onChange() {
         let state = getLocalState();
+        // keep the job
         state.job = this.state.job;
+        // update job values, if store is set
+        if (state.job.store) {
+            state.job.jobValues = state.job.store.jobValues();
+        }
+        // set the number of arguments that should be displayed
         state.rowCount = state.job.arguments.length || 1;
         this.setState(state);
     }
@@ -64,7 +75,15 @@ class JobForm extends React.Component {
     onFormChange(name, event) {
         this.state.job[name] = event.target.value;
         if (name == 'connector') {
-
+            // get connector
+            let connector = this.state.connectors.filter(connector => {
+                return connector.id == event.target.value;
+            })[0];
+            if (connector) {
+                // get the associated store
+                this.state.job.store = this.state.connectorTypes[connector.type].store;
+                this.state.job.jobValues = this.state.job.store.jobValues();
+            }
         }
         this.setState(this.state);
         this.props.validate(name);
@@ -130,12 +149,12 @@ class JobForm extends React.Component {
         let name = job.name;
         let jobId = job.job;
         let args = job.arguments;
-        let connector_id = job.connector || undefined;
+        let connectorId = job.connector || undefined;
         let connector = this.state.connectors.filter(connector => {
-            return connector.id == connector_id;
+            return connector.id == connectorId;
         })[0];
-        let connector_type = connector ? connector.type : '';
-        let action_types = ConnectorStore.types[connector_type] || [];
+        let connectorType = connector ? connector.type : '';
+        let connectorInfo = ConnectorStore.types[connectorType] || [];
         let del;
 
         if (this.formName === 'Update job') {
@@ -157,7 +176,7 @@ class JobForm extends React.Component {
                     <div className="form-group">
                         <label htmlFor="connector-job" className="control-label">Connector</label>
                         <select className="form-control" id="connector-job"
-                                value={connector_id}
+                                value={connectorId}
                                 onChange={this.onFormChange.bind(this, 'connector')}>
                             <option value='' disabled={true}>-- select an option --</option>
                             {
@@ -175,25 +194,50 @@ class JobForm extends React.Component {
                                 onChange={this.onFormChange.bind(this, 'action_type')}>
                             <option value='' disabled={true}>-- select an option --</option>
                             {
-                                action_types.map(action => {
+                                (connectorInfo && connectorInfo.methods) ? connectorInfo.methods.map(action => {
                                     return <option key={action.id} value={action.id}>{action.label}</option>
-                                })
+                                }) : null
                             }
                         </select>
                         {this.renderHelpText(this.props.getValidationMessages('action_type'))}
                     </div>
                     <div className="form-group">
                         <label htmlFor="job-job" className="control-label">Job</label>
-                        <select className="form-control" id="job-job"
-                                value={jobId}
-                                onChange={this.onFormChange.bind(this, 'job')}>
-                            <option value='' disabled={true}>-- select an option --</option>
-                            {
-                                this.state.jobs.map(job => {
-                                    return <option key={job.name} value={job.name}>{job.name}</option>
-                                })
-                            }
-                        </select>
+                        <br/>
+                        <Autocomplete
+                            value={this.state.job.job}
+                            wrapperStyle={{
+                                width: "100%",
+                                display: "inline-block"
+                            }}
+                            inputProps={{
+                                id: "job-job",
+                                className: "form-control",
+                                style: {
+                                    width: '100%'
+                                }
+                            }}
+                            items={this.state.job.jobValues}
+                            getItemValue={(item) => item.name}
+                            shouldItemRender={(item, value) => {
+                                return item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                            }}
+                            sortItems={(a, b, value) => {
+                                return (
+                                    a.name.toLowerCase().indexOf(value.toLowerCase()) >
+                                    b.name.toLowerCase().indexOf(value.toLowerCase()) ? 1 : -1
+                                )
+                            }}
+                            onChange={this.onFormChange.bind(this, 'job')}
+                            onSelect={value => this.onFormChange.apply(this, ['job', {target: {value: value}}])}
+
+                            renderItem={(item, isHighlighted) => (
+                                <div
+                                  style={isHighlighted ? styles.highlightedItem : styles.item}
+                                  key={item.name}
+                                >{item.name}</div>
+                            )}
+                        />
                         {this.renderHelpText(this.props.getValidationMessages('job'))}
                     </div>
                     <div className="form-group">
@@ -232,6 +276,24 @@ class JobForm extends React.Component {
 
 JobForm.contextTypes = {
     router: React.PropTypes.object.isRequired
+};
+
+var styles = {
+  item: {
+    padding: '2px 6px',
+    cursor: 'default'
+  },
+
+  highlightedItem: {
+    color: 'white',
+    background: 'hsl(200, 50%, 50%)',
+    padding: '2px 6px',
+    cursor: 'default'
+  },
+
+  menu: {
+    border: 'solid 1px #ccc'
+  }
 };
 
 export { JobForm };

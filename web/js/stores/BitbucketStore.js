@@ -1,7 +1,6 @@
 import React from 'react';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-import Connector from '../utils/Connector';
+import WebSocketConnection from '../utils/WebSocketConnection';
 import BaseStore from './BaseStore';
 
 
@@ -32,13 +31,13 @@ class BitbucketStore extends BaseStore {
         this._branches = [];
         this.emitChange();
 
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
 
-        connector.send({
+        wsConnection.send({
             verb: 'get',
             resource: this.baseuri + 'branches',
             args: {
-                project: project_id,
+                project: project_id
             }
         }, payload => {
             this._branches = payload.data;
@@ -55,13 +54,13 @@ class BitbucketStore extends BaseStore {
         this._commits = [];
         this.emitChange();
 
-        let connector = new Connector();
+        let wsConnection = new WebSocketConnection();
 
-        connector.send({
+        wsConnection.send({
             verb: 'get',
             resource: this.baseuri + 'commits',
             args: {
-                project: project_id,
+                project: project_id
             }
         }, payload => {
             if (this._commits != payload.data) {

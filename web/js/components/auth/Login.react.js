@@ -22,6 +22,7 @@ function getLocalState() {
     return RaccoonApp.getState(localState);
 }
 
+
 class Login extends React.Component {
     constructor(props, context) {
         super(props, context);

@@ -1,11 +1,7 @@
 import React from 'react';
-import FluxStore from 'flux';
-import assign from 'object-assign';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import Connector from '../utils/Connector';
 import BaseStore from './BaseStore';
-import AuthStore from './AuthStore';
 import Constants from '../constants/Constants';
 
 let ActionTypes = Constants.ActionTypes;
@@ -34,8 +30,11 @@ class ConnectorStore extends BaseStore {
         });
     }
 
-    register(name, publicMethods) {
-        connectorTypes[name] = publicMethods;
+    register(name, store, publicMethods) {
+        connectorTypes[name] = {
+            store: store,
+            methods: publicMethods
+        };
     }
 
     get types() {

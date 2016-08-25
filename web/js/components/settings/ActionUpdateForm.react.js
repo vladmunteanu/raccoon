@@ -3,7 +3,6 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import RaccoonApp from '../RaccoonApp.react';
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 
 import ActionStore from '../../stores/ActionStore';
 import FlowStore from '../../stores/FlowStore';
@@ -72,8 +71,7 @@ class ActionUpdateForm extends ActionForm {
                 placement: 'project',
                 project: '',
                 environment: '',
-                flow: '',
-
+                flow: ''
             }
         }
 
