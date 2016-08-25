@@ -2,10 +2,6 @@ import React from 'react'
 import { Link } from 'react-router';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import RaccoonApp from './RaccoonApp.react.js';
-import Util from '../utils/Utils';
-
-import ProjectStore from '../stores/ProjectStore';
 
 
 class MenuItem extends React.Component {
@@ -76,6 +72,7 @@ class MenuItem extends React.Component {
             </ul>
         ): '';
 
+        // js is cool, but this makes it a bit hard to read
         var link = !!this.props.link ? (
             <Link to={this.props.link}
                   onMouseEnter={this.handleMouseEnter.bind(this)}

@@ -12,7 +12,6 @@ import ActionStore from '../../stores/ActionStore';
 import Sidebar from './Sidebar.react';
 import Topbar from './../Topbar.react';
 import Taskbar from './../Taskbar.react';
-import GridItem from './GridItem.react';
 
 
 class DashboardApp extends React.Component {

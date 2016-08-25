@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import re
 
 from .controllers import *
-from raccoon.utils.exceptions import ReplyError
+from .utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +35,7 @@ class Router(object):
         (r'^/api/v1/github(/?(?P<method>[a-zA-Z\_]*))/?$', GitHubController),
         (r'^/api/v1/bitbucket(/?(?P<method>[a-zA-Z\_]*))/?$', BitbucketController),
         (r'^/api/v1/jenkins(/?(?P<method>[a-zA-Z\_]*))/?$', JenkinsController),
+        (r'^/api/v1/salt(/?(?P<method>[a-zA-Z\_]*))/?$', SaltController),
     ]
 
     @classmethod

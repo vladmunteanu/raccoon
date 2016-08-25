@@ -5,12 +5,12 @@ from celery.states import EXCEPTION_STATES
 
 from tornado import gen
 
-from raccoon.models import Task
-from raccoon.controllers.base import BaseController
-from raccoon.utils.exceptions import ReplyError
-
+from ..models import Task
+from .base import BaseController
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
+
 
 class TasksController(BaseController):
     """
@@ -33,7 +33,8 @@ class TasksController(BaseController):
             return
 
         if task.status in EXCEPTION_STATES:
-            log.info('Task %s finished with status %s', task._id, task.status)
+            log.info('Task %s finished with status %s',
+                     task.pk, task.status)
             return
 
         yield callback_method(request=request, task=task, response=kwargs)

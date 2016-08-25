@@ -14,7 +14,7 @@ class Taskbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tasks: TaskStore.all,
+            tasks: TaskStore.all
         };
         this._onChange = this._onChange.bind(this);
 
@@ -38,7 +38,7 @@ class Taskbar extends React.Component {
 
     _onChange() {
         this.setState({
-            tasks: TaskStore.all,
+            tasks: TaskStore.all
         });
     }
 

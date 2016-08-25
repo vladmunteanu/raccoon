@@ -1,10 +1,15 @@
 from copy import deepcopy
+
 from motorengine import Document
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 
 
 class BaseModel(Document):
     ignore = []
+
+    @property
+    def pk(self):
+        return self._id
 
     def get_dict(self):
         result = deepcopy(super(Document, self).to_son())
@@ -16,7 +21,7 @@ class BaseModel(Document):
     @classmethod
     def get_field_names(cls, unique=False):
         if unique:
-            [k for (k, v) in cls._fields.items() if v.unique]
+            return [k for (k, v) in cls._fields.items() if v.unique]
         return cls._fields.keys()
 
     @classmethod

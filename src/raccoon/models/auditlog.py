@@ -1,7 +1,8 @@
 from __future__ import absolute_import
 
 from motorengine import StringField, DateTimeField
-from raccoon.models import BaseModel
+
+from . import BaseModel
 
 
 class AuditLog(BaseModel):

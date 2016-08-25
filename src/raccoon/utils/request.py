@@ -4,14 +4,16 @@ import json
 import logging
 from tornado import gen
 
-from raccoon.utils.utils import json_serial
+from .utils import json_serial
 
 log = logging.getLogger(__name__)
 CLIENT_CONNECTIONS = {}
 
+
 class Request(object):
-    def __init__(self, idx, verb, resource, token, data, socket, *args, **kwargs):
-        self.requestId = idx
+    def __init__(self, idx, verb, resource, token,
+                 data, socket, *args, **kwargs):
+        self.request_id = idx
         self.verb = verb
         self.resource = resource
         self.token = token
@@ -33,7 +35,7 @@ class Request(object):
 
     def serialize(self, data):
         return {
-            'requestId': self.requestId,
+            'requestId': self.request_id,
             'verb': self.verb,
             'resource': self.resource,
             'data': data,
@@ -50,5 +52,8 @@ class Request(object):
         data = self.serialize(response)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
-            data['requestId'] = self.requestId if self.socket and connection_id == self.socket.connection_id else 'notification'
+            if self.socket and connection_id == self.socket.connection_id:
+                data['requestId'] = self.request_id
+            else:
+                data['requestId'] = 'notification'
             socket.write_message(json.dumps(data, default=json_serial))

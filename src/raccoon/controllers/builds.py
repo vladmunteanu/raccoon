@@ -4,13 +4,14 @@ import logging
 
 from tornado import gen
 
-from raccoon.controllers.base import BaseController
-from raccoon.models import Build, Project
-from raccoon.interfaces.github import GitHubInterface
-from raccoon.utils.decorators import authenticated
-
+from .base import BaseController
+from ..models import Build, Project
+from ..interfaces.github import GitHubInterface
+from ..utils.decorators import authenticated
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
+
 
 class BuildsController(BaseController):
     """

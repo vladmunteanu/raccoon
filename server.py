@@ -17,7 +17,6 @@ from raccoon.handlers import WebHandler, ApiWebSocketHandler
 # !important tasks are imported and assigned to interfaces
 from raccoon.tasks import tasks
 
-
 log = logging.getLogger(__name__)
 
 
@@ -38,6 +37,7 @@ class Application(tornado.web.Application):
         # show requests in stdout
         tornado.options.parse_command_line()
 
+
 def main():
     app = Application()
     app.listen(PORT)
@@ -47,7 +47,6 @@ def main():
     connect(DB['name'], host=DB['host'], port=DB['port'], io_loop=io_loop)
 
     tornado.ioloop.IOLoop.current().start()
-
 
 
 if __name__ == '__main__':

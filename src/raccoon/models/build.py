@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
 from motorengine import StringField, ListField, DateTimeField, ReferenceField
-from raccoon.utils.dbfields import DictField
-from raccoon.models import Project, BaseModel
+
+from ..utils.dbfields import DictField
+from . import Project, BaseModel
 
 
 class Build(BaseModel):
@@ -14,5 +15,3 @@ class Build(BaseModel):
     changelog = ListField(DictField())
     labels = ListField(StringField())
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
-
-

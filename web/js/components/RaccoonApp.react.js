@@ -80,9 +80,7 @@ class RaccoonApp extends React.Component {
         state = state || {};
 
         for (var key in state) {
-            if (state.hasOwnProperty(key)) {
-                globalState[key] = state[key];
-            }
+            globalState[key] = state[key];
         }
 
         return globalState;

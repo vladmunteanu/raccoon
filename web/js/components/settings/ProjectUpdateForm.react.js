@@ -2,12 +2,10 @@ import React from 'react';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
-import RaccoonApp from '../RaccoonApp.react';
-import Constants from '../../constants/Constants';
 import { ProjectForm } from './ProjectForm.react';
+
 
 function getLocalState(projectId) {
     let localState = {

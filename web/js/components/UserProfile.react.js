@@ -1,11 +1,10 @@
 import React from 'react';
 
-import Utils from '../utils/Utils';
 import AuthStore from '../stores/AuthStore';
 
 function getCurrentState() {
     return {
-        user: AuthStore.me || {},
+        user: AuthStore.me || {}
     };
 }
 

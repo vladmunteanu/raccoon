@@ -3,9 +3,8 @@ import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
-import AppDispatcher from '../../dispatcher/AppDispatcher';
 import EnvironmentStore from '../../stores/EnvironmentStore';
-import RaccoonApp from '../RaccoonApp.react';
+
 
 class EnvironmentForm extends React.Component {
     constructor(props) {

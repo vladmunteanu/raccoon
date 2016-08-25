@@ -7,7 +7,6 @@ from tornado import gen
 from tornado.ioloop import IOLoop
 
 
-
 def json_serial(obj):
     if isinstance(obj, datetime):
         return int(time.mktime(obj.timetuple()))
@@ -16,6 +15,7 @@ def json_serial(obj):
         return str(obj)
 
     raise TypeError
+
 
 @gen.coroutine
 def sleep(milliseconds):
@@ -28,6 +28,7 @@ def sleep(milliseconds):
 RACCOON_STATES = {
     'ABORTED': 'REVOKED',
 }
+
 
 def to_celery_status(status):
     status = status.upper()

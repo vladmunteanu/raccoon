@@ -1,11 +1,8 @@
 import React from 'react';
-import FluxStore from 'flux';
 import { EventEmitter } from 'events';
-import assign from 'object-assign';
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
-import Connector from '../utils/Connector';
+import WebSocketConnection from '../utils/WebSocketConnection';
 import Utils from '../utils/Utils';
 
 
@@ -30,13 +27,13 @@ class AuthStore extends BaseStore {
     }
 
     authenticate(data) {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'post',
             resource: '/api/v1/auth/',
             body: {
                 email: data.email,
-                password: data.password,
+                password: data.password
             }
         }, payload => {
             if (payload.code == 200) {
@@ -46,8 +43,8 @@ class AuthStore extends BaseStore {
     }
 
     register(data) {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'post',
             resource: '/api/v1/me/',
             body: {
@@ -63,10 +60,10 @@ class AuthStore extends BaseStore {
     }
 
     fetchMe() {
-        let connector = new Connector();
-        connector.send({
+        let wsConnection = new WebSocketConnection();
+        wsConnection.send({
             verb: 'get',
-            resource: '/api/v1/me/' + this.userId,
+            resource: '/api/v1/me/' + this.userId
         }, payload => {
             this.saveMe(payload.data);
         });

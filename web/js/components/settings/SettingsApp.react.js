@@ -25,7 +25,7 @@ function getLocalState() {
         connectors: ConnectorStore.all,
         users: UserStore.all,
         rights: RightStore.all,
-        jobs: JobStore.all,
+        jobs: JobStore.all
     };
     return RaccoonApp.getState(localState);
 }

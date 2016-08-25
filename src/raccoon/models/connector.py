@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 
 from motorengine import StringField, DateTimeField
-from raccoon.models import BaseModel
-from raccoon.utils.dbfields import DictField
-from raccoon.interfaces.base import REGISTERED
+
+from . import BaseModel
+from ..utils.dbfields import DictField
+from ..interfaces.base import REGISTERED
 
 
 class Connector(BaseModel):
