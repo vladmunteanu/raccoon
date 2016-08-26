@@ -94,6 +94,7 @@ class ConnectorForm extends React.Component {
                         type: this.state.connector.type,
                         config: config
                     });
+                    this.setState(getLocalState());
                 }
                 catch (err) {
                     error = err;

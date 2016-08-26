@@ -92,6 +92,7 @@ class ProjectForm extends React.Component {
                     repo_url: this.state.project.repo_url,
                     connector: this.state.project.connector
                 });
+                this.setState(getLocalState());
             }
         });
     }
