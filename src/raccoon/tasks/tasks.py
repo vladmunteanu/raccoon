@@ -65,7 +65,6 @@ def broadcast(data):
 
 def fetch(url, method='GET', body=None, headers=None):
     r = requests.get(url, verify=False)
-    print(r)
     body = r.json()
     headers = r.headers
     return body, headers
