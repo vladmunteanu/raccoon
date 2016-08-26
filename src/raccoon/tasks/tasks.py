@@ -132,14 +132,10 @@ class JenkinsQueueWatcherTask(BaseTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        try:
-            response, headers = fetch(
-                method='GET',
-                url=url,
-            )
-        except:
-            traceback.format_exc()
-            raise self.retry(countdown=5, max_retries=None)
+        response, headers = fetch(
+            method='GET',
+            url=url,
+        )
 
         broadcast({
             'verb': 'patch',
