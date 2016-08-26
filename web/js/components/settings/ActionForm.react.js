@@ -99,6 +99,7 @@ class ActionForm extends React.Component {
                     environment: this.state.action.environment,
                     flow: this.state.action.flow
                 });
+                this.setState(getLocalState());
             }
         });
     }

@@ -95,6 +95,7 @@ class FlowForm extends React.Component {
                     steps: this.state.flow.steps,
                     job: this.state.flow.job
                 });
+                this.setState(getLocalState());
             }
         });
     }

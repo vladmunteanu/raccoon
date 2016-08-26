@@ -132,6 +132,8 @@ class JobForm extends React.Component {
                     job: this.state.job.job,
                     arguments: this.state.job.arguments
                 });
+                // reset state to avoid accidental duplicates
+                this.setState(getLocalState());
             }
         });
     }
