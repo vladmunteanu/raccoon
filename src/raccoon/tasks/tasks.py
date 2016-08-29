@@ -37,7 +37,8 @@ def get_ws():
     try:
         if not ws:
             ws = create_connection(
-                'ws://{host}:{port}/websocket'.format(host=HOST, port=PORT)
+                'ws://{host}:{port}/websocket'.format(host=HOST or '127.0.0.1',
+                                                      port=PORT)
             )
         else:
             try:
@@ -45,7 +46,8 @@ def get_ws():
                 ws.ping()
             except BrokenPipeError:
                 ws = create_connection(
-                    'ws://{host}:{port}/websocket'.format(host=HOST, port=PORT)
+                    'ws://{host}:{port}/websocket'.format(
+                        host=HOST or '127.0.0.1', port=PORT)
                 )
     except ConnectionRefusedError:
         log.error('Connection to raccoon server refused!', exc_info=True)
