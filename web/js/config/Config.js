@@ -7,24 +7,21 @@ class Config {
     constructor () {
         this.WS_URL = 'ws://' + location.host + '/websocket';
         this.CONNECTOR_TYPE = {
-            "git": {
+            "github": {
                 "url": "insert git url",
                 "token": "insert git token"
             },
             "jenkins": {
                 "url": "insert jenkins url",
                 "token": "insert jenkins token"
+            },
+            "salt": {
+                "username": "insert salt username here",
+                "password": "insert salt password here",
+                "url": "insert salt url here"
             }
         }
     }
-    // connection
-    //public const WS_URL = 'ws://localhost:8888/websocket';
-    /*const WS_CLOSE: null;
-    var WS_ERROR: null;
-    var WS_CONNECTING: null;
-    var WS_CONNECTED: null;
-    var WS_DISCONNECTED: null;*/
-
 }
 
 let config = new Config();
