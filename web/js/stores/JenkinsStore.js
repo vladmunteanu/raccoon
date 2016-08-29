@@ -41,7 +41,7 @@ class JenkinsStore extends BaseStore {
             resource: this.baseuri + 'build',
             body: args
         }, payload => {
-            console.log("Builded");
+            console.log("Building...");
             this.emitChange();
         });
     }
