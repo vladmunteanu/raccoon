@@ -106,11 +106,11 @@ def fetch(url):
         r = requests.get(url, verify=False)
         body = r.json()
         headers = r.headers
-    except:
+    except requests.RequestException:
         log.error("Error fetching URL {url}!", exc_info=True)
-        if r:
-            log.error("Response: {}".format(r.text))
-        raise
+    except json.JSONDecodeError:
+        log.error("Could not decode JSON from response: {}".format(r.text),
+                  exc_info=True)
     else:
         return body, headers
 
