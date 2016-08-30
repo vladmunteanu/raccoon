@@ -11,7 +11,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
-from settings import DB, APP, PORT
+from settings import DB, APP, HOST, PORT
 from raccoon.handlers import WebHandler, ApiWebSocketHandler
 
 # !important tasks are imported and assigned to interfaces
@@ -40,7 +40,7 @@ class Application(tornado.web.Application):
 
 def main():
     app = Application()
-    app.listen(PORT)
+    app.listen(PORT, address=HOST)
 
     # Connect to MongoDB Server
     io_loop = tornado.ioloop.IOLoop.instance()

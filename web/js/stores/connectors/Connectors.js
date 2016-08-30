@@ -1,5 +1,5 @@
 import ConnectorStore from '../../stores/ConnectorStore';
-import GiHubStore from '../../stores/GitHubStore';
+import GitHubStore from '../../stores/GitHubStore';
 import BitbucketStore from '../../stores/BitbucketStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import SaltStore from '../../stores/SaltStore';
@@ -9,7 +9,7 @@ import SaltStore from '../../stores/SaltStore';
 
 
 // for code
-ConnectorStore.register('github', GiHubStore, [
+ConnectorStore.register('github', GitHubStore, [
     {id: 'branches', label: 'Branches'}
 ]);
 
@@ -26,8 +26,7 @@ ConnectorStore.register('jenkins', JenkinsStore, [
 ]);
 
 ConnectorStore.register('salt', SaltStore, [
-    {id: 'build', label: 'Build'},
-    {id: 'install', label: 'Install'}
+    {id: 'command', label: 'Command runner'}
 ]);
 
 export default ConnectorStore;

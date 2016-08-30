@@ -3,12 +3,14 @@ from __future__ import absolute_import
 import os
 
 
+HOST = ""
 PORT = 8888
 ROOT_PATH = os.path.dirname(__file__)
 
 DB = {
     'scheme': 'mongodb',
-    'host': '10.2.101.51',
+    # 'host': '10.2.101.51',
+    'host': '10.2.101.108',
     'port': 27017,
     'name': 'raccoon',
 }

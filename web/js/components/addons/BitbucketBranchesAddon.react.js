@@ -74,11 +74,11 @@ class BitbucketBranchesAddon extends BaseAddon {
         return (
             <div>
                 <div className="form-group">
-                    <label for="build-version">Build version</label>
+                    <label htmlFor="build-version">Build version</label>
                     <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} />
                 </div>
                 <div className="form-group">
-                    <label for="build-branches">Select your branch</label>
+                    <label htmlFor="build-branches">Select your branch</label>
                     <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
                         <option key="" disabled>-- select an option --</option>
                         {

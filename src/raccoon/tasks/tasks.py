@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import json
 import requests
-import traceback
 import sys
 from urllib.parse import urlparse, urljoin
 
@@ -10,7 +9,7 @@ from celery import Celery, Task, states
 from celery.utils.log import get_task_logger
 from websocket import create_connection
 
-from settings import DB
+from settings import DB, HOST, PORT
 from raccoon.utils.utils import json_serial, to_celery_status
 from raccoon.interfaces.jenkins import JenkinsInterface
 
@@ -27,17 +26,29 @@ ws = None
 
 
 def get_ws():
+    """
+    Creates a websocket connection to the Raccoon backend.
+    HOST and PORT are configured in raccoon/settings.py.
+
+    :return: websocket connection
+    """
     global ws
 
     try:
         if not ws:
-            ws = create_connection('ws://0.0.0.0:8888/websocket')
+            ws = create_connection(
+                'ws://{host}:{port}/websocket'.format(host=HOST or '127.0.0.1',
+                                                      port=PORT)
+            )
         else:
             try:
                 ws.ping()
                 ws.ping()
             except BrokenPipeError:
-                ws = create_connection('ws://0.0.0.0:8888/websocket')
+                ws = create_connection(
+                    'ws://{host}:{port}/websocket'.format(
+                        host=HOST or '127.0.0.1', port=PORT)
+                )
     except ConnectionRefusedError:
         log.error('Connection to raccoon server refused!', exc_info=True)
 
@@ -45,6 +56,17 @@ def get_ws():
 
 
 def send(verb, resource, headers=None, body=None):
+    """
+    Sends a message via the websocket connection (global 'ws').
+
+    :param verb: HTTP verb
+    :type verb: str
+    :param resource: Resource, example: '/api/v1/tasks/<task_id>'
+    :type resource: str
+    :param headers: HTTP headers
+    :param body: HTTP body
+    :return: None
+    """
     ws_connection = get_ws()
     ws_connection.send(json.dumps({
         'verb': verb,
@@ -55,6 +77,12 @@ def send(verb, resource, headers=None, body=None):
 
 
 def broadcast(data):
+    """
+    Sends a message via websocket, to the broadcast endpoint.
+
+    :param data: HTTP body
+    :return: None
+    """
     ws_connection = get_ws()
     ws_connection.send(json.dumps({
         'verb': 'post',
@@ -63,11 +91,28 @@ def broadcast(data):
     }, default=json_serial))
 
 
-def fetch(url, method='GET', body=None, headers=None):
-    r = requests.get(url, verify=False)
-    body = r.json()
-    headers = r.headers
-    return body, headers
+def fetch(url):
+    """
+    Performs a GET request on the specified URL.
+    The result is expected to be a JSON,
+    which will be loaded and returned as body.
+
+    :param url: URL to GET
+    :return: (body, headers)
+    :rtype: tuple
+    """
+    r = None
+    try:
+        r = requests.get(url, verify=False)
+        body = r.json()
+        headers = r.headers
+    except requests.RequestException:
+        log.error("Error fetching URL {url}!", exc_info=True)
+    except json.JSONDecodeError:
+        log.error("Could not decode JSON from response: {}".format(r.text),
+                  exc_info=True)
+    else:
+        return body, headers
 
 
 class BaseTask(Task):
@@ -84,10 +129,7 @@ class JenkinsJobWatcherTask(BaseTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        response, headers = fetch(
-            method='GET',
-            url=url,
-        )
+        response, headers = fetch(url)
 
         status = response.get('result') or states.STARTED
         status = to_celery_status(status)
@@ -131,10 +173,7 @@ class JenkinsQueueWatcherTask(BaseTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        response, headers = fetch(
-            method='GET',
-            url=url,
-        )
+        response, headers = fetch(url)
 
         broadcast({
             'verb': 'patch',
