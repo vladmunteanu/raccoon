@@ -14,7 +14,8 @@ function getLocalState() {
             name: '',
             label: '',
             repo_url: '',
-            connector: ''
+            connector: '',
+            version: '',
         }
     };
     return localState;
@@ -32,7 +33,8 @@ class ProjectForm extends React.Component {
             repo_url: Joi.string().uri({
                 scheme: ['http', 'https']
             }).required().label('Repository url'),
-            connector: Joi.any().disallow(null, '').required().label('Connector')
+            connector: Joi.any().disallow(null, '').required().label('Connector'),
+            version: Joi.string().max(25).label('Project Version')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
         this.renderHelpText = this.renderHelpText.bind(this);
@@ -90,7 +92,8 @@ class ProjectForm extends React.Component {
                     name: this.state.project.name,
                     label: this.state.project.label,
                     repo_url: this.state.project.repo_url,
-                    connector: this.state.project.connector
+                    connector: this.state.project.connector,
+                    version: this.state.project.version
                 });
                 this.setState(getLocalState());
             }
@@ -108,6 +111,7 @@ class ProjectForm extends React.Component {
         let label = project.label;
         let url = project.repo_url;
         let connectorId = project.connector;
+        let version = project.version;
         let del;
 
         if (this.formName === 'Update project') {
@@ -160,6 +164,15 @@ class ProjectForm extends React.Component {
                             }
                         </select>
                         {this.renderHelpText(this.props.getValidationMessages('connector'))}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="project-version" className="control-label">Project Version</label>
+                        <input type="text"  className="form-control"
+                               id="project-version" value={version}
+                               placeholder="Project Version"
+                               onChange={this.onFormChange.bind(this, 'version')}
+                               onBlur={this.props.handleValidation('version')}/>
+                        {this.renderHelpText(this.props.getValidationMessages('version'))}
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

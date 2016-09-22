@@ -63,8 +63,15 @@ class JenkinsInterface(BaseInterface):
         if not project:
             raise ReplyError(404)
 
+        project_version, project_build_counter = version.split("-")
+        project_build_counter = int(project_build_counter)
+
         # save latest version
-        project.version = version
+        project.version = project_version
+
+        # save the counter
+        project.build_counter = project_build_counter
+
         yield project.save()
 
         # load project references
@@ -77,7 +84,7 @@ class JenkinsInterface(BaseInterface):
         build = Build(
             project=project.pk,
             branch=branch_name,
-            version='{}-{}'.format(version, str(task.pk)[-6:]),
+            version='{}-{}'.format(project_version, project_build_counter),
             changelog=changelog,
         )
         yield build.save()
