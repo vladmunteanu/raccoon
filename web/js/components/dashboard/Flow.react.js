@@ -1,4 +1,5 @@
 import React from 'react'
+import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
 import AppDispatcher from '../../dispatcher/AppDispatcher';
@@ -92,12 +93,29 @@ class Flow extends React.Component {
     }
 
     _handleNext(event) {
-        let state = getLocalState(this.props.params.id,
-            this.props.params.project,
-            this.props.params.env);
-        this.step += 1;
-        state.step = this.step;
-        this.setState(state);
+        let currentAddon = this.refs[this.state.flow.id + '-LastStepAddon'];
+        let addonErrors = currentAddon.validate();
+        if (!addonErrors) {
+            let state = getLocalState(
+                this.props.params.id,
+                this.props.params.project,
+                this.props.params.env
+            );
+            this.step += 1;
+            state.step = this.step;
+            this.setState(state);
+        }
+        else {
+            if (!this._notificationSystem) {
+                this._notificationSystem = this.refs.notificationSystem;
+            }
+            this._notificationSystem.addNotification({
+                level: 'error',
+                position: 'br',
+                title: "Current addon not valid:",
+                message: addonErrors
+            });
+        }
     }
 
     render() {
@@ -149,6 +167,8 @@ class Flow extends React.Component {
                     name={"Addon cu numaru' " + stepIndex}
                     context={lastContext}
                 />
+
+                <NotificationSystem ref="notificationSystem" />
 
                 <nav>
                     <ul className="pager">
