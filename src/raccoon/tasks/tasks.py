@@ -44,7 +44,7 @@ def get_ws():
             try:
                 ws.ping()
                 ws.ping()
-            except BrokenPipeError:
+            except (OSError, BrokenPipeError):
                 ws = create_connection(
                     'ws://{host}:{port}/websocket'.format(
                         host=HOST or '127.0.0.1', port=PORT)
