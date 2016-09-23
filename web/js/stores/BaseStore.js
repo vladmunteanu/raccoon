@@ -26,6 +26,9 @@ class BaseStore extends EventEmitter {
             if (payload.code == 200) {
                 this.instances = this.instances.map(instance => {
                     if (instance.id === payload.data.id) {
+                        Object.keys(payload.data).forEach((key) => {
+                            instance[key] = payload.data[key];
+                        });
                         return payload.data;
                     } else {
                         return instance;
@@ -116,7 +119,7 @@ class BaseStore extends EventEmitter {
             verb: 'put',
             resource: this.baseuri + id,
             body: data
-        });/*, payload => {
+        }/*, payload => {
             this.instances = this.instances.map(instance => {
                 if (instance.id === payload.data.id) {
                     return payload.data;
@@ -124,9 +127,8 @@ class BaseStore extends EventEmitter {
                     return instance;
                 }
             });
-            console.log([this.instances]);
             this.emitChange();
-        });*/
+        }*/);
     }
 
     create(data) {

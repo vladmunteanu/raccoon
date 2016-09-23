@@ -74,6 +74,10 @@ class JenkinsInterface(BaseInterface):
 
         yield project.save()
 
+        request.verb = "put"
+        request.resource = "/api/v1/projects/"
+        request.broadcast(project.get_dict())
+
         # load project references
         yield project.load_references()
 
