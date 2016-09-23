@@ -6,12 +6,12 @@ import GitHubStore from '../../stores/GitHubStore';
 import ProjectStore from '../../stores/ProjectStore';
 import ActionStore from '../../stores/ActionStore';
 
-
 class GitBranchesAddon extends BaseAddon {
     constructor(props) {
         super(props);
 
         let project = ProjectStore.getById(this.addon_context.project);
+
         this.state = {
             project: project,
             action: ActionStore.getById(this.addon_context.action),
@@ -47,7 +47,6 @@ class GitBranchesAddon extends BaseAddon {
             project: project,
             action: ActionStore.getById(this.addon_context.action),
             branches: GitHubStore.branches,
-            version: project ? project.version : '1.0.0'
         });
 
         this.updateContext('version', this.state.version);
@@ -60,7 +59,7 @@ class GitBranchesAddon extends BaseAddon {
     _onChangeVersion(event) {
         this.state.version = event.target.value;
         this.setState(this.state);
-        this.updateContext('version', event.target.value);
+        this.updateContext('version', this.state.version);
     }
 
     _onChangeBranch(event) {
@@ -69,27 +68,45 @@ class GitBranchesAddon extends BaseAddon {
         this.updateContext('branch', event.target.value);
     }
 
-    render() {
+    /**
+     * Validates the constraints for this addon.
+     * Checks that the branch is set, and that the build version is unique
+     * @returns {string} branch not set -> "Branch must be set!"
+     */
+    validate() {
+        // check branch is set
+        // check that the build version is unique for this project and branch
+        if (!this.state.branch) {
+            return "Branch must be set!";
+        }
+        return "";
+    }
 
+    render() {
         return (
-            <div>
-                <div className="form-group">
-                    <label htmlFor="build-version">Build version</label>
-                    <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} />
+            <div className="container-fluid">
+                <div className="row form-group">
+                    <div className="input-group col-lg-6 col-md-6 col-xs-6">
+                        <label htmlFor="build-branches">Select your branch</label>
+                        <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
+                            <option key="" disabled>-- select an option --</option>
+                            {
+                                this.state.branches.map(branch => {
+                                    return <option key={branch.name} value={branch.name}>{branch.name}</option>
+                                })
+                            }
+                        </select>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="build-branches">Select your branch</label>
-                    <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
-                        <option key="" disabled>-- select an option --</option>
-                        {
-                            this.state.branches.map(branch => {
-                                return <option key={branch.name} value={branch.name}>{branch.name}</option>
-                            })
-                        }
-                    </select>
+                <div className="row form-group">
+                    <label htmlFor="build-version">Build version</label>
+                    <div className="input-group col-lg-6 col-md-6 col-xs-6">
+                        <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} disabled={!this.state.branch}/>
+                    </div>
                 </div>
             </div>
         );
+
     }
 }
 

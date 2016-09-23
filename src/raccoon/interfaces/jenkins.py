@@ -48,8 +48,27 @@ class JenkinsInterface(BaseInterface):
         )
 
     @gen.coroutine
-    def build(self, *args, **kwargs):
-        yield self.trigger(callback_method=self.build_callback, *args, **kwargs)
+    def build(self, request, *args, **kwargs):
+        project_id = kwargs.get('project')
+        version = kwargs.get('version')
+
+        project = yield Project.objects.get(id=project_id)
+        if not project:
+            raise ReplyError(404)
+
+        # update project
+        project.version = version
+        project.build_counter += 1
+        yield project.save()
+
+        # send notification for project
+        request.verb = "put"
+        request.resource = "/api/v1/projects/"
+        request.broadcast(project.get_dict())
+
+        version = version + "-" + str(project.build_counter)
+        kwargs.update({'version': version})
+        yield self.trigger(request, callback_method=self.build_callback, *args, **kwargs)
 
     @classmethod
     @gen.coroutine
@@ -63,21 +82,6 @@ class JenkinsInterface(BaseInterface):
         if not project:
             raise ReplyError(404)
 
-        project_version, project_build_counter = version.split("-")
-        project_build_counter = int(project_build_counter)
-
-        # save latest version
-        project.version = project_version
-
-        # save the counter
-        project.build_counter = project_build_counter
-
-        yield project.save()
-
-        request.verb = "put"
-        request.resource = "/api/v1/projects/"
-        request.broadcast(project.get_dict())
-
         # load project references
         yield project.load_references()
 
@@ -88,7 +92,7 @@ class JenkinsInterface(BaseInterface):
         build = Build(
             project=project.pk,
             branch=branch_name,
-            version='{}-{}'.format(project_version, project_build_counter),
+            version=version,
             changelog=changelog,
         )
         yield build.save()

@@ -29,10 +29,8 @@ class BaseStore extends EventEmitter {
                         Object.keys(payload.data).forEach((key) => {
                             instance[key] = payload.data[key];
                         });
-                        return payload.data;
-                    } else {
-                        return instance;
                     }
+                    return instance;
                 });
                 this.emitChange();
             }
@@ -42,12 +40,10 @@ class BaseStore extends EventEmitter {
             this.instances = this.instances.map(instance => {
                 if (instance.id === payload.data.id) {
                     Object.keys(payload.data).forEach((key) => {
-                       instance[key] = payload.data[key];
+                        instance[key] = payload.data[key];
                     });
-                    return instance;
-                } else {
-                    return instance;
                 }
+                return instance;
             });
             this.emitChange();
         });
