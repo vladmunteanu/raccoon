@@ -23,10 +23,10 @@ class BaseAddon extends React.Component {
      * Implement this in your addon if you need validation,
      * and return the error string if the validation fails.
 
-     * @returns {null}
+     * @returns {string} empty string
      */
     validate() {
-        return null;
+        return "";
     }
 }
 
