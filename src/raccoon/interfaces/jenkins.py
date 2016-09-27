@@ -102,8 +102,8 @@ class JenkinsInterface(BaseInterface):
         request.broadcast(build.get_dict())
 
     @gen.coroutine
-    def install(self, *args, **kwargs):
-        yield self.trigger(callback_method=self.install_callback,
+    def install(self, request, *args, **kwargs):
+        yield self.trigger(request, callback_method=self.install_callback,
                            *args, **kwargs)
 
     @classmethod
