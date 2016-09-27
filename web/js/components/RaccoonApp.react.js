@@ -3,6 +3,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import ActionStore from '../stores/ActionStore';
 import AuthStore from '../stores/AuthStore';
+import AuditlogStore from '../stores/AuditlogStore';
 import EnvironmentStore from '../stores/EnvironmentStore';
 import ProjectStore from '../stores/ProjectStore';
 import NotificationStore from '../stores/NotificationStore';

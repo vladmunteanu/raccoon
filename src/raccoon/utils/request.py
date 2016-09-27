@@ -33,11 +33,11 @@ class Request(object):
     def user(self, user):
         self.currentUser = user
 
-    def serialize(self, data):
+    def serialize(self, data, verb=None, resource=None):
         return {
             'requestId': self.request_id,
-            'verb': self.verb,
-            'resource': self.resource,
+            'verb': verb or self.verb,
+            'resource': resource or self.resource,
             'data': data,
             'code': 200,
             'message': 'OK',
@@ -48,8 +48,8 @@ class Request(object):
         data = self.serialize(response)
         self.socket.write_message(json.dumps(data, default=json_serial))
 
-    def broadcast(self, response=None):
-        data = self.serialize(response)
+    def broadcast(self, response=None, verb=None, resource=None):
+        data = self.serialize(response, verb, resource)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
             if self.socket and connection_id == self.socket.connection_id:
