@@ -35,7 +35,7 @@ class SaltController(BaseController):
                              action=kwargs.get('fun'),
                              project=kwargs.get('service_type'),
                              environment=kwargs.get('target_env'),
-                             message="Salt master returned code: {}".format(_.get('code')))
+                             message="Salt master operation")
         yield audit_log.save()
 
         request.broadcast(audit_log.get_dict(),
