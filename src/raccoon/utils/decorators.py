@@ -2,7 +2,6 @@ import logging
 
 import jwt
 from tornado import gen
-from bson.objectid import ObjectId
 
 from settings import SECRET
 from ..models import User
