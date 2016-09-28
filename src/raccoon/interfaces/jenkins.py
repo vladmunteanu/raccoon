@@ -77,7 +77,9 @@ class JenkinsInterface(BaseInterface):
                                                                               branch))
         yield audit_log.save()
 
-        request.broadcast(audit_log.get_dict(), verb='post', resource='/api/v1/auditlogs/')
+        request.broadcast(audit_log.get_dict(),
+                          verb='post', resource='/api/v1/auditlogs/',
+                          admin_only=True)
 
         yield self.trigger(request, callback_method=self.build_callback, *args, **kwargs)
 
@@ -135,7 +137,9 @@ class JenkinsInterface(BaseInterface):
                              message='Install started for build {}'.format(build.version))
         yield audit_log.save()
 
-        request.broadcast(audit_log.get_dict(), verb='post', resource='/api/v1/auditlogs/')
+        request.broadcast(audit_log.get_dict(),
+                          verb='post', resource='/api/v1/auditlogs/',
+                          admin_only=True)
 
         yield self.trigger(request, callback_method=self.install_callback, *args, **kwargs)
 

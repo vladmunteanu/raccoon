@@ -39,6 +39,7 @@ class SaltController(BaseController):
         yield audit_log.save()
 
         request.broadcast(audit_log.get_dict(),
-                          verb="post", resource="/api/v1/auditlogs/")
+                          verb="post", resource="/api/v1/auditlogs/",
+                          admin_only=True)
 
         yield request.send(response)

@@ -2,13 +2,15 @@ from __future__ import absolute_import
 
 import logging
 import json
-from tornado import gen
 
+import jwt
+from tornado import gen
 import tornado.websocket
 
 from ..urls import Router
 from ..utils.request import Request, CLIENT_CONNECTIONS
 from ..utils.exceptions import ReplyError
+from settings import SECRET
 
 log = logging.getLogger(__name__)
 
@@ -19,6 +21,11 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     """
 
     ALLOWED_VERBS = ('get', 'post', 'put', 'delete', 'patch')
+
+    def __init__(self, *args, **kwargs):
+        self.is_admin = False
+        self.user_data = None
+        super(ApiWebSocketHandler, self).__init__(*args, **kwargs)
 
     @property
     def connection_id(self):
@@ -69,6 +76,16 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 raise ReplyError(403)
             controller, params = Router.get(resource)
             method = getattr(controller, verb, None)
+
+            if not self.user_data and token:
+                try:
+                    self.user_data = jwt.decode(token, SECRET,
+                                                algorithms=['HS256'])
+                except jwt.DecodeError:
+                    log.warning(["Can't decode token", token])
+                    pass
+                else:
+                    self.is_admin = self.user_data.get('role') == 'admin'
 
             if not method:
                 raise ReplyError(404)

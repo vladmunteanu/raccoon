@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import json
 import logging
+
 from tornado import gen
 
 from .utils import json_serial
@@ -48,7 +49,7 @@ class Request(object):
         data = self.serialize(response)
         self.socket.write_message(json.dumps(data, default=json_serial))
 
-    def broadcast(self, response=None, verb=None, resource=None):
+    def broadcast(self, response=None, verb=None, resource=None, admin_only=False):
         data = self.serialize(response, verb, resource)
         for connection_id, socket in CLIENT_CONNECTIONS.items():
             # mark the broadcast as notification for other users
@@ -56,4 +57,6 @@ class Request(object):
                 data['requestId'] = self.request_id
             else:
                 data['requestId'] = 'notification'
+            if admin_only and not socket.is_admin:
+                continue
             socket.write_message(json.dumps(data, default=json_serial))

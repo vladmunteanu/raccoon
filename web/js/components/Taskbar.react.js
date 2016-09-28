@@ -3,6 +3,7 @@ import React from 'react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import TaskStore from '../stores/TaskStore';
 import AuditlogStore from '../stores/AuditlogStore';
+import AuthStore from '../stores/AuthStore';
 import Constants from '../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
 
@@ -14,11 +15,14 @@ class Taskbar extends React.Component {
 
     constructor(props) {
         super(props);
+        this._onChange = this._onChange.bind(this);
+
         this.state = {
             tasks: TaskStore.all,
-            logs: AuditlogStore.all
+            user: AuthStore.me,
+            logs: [],
+            fetchedLogs: false
         };
-        this._onChange = this._onChange.bind(this);
 
         // register for taskbar toggle event and display
         AppDispatcher.registerOnce(ActionTypes.TASKBAR_TOGGLE, _ => {
@@ -32,20 +36,31 @@ class Taskbar extends React.Component {
     componentDidMount() {
         TaskStore.addListener(this._onChange);
         AuditlogStore.addListener(this._onChange);
+        AuthStore.addListener(this._onChange);
         TaskStore.fetchAll();
-        AuditlogStore.fetchAll();
     }
 
     componentWillUnmount() {
         TaskStore.removeListener(this._onChange);
         AuditlogStore.removeListener(this._onChange);
+        AuthStore.removeListener(this._onChange);
     }
 
     _onChange() {
+        let tasks = TaskStore.all;
+        let user = AuthStore.me;
+        let isAdmin = user ? user.role == 'admin' : false;
+
+        if (isAdmin && !this.state.fetchedLogs) {
+            AuditlogStore.fetchAll();
+            this.state.fetchedLogs = true;
+        }
+
         this.setState({
-            tasks: TaskStore.all,
+            tasks: tasks,
+            user: user,
             logs: AuditlogStore.all
-        });
+        })
     }
 
     render() {

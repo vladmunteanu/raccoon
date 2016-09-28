@@ -13,3 +13,4 @@ class FlowsController(BaseController):
     Flows Controller
     """
     model = Flow
+    audit_logs = True

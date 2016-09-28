@@ -38,6 +38,9 @@ T.setTexts({
     HTTP_201_POST_jenkins: 'Your task just started',
     HTTP_302_POST_jenkins: 'Your task was aborted',
 
+    // audit logs
+    HTTP_200_POST_auditlogs: "New log entry",
+
     // salt
     HTTP_200_POST_salt: 'Salt command executed successfully',
 

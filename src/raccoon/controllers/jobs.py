@@ -13,3 +13,4 @@ class JobsController(BaseController):
     Jobs Controller
     """
     model = Job
+    audit_logs = True

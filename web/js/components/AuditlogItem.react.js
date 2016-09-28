@@ -20,13 +20,13 @@ class AuditlogItem extends React.Component {
         return (
             <div className="list-group-item old">
                 <div className="list-group-item-heading">
-                    <span className="title">{this.state.action || "no action"}</span>
+                    <span className="title text-uppercase">{this.state.action || "no action"}</span>
                 </div>
                 <div className="list-group-item-text">
                     {this.state.email || "no email"}<br/>
-                    {this.state.project || "no project"}
-                    {" ON "}
-                    {this.state.environment || "no environment"}<br/>
+                    {this.state.project ? "Project: " + this.state.project : ""}
+                    {this.state.project && this.state.environment ? " ON " : ""}
+                    {this.state.environment ? "Environment: " + this.state.environment : ""}<br/><br/>
                     {this.state.message || "no message"}
                     <span className="time pull-right">
                         <TimeAgo
@@ -36,6 +36,7 @@ class AuditlogItem extends React.Component {
                         />
                     </span>
                 </div>
+                <br/>
             </div>
         )
     }

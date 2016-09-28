@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 
 from ..utils.decorators import authenticated, is_admin
 from ..utils.exceptions import ReplyError
+from ..models import AuditLog
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +18,9 @@ class BaseController(object):
     Base Controller
     """
     model = None
+
+    # Override this to enable audit logs for PUT, POST and DELETE
+    audit_logs = False
 
     @classmethod
     @authenticated
@@ -62,6 +66,17 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
+        if cls.audit_logs:
+            audit_log = AuditLog(user=request.user.email,
+                                 action='new {}'.format(cls.model.__name__),
+                                 message='{} {} added'.format(cls.model.__name__,
+                                                              kwargs.get('name')))
+            yield audit_log.save()
+
+            request.broadcast(audit_log.get_dict(),
+                              verb='post', resource='/api/v1/auditlogs/',
+                              admin_only=True)
+
         request.broadcast(response.get_dict())
 
     @classmethod
@@ -100,6 +115,17 @@ class BaseController(object):
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
+        if cls.audit_logs:
+            audit_log = AuditLog(user=request.user.email,
+                                 action='update {}'.format(cls.model.__name__),
+                                 message='{} {} modified'.format(cls.model.__name__,
+                                                                 kwargs.get('name')))
+            yield audit_log.save()
+
+            request.broadcast(audit_log.get_dict(),
+                              verb='post', resource='/api/v1/auditlogs/',
+                              admin_only=True)
+
         request.broadcast(response.get_dict())
 
     @classmethod
@@ -132,5 +158,16 @@ class BaseController(object):
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
+
+        if cls.audit_logs:
+            audit_log = AuditLog(user=request.user.email,
+                                 action='delete {}'.format(cls.model.__name__),
+                                 message='{} {} deleted'.format(cls.model.__name__,
+                                                                getattr(instance, 'name', '')))
+            yield audit_log.save()
+
+            request.broadcast(audit_log.get_dict(),
+                              verb='post', resource='/api/v1/auditlogs/',
+                              admin_only=True)
 
         request.broadcast(pk)
