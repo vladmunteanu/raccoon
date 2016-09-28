@@ -1,9 +1,14 @@
+import logging
+
 import jwt
 from tornado import gen
+from bson.objectid import ObjectId
 
 from settings import SECRET
 from ..models import User
 from .exceptions import ReplyError
+
+log = logging.getLogger(__name__)
 
 
 def authenticated(method):
@@ -22,7 +27,7 @@ def authenticated(method):
         except jwt.exceptions.DecodeError:
             raise ReplyError(400)
 
-        if 'id' not in user_data:
+        if not user_data.get('id'):
             raise ReplyError(401)
 
         request.user = yield User.objects.get(user_data['id'])
