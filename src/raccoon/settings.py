@@ -1,23 +1,22 @@
 from __future__ import absolute_import
 
-import os
-
+from os import path
 
 HOST = ""
 PORT = 8888
-ROOT_PATH = os.path.dirname(__file__)
+ROOT_PATH = path.abspath(path.join(path.dirname(__file__), '../..'))
 
 DB = {
     'scheme': 'mongodb',
-    # 'host': '10.2.101.51',
-    'host': '10.2.101.108',
+    'host': '10.2.101.51',
+    # 'host': '10.2.101.108',
     'port': 27017,
     'name': 'raccoon',
 }
 
 DEBUG = True
-STATIC_PATH = os.path.join(ROOT_PATH, 'web')
-TEMPLATE_PATH = os.path.join(ROOT_PATH, 'web')
+STATIC_PATH = path.join(ROOT_PATH, 'web')
+TEMPLATE_PATH = path.join(ROOT_PATH, 'web')
 
 APP = {
     'static_path': STATIC_PATH,
