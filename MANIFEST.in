@@ -1,4 +1,4 @@
-include requirements.txt README.md server.py settings.py
+include requirements.txt README.md
 include sys/bin/*
 recursive-include web *
 prune web/node_modules

@@ -9,7 +9,7 @@ from celery import Celery, Task, states
 from celery.utils.log import get_task_logger
 from websocket import create_connection
 
-from settings import DB, HOST, PORT
+from raccoon.settings import DB, HOST, PORT
 from raccoon.utils.utils import json_serial, to_celery_status
 from raccoon.interfaces.jenkins import JenkinsInterface
 

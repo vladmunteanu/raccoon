@@ -5,7 +5,7 @@ import jwt
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from tornado import gen
 
-from settings import SECRET
+from ..settings import SECRET
 
 from .base import BaseController
 from ..models import User

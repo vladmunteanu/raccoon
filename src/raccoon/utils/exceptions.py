@@ -5,7 +5,7 @@ import logging
 import traceback
 from http.server import BaseHTTPRequestHandler
 
-from settings import DEBUG
+from ..settings import DEBUG
 
 
 log = logging.getLogger(__name__)
