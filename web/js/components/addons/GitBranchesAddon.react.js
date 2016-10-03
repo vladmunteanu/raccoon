@@ -1,85 +1,71 @@
 import React from 'react';
+import Joi from 'joi';
+import strategy from 'joi-validation-strategy';
+import validation from 'react-validation-mixin';
+
 import BaseAddon from './BaseAddon.react';
 
 // stores
 import GitHubStore from '../../stores/GitHubStore';
 import ProjectStore from '../../stores/ProjectStore';
-import ActionStore from '../../stores/ActionStore';
 
-class GitBranchesAddon extends BaseAddon {
+
+/**
+ * Renders the build form for Git branches and build version.
+ */
+class BuildForm extends React.Component {
     constructor(props) {
         super(props);
 
-        let project = ProjectStore.getById(this.addon_context.project);
-
         this.state = {
-            project: project,
-            action: ActionStore.getById(this.addon_context.action),
-            branches: GitHubStore.branches,
-            branch: '',
-            version: project ? project.version : '1.0.0'
+            project: this.props.project,
+            branches: this.props.branches,
+            version: this.props.project ? this.props.project.version : '1.0.0',
+            branch: ''
         };
 
-        this._onChange = this._onChange.bind(this);
+        this.validatorTypes = {
+            branch: Joi.string().required().label('Branch'),
+            version: Joi.string().required().label('Version')
+        };
+        this.getValidatorData = this.getValidatorData.bind(this);
+
         this._onChangeVersion = this._onChangeVersion.bind(this);
         this._onChangeBranch = this._onChangeBranch.bind(this);
     }
 
-    componentDidMount() {
-        ProjectStore.addListener(this._onChange);
-        ActionStore.addListener(this._onChange);
-        GitHubStore.addListener(this._onChange);
-
-        if (this.addon_context.project) {
-            GitHubStore.fetchBranches(this.addon_context.project);
+    getValidatorData() {
+        return {
+            branch: this.state.branch,
+            version: this.state.version
         }
     }
 
-    componentWillUnmount() {
-        ProjectStore.removeListener(this._onChange);
-        ActionStore.removeListener(this._onChange);
-        GitHubStore.removeListener(this._onChange);
+    renderHelpText(messages) {
+        return (
+            <div className="text-danger">
+                {
+                    messages.map((message, idx) => {
+                        return <div key={"error-message-" + idx}>{message}</div>
+                    })
+                }
+            </div>
+        );
     }
 
-    _updateState() {
-        let project = ProjectStore.getById(this.addon_context.project);
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            project: project,
-            action: ActionStore.getById(this.addon_context.action),
-            branches: GitHubStore.branches,
-        });
-
-        this.updateContext('version', this.state.version);
-    }
-
-    _onChange() {
-        this._updateState();
+            project: nextProps.project,
+            branches: nextProps.branches,
+        })
     }
 
     _onChangeVersion(event) {
-        this.state.version = event.target.value;
-        this.setState(this.state);
-        this.updateContext('version', this.state.version);
+        this.setState({version: event.target.value});
     }
 
     _onChangeBranch(event) {
-        this.state.branch = event.target.value;
-        this.setState(this.state);
-        this.updateContext('branch', event.target.value);
-    }
-
-    /**
-     * Validates the constraints for this addon.
-     * Checks that the branch is set, and that the build version is unique
-     * @returns {string} branch not set -> "Branch must be set!"
-     */
-    validate() {
-        // check branch is set
-        // check that the build version is unique for this project and branch
-        if (!this.state.branch) {
-            return "Branch must be set!";
-        }
-        return "";
+        this.setState({branch: event.target.value});
     }
 
     render() {
@@ -96,6 +82,7 @@ class GitBranchesAddon extends BaseAddon {
                                 })
                             }
                         </select>
+                        {this.renderHelpText(this.props.getValidationMessages('branch'))}
                     </div>
                 </div>
                 <div className="row form-group">
@@ -103,10 +90,79 @@ class GitBranchesAddon extends BaseAddon {
                     <div className="input-group col-lg-6 col-md-6 col-xs-6">
                         <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} disabled={!this.state.branch}/>
                     </div>
+                    {this.renderHelpText(this.props.getValidationMessages('version'))}
                 </div>
             </div>
-        );
+        )
+    }
+}
 
+BuildForm = validation(strategy)(BuildForm);
+
+
+class GitBranchesAddon extends BaseAddon {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            project: ProjectStore.getById(this.addon_context.project),
+            branches: GitHubStore.branches
+        };
+
+        this._onChange = this._onChange.bind(this);
+    }
+
+    componentDidMount() {
+        ProjectStore.addListener(this._onChange);
+        GitHubStore.addListener(this._onChange);
+
+        if (this.addon_context.project) {
+            GitHubStore.fetchBranches(this.addon_context.project);
+        }
+    }
+
+    componentWillUnmount() {
+        ProjectStore.removeListener(this._onChange);
+        GitHubStore.removeListener(this._onChange);
+    }
+
+    _updateState() {
+        let project = ProjectStore.getById(this.addon_context.project);
+        this.setState({
+            project: project,
+            branches: GitHubStore.branches,
+        });
+    }
+
+    _onChange() {
+        this._updateState();
+    }
+
+    /**
+     * Validates the constraints for this addon.
+     * Checks that branch and build version are set.
+     * @param callback: method to call after inner form validation is performed.
+     */
+    validate(callback) {
+        this.refs.buildForm.validate((error) => {
+            if (!error) {
+                this.updateContext(
+                    'version',
+                    this.refs.buildForm.refs.component.state.version
+                );
+                this.updateContext(
+                    'branch',
+                    this.refs.buildForm.refs.component.state.branch
+                );
+            }
+
+            // call flow callback, disable notifications
+            callback(error, false);
+        });
+    }
+
+    render() {
+        return <BuildForm ref="buildForm" project={this.state.project} branches={this.state.branches}/>;
     }
 }
 
