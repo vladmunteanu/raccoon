@@ -23,8 +23,8 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     ALLOWED_VERBS = ('get', 'post', 'put', 'delete', 'patch')
 
     def __init__(self, *args, **kwargs):
-        self.is_admin = False
         super(ApiWebSocketHandler, self).__init__(*args, **kwargs)
+        self.is_admin = False
 
     @property
     def connection_id(self):
