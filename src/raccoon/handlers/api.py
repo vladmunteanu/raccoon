@@ -24,7 +24,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def __init__(self, *args, **kwargs):
         self.is_admin = False
-        self.user_data = None
         super(ApiWebSocketHandler, self).__init__(*args, **kwargs)
 
     @property
@@ -77,16 +76,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
             controller, params = Router.get(resource)
             method = getattr(controller, verb, None)
 
-            if not self.user_data and token:
-                try:
-                    self.user_data = jwt.decode(token, SECRET,
-                                                algorithms=['HS256'])
-                except jwt.DecodeError:
-                    log.warning(["Can't decode token", token])
-                    pass
-                else:
-                    self.is_admin = self.user_data.get('role') == 'admin'
-
             if not method:
                 raise ReplyError(404)
 
@@ -102,6 +91,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 data=jdata,
                 socket=self
             )
+            self.is_admin = req.is_admin
             yield method(req, **params)
         except ReplyError as e:
             e.request_id = request_id
