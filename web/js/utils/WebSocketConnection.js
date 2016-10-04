@@ -138,7 +138,10 @@ class WebSocketConnection {
 
         // set authorization headers
         let headers = request.headers || {};
-        headers['Authorization'] = 'Bearer ' + AuthStore.token;
+        let token = AuthStore.token;
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + AuthStore.token;
+        }
         request.headers = headers;
 
         this.pendingCallbacks[request.requestId] = callback;
