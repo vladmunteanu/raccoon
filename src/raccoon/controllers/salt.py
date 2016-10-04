@@ -31,7 +31,8 @@ class SaltController(BaseController):
 
         response = yield method(**kwargs)
 
-        audit_log = AuditLog(user=request.user.email,
+        user = yield request.user
+        audit_log = AuditLog(user=user.email,
                              action=kwargs.get('fun'),
                              project=kwargs.get('service_type'),
                              environment=kwargs.get('target_env'),

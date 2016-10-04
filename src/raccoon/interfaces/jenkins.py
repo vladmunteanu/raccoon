@@ -69,7 +69,8 @@ class JenkinsInterface(BaseInterface):
         kwargs.update({'version': version})
 
         # Log build started
-        audit_log = AuditLog(user=request.user.email,
+        user = yield request.user
+        audit_log = AuditLog(user=user.email,
                              action='build',
                              project=project.name,
                              environment=kwargs.get('environment', '-'),
@@ -118,19 +119,20 @@ class JenkinsInterface(BaseInterface):
         build_id = kwargs.get('build')
         environment_id = kwargs.get('environment')
 
-        project = Project.objects.get(id=project_id)
+        project = yield Project.objects.get(id=project_id)
         if not project:
             raise ReplyError(404)
 
-        environment = Environment.objects.get(id=environment_id)
+        environment = yield Environment.objects.get(id=environment_id)
         if not environment:
             raise ReplyError(404)
 
-        build = Build.objects.get(id=build_id)
+        build = yield Build.objects.get(id=build_id)
         if not build:
             raise ReplyError(404)
 
-        audit_log = AuditLog(user=kwargs.get('request').user.email,
+        user = yield request.user
+        audit_log = AuditLog(user=user.email,
                              action='install',
                              project=project.name,
                              environment=environment.name,
@@ -206,8 +208,9 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
+        user = yield request.user
         task = Task(
-            user=request.user,
+            user=user,
             connector_type='jenkins',
             job=flow.job,
             context=kwargs,
