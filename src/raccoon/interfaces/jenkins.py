@@ -69,7 +69,7 @@ class JenkinsInterface(BaseInterface):
         kwargs.update({'version': version})
 
         # Log build started
-        user = yield request.user
+        user = yield request.get_user()
         audit_log = AuditLog(user=user.email,
                              action='build',
                              project=project.name,
@@ -131,7 +131,7 @@ class JenkinsInterface(BaseInterface):
         if not build:
             raise ReplyError(404)
 
-        user = yield request.user
+        user = yield request.get_user()
         audit_log = AuditLog(user=user.email,
                              action='install',
                              project=project.name,
@@ -175,7 +175,11 @@ class JenkinsInterface(BaseInterface):
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
         """
-        :param kwargs: parameter for jenkins job
+            Creates and starts the Celery tasks for the current job.
+        :param request: HTTP request
+        :param kwargs: parameters for jenkins job
+        :param flow: Flow
+        :param callback_method: callback method to call when job is finished
         :return: Build information
         """
         verb, path = URLS.get('build')
@@ -208,7 +212,7 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
-        user = yield request.user
+        user = yield request.get_user()
         task = Task(
             user=user,
             connector_type='jenkins',

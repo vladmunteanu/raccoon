@@ -33,9 +33,8 @@ class Request(object):
 
         self._user = None
 
-    @property
     @gen.coroutine
-    def user(self):
+    def get_user(self):
         if not self._user:
             self._user = yield User.objects.get(self.user_data.get('id'))
         return self._user

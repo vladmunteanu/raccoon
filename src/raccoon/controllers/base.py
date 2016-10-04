@@ -67,7 +67,7 @@ class BaseController(object):
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.user
+            user = yield request.get_user()
             audit_log = AuditLog(user=user.email,
                                  action='new {}'.format(cls.model.__name__),
                                  message='{} {} added'.format(cls.model.__name__,
@@ -117,7 +117,7 @@ class BaseController(object):
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.user
+            user = yield request.get_user()
             audit_log = AuditLog(user=user.email,
                                  action='update {}'.format(cls.model.__name__),
                                  message='{} {} modified'.format(cls.model.__name__,
@@ -162,7 +162,7 @@ class BaseController(object):
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.user
+            user = yield request.get_user()
             audit_log = AuditLog(user=user.email,
                                  action='delete {}'.format(cls.model.__name__),
                                  message='{} {} deleted'.format(cls.model.__name__,
