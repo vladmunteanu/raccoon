@@ -18,6 +18,13 @@ DEBUG = True
 STATIC_PATH = path.join(ROOT_PATH, 'web')
 TEMPLATE_PATH = path.join(ROOT_PATH, 'web')
 
+
+LDAP_AUTH = True
+LDAP_CONF = {
+    'uri': 'ldap://krusty.ad.avira.com',
+    'port': 3268
+}
+
 APP = {
     'static_path': STATIC_PATH,
     'template_path': TEMPLATE_PATH,

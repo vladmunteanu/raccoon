@@ -14,7 +14,7 @@ setup(
     package_dir={'raccoon': 'src/raccoon'},
     include_package_data=True,
     install_requires=[
-        'tornado>=4.2.1',
+        'tornado>=4.4.2',
         'motorengine',
     ],
 )
