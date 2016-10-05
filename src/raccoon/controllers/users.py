@@ -36,7 +36,11 @@ class UsersController(BaseController):
             if hasattr(cls.model, key) and key != "pk":
                 params[key] = value
 
-        password = params.pop('password', '').encode('utf-8')
+        password = params.pop('password', None)
+        if not password:
+            raise ReplyError(400)
+
+        password = password.encode('utf-8')
         password = bcrypt.hashpw(password, bcrypt.gensalt())
         params['password'] = password.decode('utf-8')
 
