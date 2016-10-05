@@ -19,14 +19,13 @@ class BaseAddon extends React.Component {
     /**
      * Method that validates the requirements of an addon.
      * Called by Flow, before going to the next step.
-     *
-     * Implement this in your addon if you need validation,
-     * and return the error string if the validation fails.
-
-     * @returns {string} empty string
+     * @param callback: method to call after validation.
+     *                  The callback function should take two arguments:
+     *                      - validation errors object
+     *                      - displayError bool: enables error notifications
      */
-    validate() {
-        return "";
+    validate(callback) {
+        callback(null, false);
     }
 }
 

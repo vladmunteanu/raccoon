@@ -45,8 +45,8 @@ class Login extends React.Component {
         return (
             <div className="text-danger">
                 {
-                    messages.map(message => {
-                        return <div>{message}</div>
+                    messages.map((message, idx) => {
+                        return <div key={"error-message-" + idx}>{message}</div>
                     })
                 }
             </div>
