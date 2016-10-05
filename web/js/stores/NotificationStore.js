@@ -14,6 +14,7 @@ T.setTexts({
     HTTP_200_POST_auth: 'Hi there, welcome back! :)',
     HTTP_404_POST_auth: 'Invalid credentials',
     HTTP_200_POST_me: 'Welcome to Raccoon!',
+    HTTP_400_POST_me: 'Invalid email or password',
     HTTP_403_POST_me: 'Use your LDAP account to login!',
     HTTP_409_POST_me: 'Email address is already associated with an account!',
 

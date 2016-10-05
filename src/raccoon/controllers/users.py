@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 
 import logging
+
 import jwt
+import bcrypt
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from tornado import gen
 
@@ -33,6 +35,14 @@ class UsersController(BaseController):
         for key, value in kwargs.items():
             if hasattr(cls.model, key) and key != "pk":
                 params[key] = value
+
+        password = params.pop('password', None)
+        if not password:
+            raise ReplyError(400)
+
+        password = password.encode('utf-8')
+        password = bcrypt.hashpw(password, bcrypt.gensalt())
+        params['password'] = password.decode('utf-8')
 
         try:
             user = yield cls.model.objects.create(**params)

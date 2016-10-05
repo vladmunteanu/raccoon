@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import logging
 
 import jwt
+import bcrypt
 from tornado import gen
 from ldap3 import Server, Connection, ALL, AUTH_SIMPLE
 from ldap3.core.exceptions import LDAPBindError
@@ -52,8 +53,9 @@ class AuthController(BaseController):
                 user = yield cls.model.objects.create(name=name, email=email,
                                                       active_directory=True)
         else:
-            user = yield cls.model.objects.get(email=email, password=password)
-            if not user:
+            password = password.encode('utf-8')
+            user = yield cls.model.objects.get(email=email)
+            if not user or not bcrypt.checkpw(password, user.password.encode('utf-8')):
                 raise ReplyError(404, 'Invalid email or password')
 
         token = jwt.encode({
