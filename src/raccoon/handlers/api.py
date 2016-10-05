@@ -2,13 +2,15 @@ from __future__ import absolute_import
 
 import logging
 import json
-from tornado import gen
 
+import jwt
+from tornado import gen
 import tornado.websocket
 
 from ..urls import Router
 from ..utils.request import Request, CLIENT_CONNECTIONS
 from ..utils.exceptions import ReplyError
+from ..settings import SECRET
 
 log = logging.getLogger(__name__)
 
@@ -19,6 +21,10 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
     """
 
     ALLOWED_VERBS = ('get', 'post', 'put', 'delete', 'patch')
+
+    def __init__(self, *args, **kwargs):
+        super(ApiWebSocketHandler, self).__init__(*args, **kwargs)
+        self.is_admin = False
 
     @property
     def connection_id(self):
@@ -85,6 +91,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 data=jdata,
                 socket=self
             )
+            self.is_admin = req.is_admin
             yield method(req, **params)
         except ReplyError as e:
             e.request_id = request_id

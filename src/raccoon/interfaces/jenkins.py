@@ -6,7 +6,7 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 
 from .base import BaseInterface, REGISTERED
-from ..models import Task, Build, Project, Environment, Install
+from ..models import Task, Build, Project, Environment, Install, AuditLog
 from ..utils.exceptions import ReplyError
 
 
@@ -51,6 +51,7 @@ class JenkinsInterface(BaseInterface):
     def build(self, request, *args, **kwargs):
         project_id = kwargs.get('project')
         version = kwargs.get('version')
+        branch = kwargs.get('branch')
 
         project = yield Project.objects.get(id=project_id)
         if not project:
@@ -62,12 +63,25 @@ class JenkinsInterface(BaseInterface):
         yield project.save()
 
         # send notification for project
-        request.verb = "put"
-        request.resource = "/api/v1/projects/"
-        request.broadcast(project.get_dict())
+        request.broadcast(project.get_dict(), verb='put', resource='/api/v1/projects/')
 
-        version = version + "-" + str(project.build_counter)
+        version = version + '-' + str(project.build_counter)
         kwargs.update({'version': version})
+
+        # Log build started
+        user = yield request.get_user()
+        audit_log = AuditLog(user=user.email,
+                             action='build',
+                             project=project.name,
+                             environment=kwargs.get('environment', '-'),
+                             message='Build {} started for branch {}.'.format(version,
+                                                                              branch))
+        yield audit_log.save()
+
+        request.broadcast(audit_log.get_dict(),
+                          verb='post', resource='/api/v1/auditlogs/',
+                          admin_only=True)
+
         yield self.trigger(request, callback_method=self.build_callback, *args, **kwargs)
 
     @classmethod
@@ -93,18 +107,43 @@ class JenkinsInterface(BaseInterface):
             project=project.pk,
             branch=branch_name,
             version=version,
-            changelog=changelog,
+            changelog=changelog
         )
         yield build.save()
 
-        request.verb = 'post'
-        request.resource = '/api/v1/builds/'
-        request.broadcast(build.get_dict())
+        request.broadcast(build.get_dict(), verb='post', resource='/api/v1/builds/')
 
     @gen.coroutine
     def install(self, request, *args, **kwargs):
-        yield self.trigger(request, callback_method=self.install_callback,
-                           *args, **kwargs)
+        project_id = kwargs.get('project')
+        build_id = kwargs.get('build')
+        environment_id = kwargs.get('environment')
+
+        project = yield Project.objects.get(id=project_id)
+        if not project:
+            raise ReplyError(404)
+
+        environment = yield Environment.objects.get(id=environment_id)
+        if not environment:
+            raise ReplyError(404)
+
+        build = yield Build.objects.get(id=build_id)
+        if not build:
+            raise ReplyError(404)
+
+        user = yield request.get_user()
+        audit_log = AuditLog(user=user.email,
+                             action='install',
+                             project=project.name,
+                             environment=environment.name,
+                             message='Install started for build {}'.format(build.version))
+        yield audit_log.save()
+
+        request.broadcast(audit_log.get_dict(),
+                          verb='post', resource='/api/v1/auditlogs/',
+                          admin_only=True)
+
+        yield self.trigger(request, callback_method=self.install_callback, *args, **kwargs)
 
     @classmethod
     @gen.coroutine
@@ -131,14 +170,16 @@ class JenkinsInterface(BaseInterface):
         install = Install(build=build, project=project, environment=env)
         yield install.save()
 
-        request.verb = 'post'
-        request.resource = '/api/v1/installs/'
-        request.broadcast(install.get_dict())
+        request.broadcast(install.get_dict(), verb='post', resource='/api/v1/installs/')
 
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
         """
-        :param kwargs: parameter for jenkins job
+            Creates and starts the Celery tasks for the current job.
+        :param request: HTTP request
+        :param kwargs: parameters for jenkins job
+        :param flow: Flow
+        :param callback_method: callback method to call when job is finished
         :return: Build information
         """
         verb, path = URLS.get('build')
@@ -171,8 +212,9 @@ class JenkinsInterface(BaseInterface):
         # get queue info
         queue_url = headers.get('Location')
 
+        user = yield request.get_user()
         task = Task(
-            user=request.user,
+            user=user,
             connector_type='jenkins',
             job=flow.job,
             context=kwargs,

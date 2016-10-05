@@ -13,3 +13,4 @@ class EnvironmentsController(BaseController):
     Environments Controller
     """
     model = Environment
+    audit_logs = True

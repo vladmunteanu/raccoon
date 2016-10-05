@@ -6,7 +6,7 @@ from ..utils.decorators import authenticated
 from ..utils.exceptions import ReplyError
 from .base import BaseController
 from ..interfaces.salt import SaltStackInterface
-from ..models import Connector
+from ..models import Connector, AuditLog
 
 
 log = logging.getLogger(__name__)
@@ -30,5 +30,17 @@ class SaltController(BaseController):
             raise ReplyError(404)
 
         response = yield method(**kwargs)
+
+        user = yield request.get_user()
+        audit_log = AuditLog(user=user.email,
+                             action=kwargs.get('fun'),
+                             project=kwargs.get('service_type'),
+                             environment=kwargs.get('target_env'),
+                             message="Salt master operation")
+        yield audit_log.save()
+
+        request.broadcast(audit_log.get_dict(),
+                          verb="post", resource="/api/v1/auditlogs/",
+                          admin_only=True)
 
         yield request.send(response)

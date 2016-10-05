@@ -31,7 +31,7 @@ class UsersController(BaseController):
 
         params = {}
         for key, value in kwargs.items():
-            if hasattr(cls.model, key):
+            if hasattr(cls.model, key) and key != "pk":
                 params[key] = value
 
         try:

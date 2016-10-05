@@ -13,3 +13,4 @@ class ConnectorsController(BaseController):
     Connectors Controller
     """
     model = Connector
+    audit_logs = True

@@ -13,3 +13,4 @@ class ActionsController(BaseController):
     Actions Controller
     """
     model = Action
+    audit_logs = True
