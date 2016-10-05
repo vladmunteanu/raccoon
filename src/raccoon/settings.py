@@ -1,11 +1,10 @@
 from __future__ import absolute_import
 
-import os
-
+from os import path
 
 HOST = ""
 PORT = 8888
-ROOT_PATH = os.path.dirname(__file__)
+ROOT_PATH = path.abspath(path.join(path.dirname(__file__), '../..'))
 
 DB = {
     'scheme': 'mongodb',
@@ -16,8 +15,15 @@ DB = {
 }
 
 DEBUG = True
-STATIC_PATH = os.path.join(ROOT_PATH, 'web')
-TEMPLATE_PATH = os.path.join(ROOT_PATH, 'web')
+STATIC_PATH = path.join(ROOT_PATH, 'web')
+TEMPLATE_PATH = path.join(ROOT_PATH, 'web')
+
+
+LDAP_AUTH = True
+LDAP_CONF = {
+    'uri': 'ldap://krusty.ad.avira.com',
+    'port': 3268
+}
 
 APP = {
     'static_path': STATIC_PATH,

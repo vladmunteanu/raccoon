@@ -1,8 +1,6 @@
 import React from 'react';
-import FluxStore from 'flux';
 import T from 'i18n-react';
 
-// stores
 import BaseStore from './BaseStore';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
@@ -16,6 +14,7 @@ T.setTexts({
     HTTP_200_POST_auth: 'Hi there, welcome back! :)',
     HTTP_404_POST_auth: 'Invalid credentials',
     HTTP_200_POST_me: 'Welcome to Raccoon!',
+    HTTP_403_POST_me: 'Use your LDAP account to login!',
     HTTP_409_POST_me: 'Email address is already associated with an account!',
 
     // projects

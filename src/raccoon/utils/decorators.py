@@ -1,7 +1,7 @@
 import jwt
 from tornado import gen
 
-from settings import SECRET
+from ..settings import SECRET
 from ..models import User
 from .exceptions import ReplyError
 

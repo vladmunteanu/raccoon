@@ -5,7 +5,7 @@ import jwt
 from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from tornado import gen
 
-from settings import SECRET
+from ..settings import SECRET, LDAP_AUTH
 
 from .base import BaseController
 from ..models import User
@@ -23,6 +23,9 @@ class UsersController(BaseController):
     @classmethod
     @gen.coroutine
     def post(cls, request, *args, **kwargs):
+        if LDAP_AUTH:
+            raise ReplyError(403)
+
         if not cls.model:
             raise ReplyError(404)
 

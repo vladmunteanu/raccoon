@@ -11,14 +11,14 @@ Raccoon interactive shell
 """
 
 PRELOAD = """
-from raccoon.models import Project, Connector
+from raccoon.models import Project, Connector, User
 from raccoon.interfaces.github import GitHubInterface
 from raccoon.interfaces.jenkins import JenkinsInterface
 
 from tornado.ioloop import IOLoop
 from motorengine.connection import connect
 
-from settings import DB, APP, PORT
+from raccoon.settings import DB, APP, PORT
 
 # Connect to DB
 io_loop = IOLoop.instance()
@@ -37,7 +37,7 @@ def init_shell(cls):
             config=cls.config,
             banner1='\nRaccoon Interactive Shell',
             banner2='==========================\n'
-                    'Imported objects: Project, GitHubConnector\n\n',
+                    'Imported objects: Project, Connector, User, GitHubInterface, JenkinsInterface\n\n',
             display_banner=False,
             profile_dir=cls.profile_dir,
             ipython_dir=cls.ipython_dir

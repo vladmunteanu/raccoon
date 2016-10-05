@@ -3,7 +3,6 @@
 from __future__ import absolute_import
 
 import logging
-import os
 
 from motorengine.connection import connect
 import tornado
@@ -11,11 +10,11 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
-from settings import DB, APP, HOST, PORT
-from raccoon.handlers import WebHandler, ApiWebSocketHandler
+from .settings import DB, APP, HOST, PORT
+from .handlers import WebHandler, ApiWebSocketHandler
 
 # !important tasks are imported and assigned to interfaces
-from raccoon.tasks import tasks
+from .tasks import tasks
 
 log = logging.getLogger(__name__)
 
