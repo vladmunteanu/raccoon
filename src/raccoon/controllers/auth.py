@@ -36,12 +36,12 @@ class AuthController(BaseController):
             try:
                 server = Server(LDAP_CONF['uri'], port=LDAP_CONF['port'],
                                 get_info=ALL)
-                conn = Connection(server, authentication=AUTH_SIMPLE,
-                                  user=email, password=password, auto_bind=True)
-                conn.search(search_base='DC=ad,DC=avira,DC=com',
-                            search_filter='(userPrincipalName=%s)' % email,
-                            attributes=['displayName'])
-                name = str(conn.entries[0].displayName)
+                with Connection(server, authentication=AUTH_SIMPLE, user=email,
+                                password=password, auto_bind=True) as conn:
+                    conn.search(search_base='DC=ad,DC=avira,DC=com',
+                                search_filter='(userPrincipalName=%s)' % email,
+                                attributes=['displayName'])
+                    name = str(conn.entries[0].displayName)
             except LDAPBindError:
                 raise ReplyError(404, 'LDAP invalid credentials')
             except:
