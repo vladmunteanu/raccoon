@@ -87,6 +87,8 @@ class BaseController(object):
                 # Make value = ObjectId(value) if field is a reference field
                 field = instance.get_field_by_db_name(key)
                 if hasattr(field, 'reference_type'):
+                    if not value:
+                        value = None
                     value = ObjectId(value)
 
                 setattr(instance, key, value)

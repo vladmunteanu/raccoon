@@ -15,6 +15,18 @@ class BaseAddon extends React.Component {
     getContext() {
         return this.addon_context;
     }
+
+    /**
+     * Method that validates the requirements of an addon.
+     * Called by Flow, before going to the next step.
+     * @param callback: method to call after validation.
+     *                  The callback function should take two arguments:
+     *                      - validation errors object
+     *                      - displayError bool: enables error notifications
+     */
+    validate(callback) {
+        callback(null, false);
+    }
 }
 
 export default BaseAddon;

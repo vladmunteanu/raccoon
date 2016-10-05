@@ -44,7 +44,8 @@ class ProjectUpdateForm extends ProjectForm {
                     name: this.state.project.name,
                     label: this.state.project.label,
                     repo_url: this.state.project.repo_url,
-                    connector: this.state.project.connector
+                    connector: this.state.project.connector,
+                    version: this.state.project.version
                 });
             }
         });
@@ -56,7 +57,8 @@ class ProjectUpdateForm extends ProjectForm {
                 name: '',
                 label: '',
                 repo_url: '',
-                connector: ''
+                connector: '',
+                version: ''
             }
         }
         return this.state.project;
