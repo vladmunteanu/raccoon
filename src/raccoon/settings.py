@@ -8,7 +8,7 @@ ROOT_PATH = path.abspath(path.join(path.dirname(__file__), '../..'))
 
 DB = {
     'scheme': 'mongodb',
-    'host': 'localhost',
+    'host': '10.2.101.51',
     'port': 27017,
     'name': 'raccoon',
 }
