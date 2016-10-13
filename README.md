@@ -12,6 +12,8 @@ Requirements
 3. Install virtualenv with python3
   - Run `$ python --version` it should return `$ Python 3.5.0`
   - Run `$ pip3 install virtualenv`
+4. Install mongodb
+  - Linux: run `$ sudo apt-get install mongodb`
 
 Virtual environment
 -------------------
