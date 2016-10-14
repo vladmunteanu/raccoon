@@ -13,7 +13,8 @@ class Config {
             },
             "jenkins": {
                 "url": "insert jenkins url",
-                "token": "insert jenkins token"
+                "token": "insert jenkins token",
+                "username": "insert jenkins user"
             },
             "salt": {
                 "username": "insert salt username here",
