@@ -71,7 +71,7 @@ class EnvironmentForm extends React.Component {
                 EnvironmentStore.create({
                     name: this.state.environment.name
                 });
-                this.setState({name: ''});
+                this.setState({environment: {name: ''}});
             }
         });
     }
