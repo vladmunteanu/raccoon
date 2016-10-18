@@ -9,6 +9,7 @@ import ActionStore from '../../stores/ActionStore';
 import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import FlowStore from '../../stores/FlowStore';
+import FormValidationError from '../FormValidationError.react';
 
 
 function getLocalState() {
@@ -36,7 +37,6 @@ class ActionForm extends React.Component {
             label: Joi.string().min(3).max(50).required().label('Action label')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
     }
@@ -65,18 +65,6 @@ class ActionForm extends React.Component {
         this.state.action[name] = event.target.value;
         this.setState(this.state);
         this.props.validate(name);
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     getValidatorData() {
@@ -178,7 +166,7 @@ class ActionForm extends React.Component {
                                id="action-name" value={name} placeholder="Action Name"
                                onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')} />
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-label" className="control-label">Action label</label>
@@ -186,7 +174,7 @@ class ActionForm extends React.Component {
                                id="action-label" value={label} placeholder="Action label"
                                onChange={this.onFormChange.bind(this, 'label')}
                                onBlur={this.props.handleValidation('label')} />
-                        {this.renderHelpText(this.props.getValidationMessages('label'))}
+                        <FormValidationError key="form-errors-label" messages={this.props.getValidationMessages('label')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="action-placement" className="control-label">Action placement</label>

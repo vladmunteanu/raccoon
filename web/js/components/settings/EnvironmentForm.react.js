@@ -4,6 +4,7 @@ import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
 
 import EnvironmentStore from '../../stores/EnvironmentStore';
+import FormValidationError from '../FormValidationError.react';
 
 
 class EnvironmentForm extends React.Component {
@@ -19,7 +20,6 @@ class EnvironmentForm extends React.Component {
             name: Joi.string().min(3).max(50).required().label('Environment name')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
 
@@ -50,18 +50,6 @@ class EnvironmentForm extends React.Component {
 
     getValidatorData() {
         return this.state.environment;
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     onSubmit(event) {
@@ -102,7 +90,7 @@ class EnvironmentForm extends React.Component {
                                placeholder="Environment Name"
                                onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

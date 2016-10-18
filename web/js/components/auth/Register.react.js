@@ -9,6 +9,7 @@ import RaccoonApp from '../RaccoonApp.react';
 
 import AuthStore from '../../stores/AuthStore';
 import NotificationStore from '../../stores/NotificationStore';
+import FormValidationError from '../FormValidationError.react';
 
 
 function getLocalState() {
@@ -32,25 +33,12 @@ class Register extends React.Component {
             email: Joi.string().email().required().label('Email')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.register = this.register.bind(this);
         this._onChange = this._onChange.bind(this);
     }
 
     getValidatorData() {
         return this.state;
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     register(event) {
@@ -109,7 +97,7 @@ class Register extends React.Component {
                                 value={this.state.name}
                                 onChange={this.onFormChange.bind(this, 'name')}
                                 onBlur={this.props.handleValidation('name')}/>
-                            {this.renderHelpText(this.props.getValidationMessages('name'))}
+                            <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                         </div>
 
                         <hr />
@@ -120,7 +108,7 @@ class Register extends React.Component {
                                 value={this.state.email}
                                 onChange={this.onFormChange.bind(this, 'email')}
                                 onBlur={this.props.handleValidation('email')}/>
-                            {this.renderHelpText(this.props.getValidationMessages('email'))}
+                            <FormValidationError key="form-errors-email" messages={this.props.getValidationMessages('email')}/>
                         </div>
 
                         <hr />
@@ -131,7 +119,7 @@ class Register extends React.Component {
                                 value={this.state.password}
                                 onChange={this.onFormChange.bind(this, 'password')}
                                 onBlur={this.props.handleValidation('password')}/>
-                            {this.renderHelpText(this.props.getValidationMessages('password'))}
+                            <FormValidationError key="form-errors-password" messages={this.props.getValidationMessages('password')}/>
                         </div>
 
                         <br />

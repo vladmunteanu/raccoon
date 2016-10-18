@@ -6,6 +6,7 @@ import validation from 'react-validation-mixin';
 import NotificationSystem from 'react-notification-system';
 
 import RaccoonApp from '../RaccoonApp.react';
+import FormValidationError from '../FormValidationError.react';
 
 // stores
 import AuthStore from '../../stores/AuthStore';
@@ -32,25 +33,12 @@ class Login extends React.Component {
             password: Joi.string().required().label('Password')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.login = this.login.bind(this);
         this._onChange = this._onChange.bind(this);
     }
 
     getValidatorData() {
         return this.state;
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     login(event) {
@@ -110,7 +98,7 @@ class Login extends React.Component {
                                 value={this.state.email}
                                 onChange={this.onFormChange.bind(this, 'email')}
                                 onBlur={this.props.handleValidation('email')}/>
-                            {this.renderHelpText(this.props.getValidationMessages('email'))}
+                            <FormValidationError key="form-errors-email" messages={this.props.getValidationMessages('email')}/>
                         </div>
 
                         <hr />
@@ -121,7 +109,7 @@ class Login extends React.Component {
                                 value={this.state.password}
                                 onChange={this.onFormChange.bind(this, 'password')}
                                 onBlur={this.props.handleValidation('password')}/>
-                            {this.renderHelpText(this.props.getValidationMessages('password'))}
+                            <FormValidationError key="form-errors-password" messages={this.props.getValidationMessages('password')}/>
                         </div>
 
                         <br />

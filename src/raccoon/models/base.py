@@ -45,3 +45,9 @@ class BaseModel(Document):
                 break
 
         return message
+
+    def __str__(self):
+        return str(self.get_dict())
+
+    def __repr__(self):
+        return str(self.get_dict())

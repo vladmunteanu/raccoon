@@ -9,6 +9,8 @@ import BaseAddon from './BaseAddon.react';
 import GitHubStore from '../../stores/GitHubStore';
 import ProjectStore from '../../stores/ProjectStore';
 
+import FormValidationError from '../FormValidationError.react';
+
 
 /**
  * Renders the build form for Git branches and build version.
@@ -41,18 +43,6 @@ class BuildForm extends React.Component {
         }
     }
 
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
-    }
-
     componentWillReceiveProps(nextProps) {
         this.setState({
             project: nextProps.project,
@@ -82,7 +72,7 @@ class BuildForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('branch'))}
+                        <FormValidationError key="form-errors-branch" messages={this.props.getValidationMessages('branch')}/>
                     </div>
                 </div>
                 <div className="row form-group">
@@ -90,7 +80,7 @@ class BuildForm extends React.Component {
                     <div className="input-group col-lg-6 col-md-6 col-xs-6">
                         <input type="text" className="form-control" id="build-version" value={this.state.version} onChange={this._onChangeVersion} disabled={!this.state.branch}/>
                     </div>
-                    {this.renderHelpText(this.props.getValidationMessages('version'))}
+                    <FormValidationError key="form-errors-version" messages={this.props.getValidationMessages('version')}/>
                 </div>
             </div>
         )

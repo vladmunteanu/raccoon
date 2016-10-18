@@ -5,6 +5,7 @@ import strategy from 'joi-validation-strategy';
 
 import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
+import FormValidationError from '../FormValidationError.react';
 
 
 function getLocalState() {
@@ -37,7 +38,6 @@ class ProjectForm extends React.Component {
             version: Joi.string().max(25).label('Project Version')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
     }
@@ -72,18 +72,6 @@ class ProjectForm extends React.Component {
         return this.state.project;
     }
 
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
-    }
-
     onSubmit(event) {
         event.preventDefault();
         this.props.validate((error) => {
@@ -115,8 +103,7 @@ class ProjectForm extends React.Component {
         let del;
 
         if (this.formName === 'Update project') {
-            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>
-            );
+            del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>);
         }
 
         return (
@@ -130,7 +117,7 @@ class ProjectForm extends React.Component {
                                placeholder="Project Name"
                                onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="project-label" className="control-label">Project label</label>
@@ -139,7 +126,7 @@ class ProjectForm extends React.Component {
                                placeholder="Project label"
                                onChange={this.onFormChange.bind(this, 'label')}
                                onBlur={this.props.handleValidation('label')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('label'))}
+                        <FormValidationError key="form-errors-label" messages={this.props.getValidationMessages('label')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="repo-url" className="control-label">Repository url</label>
@@ -148,7 +135,7 @@ class ProjectForm extends React.Component {
                                placeholder="Repository url"
                                onChange={this.onFormChange.bind(this, 'repo_url')}
                                onBlur={this.props.handleValidation('repo_url')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('repo_url'))}
+                        <FormValidationError key="form-errors-repo-url" messages={this.props.getValidationMessages('repo_url')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-project" className="control-label">Connector</label>
@@ -163,7 +150,7 @@ class ProjectForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('connector'))}
+                        <FormValidationError key="form-errors-connector" messages={this.props.getValidationMessages('connector')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="project-version" className="control-label">Project Version</label>
@@ -172,7 +159,7 @@ class ProjectForm extends React.Component {
                                placeholder="Project Version"
                                onChange={this.onFormChange.bind(this, 'version')}
                                onBlur={this.props.handleValidation('version')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('version'))}
+                        <FormValidationError key="form-errors-version" messages={this.props.getValidationMessages('version')}/>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

@@ -7,6 +7,7 @@ import Autocomplete from 'react-autocomplete';
 import JobStore from '../../stores/JobStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import ConnectorStore from '../../stores/ConnectorStore';
+import FormValidationError from '../FormValidationError.react';
 
 
 function getLocalState() {
@@ -44,7 +45,6 @@ class JobForm extends React.Component {
         };
         this.getValidatorData = this.getValidatorData.bind(this);
 
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
     }
@@ -58,6 +58,7 @@ class JobForm extends React.Component {
     componentWillUnmount() {
         JobStore.removeListener(this._onChange);
         ConnectorStore.removeListener(this._onChange);
+        JenkinsStore.removeListener(this._onChange);
     }
 
     _onChange() {
@@ -92,18 +93,6 @@ class JobForm extends React.Component {
 
     getValidatorData() {
         return this.state.job;
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     onChangeArgument(idxRow, key, event) {
@@ -174,7 +163,7 @@ class JobForm extends React.Component {
                         <input type="text"  className="form-control"
                                id="job-name" value={name} placeholder="Job Name"
                                onChange={this.onFormChange.bind(this, 'name')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-job" className="control-label">Connector</label>
@@ -188,7 +177,7 @@ class JobForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('connector'))}
+                        <FormValidationError key="form-errors-connector" messages={this.props.getValidationMessages('connector')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-action-type" className="control-label">Action Type</label>
@@ -202,7 +191,7 @@ class JobForm extends React.Component {
                                 }) : null
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('action_type'))}
+                        <FormValidationError key="form-errors-action-type" messages={this.props.getValidationMessages('action_type')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="job-job" className="control-label">Job</label>
@@ -241,7 +230,7 @@ class JobForm extends React.Component {
                                 >{item.name}</div>
                             )}
                         />
-                        {this.renderHelpText(this.props.getValidationMessages('job'))}
+                        <FormValidationError key="form-errors-job" messages={this.props.getValidationMessages('job')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="job-arguments" className="control-label">Arguments</label>

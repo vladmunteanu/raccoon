@@ -8,6 +8,7 @@ import 'brace/mode/json';
 import 'brace/theme/tomorrow';
 
 import ConnectorStore from '../../stores/connectors/Connectors'; // !important for register
+import FormValidationError from '../FormValidationError.react';
 import localConf from '../../config/Config'
 let ConnectorType = localConf.CONNECTOR_TYPE;
 
@@ -33,7 +34,6 @@ class ConnectorForm extends React.Component {
             config: Joi.any().required().label('Config')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
     }
@@ -64,18 +64,6 @@ class ConnectorForm extends React.Component {
 
     getValidatorData() {
         return this.state.connector;
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     _getDataForRender() {
@@ -141,7 +129,7 @@ class ConnectorForm extends React.Component {
                                id="connector-name" value={name} placeholder="Connector Name"
                                onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')}/>
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-type" className="control-label">Connector Type</label><br/>
@@ -155,7 +143,7 @@ class ConnectorForm extends React.Component {
                                 })
                             }
                         </select>
-                        {this.renderHelpText(this.props.getValidationMessages('type'))}
+                        <FormValidationError key="form-errors-type" messages={this.props.getValidationMessages('type')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="connector-config" className="control-label">Config</label>
@@ -168,7 +156,7 @@ class ConnectorForm extends React.Component {
                             value={config}
                             onChange={this.onFormChange.bind(this, 'config')}
                           />
-                        {this.renderHelpText(this.props.getValidationMessages('config'))}
+                        <FormValidationError key="form-errors-config" messages={this.props.getValidationMessages('config')}/>
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

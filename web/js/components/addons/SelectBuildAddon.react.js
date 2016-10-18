@@ -26,7 +26,7 @@ class SelectBuildAddon extends BaseAddon {
         this._onChange = this._onChange.bind(this);
 
         if (this.state.environment) {
-            this.updateContext('environment', this.state.environment.name);
+            this.updateContext('environment', this.state.environment.id);
         }
     }
 
@@ -47,7 +47,7 @@ class SelectBuildAddon extends BaseAddon {
         this.setState(state);
 
         if (this.state.environment) {
-            this.updateContext('environment', this.state.environment.label || this.state.environment.name);
+            this.updateContext('environment', this.state.environment.id);
         }
     }
     
@@ -58,6 +58,14 @@ class SelectBuildAddon extends BaseAddon {
         this.updateContext('branch', build.branch);
         this.updateContext('version', build.version);
         this.setState(this.state);
+    }
+
+    /** Checks that a build is selected. */
+    validate(callback) {
+        let error = this.state.selectedBuild ? null : {build: "must be specified!"};
+
+        // call flow callback, enable notifications
+        callback(error, true);
     }
 
     render() {

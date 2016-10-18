@@ -25,7 +25,7 @@ function getLocalState(projectId) {
 export class TaskItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = getLocalState(this.props.data.context.project);
+        this.state = getLocalState(this.props.data.context.project_id);
         this._onChange = this._onChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
@@ -39,7 +39,7 @@ export class TaskItem extends React.Component {
     }
 
     _onChange() {
-        let state = getLocalState(this.props.data.context.project);
+        let state = getLocalState(this.props.data.context.project_id);
         this.setState(state);
     }
 
@@ -65,7 +65,7 @@ export class TaskItem extends React.Component {
             // loading
             return <div></div>;
         }
-        
+
         let data = this.props.data;
         let now = new Date().getTime();
         let started_at = data.started_at || 0;

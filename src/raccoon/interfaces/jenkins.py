@@ -73,7 +73,7 @@ class JenkinsInterface(BaseInterface):
         audit_log = AuditLog(user=user.email,
                              action='build',
                              project=project.name,
-                             environment=kwargs.get('environment', '-'),
+                             environment=kwargs.get('environment'),
                              message='Build {} started for branch {}.'.format(version,
                                                                               branch))
         yield audit_log.save()
@@ -82,12 +82,16 @@ class JenkinsInterface(BaseInterface):
                           verb='post', resource='/api/v1/auditlogs/',
                           admin_only=True)
 
+        # prepare arguments for Jenkins call
+        kwargs['project'] = project.name
+        kwargs['project_id'] = project.pk
+
         yield self.trigger(request, callback_method=self.build_callback, *args, **kwargs)
 
     @classmethod
     @gen.coroutine
     def build_callback(cls, request, task, response):
-        project_id = task.context.get('project')
+        project_id = task.context.get('project_id')
         branch_name = task.context.get('branch')
         version = task.context.get('version')
 
@@ -143,14 +147,21 @@ class JenkinsInterface(BaseInterface):
                           verb='post', resource='/api/v1/auditlogs/',
                           admin_only=True)
 
+        # prepare arguments for Jenkins call
+        kwargs['project'] = project.name
+        kwargs['project_id'] = project.pk
+        kwargs['environment'] = environment.name
+        kwargs['environment_id'] = environment.pk
+        kwargs['version'] = build.version
+
         yield self.trigger(request, callback_method=self.install_callback, *args, **kwargs)
 
     @classmethod
     @gen.coroutine
     def install_callback(cls, request, task, response):
-        project_id = task.context.get('project')
+        project_id = task.context.get('project_id')
         build_id = task.context.get('build')
-        env_id = task.context.get('environment')
+        env_id = task.context.get('environment_id')
 
         # get project
         project = yield Project.objects.get(id=project_id)
@@ -163,7 +174,7 @@ class JenkinsInterface(BaseInterface):
             raise ReplyError(404)
 
         # get env
-        env = yield Environment.objects.get(name=env_id)
+        env = yield Environment.objects.get(id=env_id)
         if not env:
             raise ReplyError(404)
 
@@ -180,7 +191,6 @@ class JenkinsInterface(BaseInterface):
         :param kwargs: parameters for jenkins job
         :param flow: Flow
         :param callback_method: callback method to call when job is finished
-        :return: Build information
         """
         verb, path = URLS.get('build')
         if kwargs:

@@ -7,6 +7,7 @@ import Select from 'react-select';
 import FlowStore from '../../stores/FlowStore';
 import JobStore from '../../stores/JobStore';
 import Addons from '../addons/Addons'
+import FormValidationError from '../FormValidationError.react';
 
 
 function getLocalState() {
@@ -31,7 +32,6 @@ class FlowForm extends React.Component {
             job: Joi.string().min(3).max(50).required().label('Job')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-        this.renderHelpText = this.renderHelpText.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.addAddon = this.addAddon.bind(this);
         this._onChange = this._onChange.bind(this);
@@ -55,18 +55,6 @@ class FlowForm extends React.Component {
         this.state.flow[name] = event.target.value;
         this.setState(this.state);
         this.props.validate(name);
-    }
-
-    renderHelpText(messages) {
-        return (
-            <div className="text-danger">
-                {
-                    messages.map((message, idx) => {
-                        return <div key={"error-message-" + idx}>{message}</div>
-                    })
-                }
-            </div>
-        );
     }
 
     getValidatorData() {
@@ -134,7 +122,7 @@ class FlowForm extends React.Component {
                                id="flow-name" value={name} placeholder="Flow Name"
                                onChange={this.onFormChange.bind(this, 'name')}
                                onBlur={this.props.handleValidation('name')} />
-                        {this.renderHelpText(this.props.getValidationMessages('name'))}
+                        <FormValidationError key="form-errors-name" messages={this.props.getValidationMessages('name')}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="flow-addon" className="control-label">Addons</label><br/>

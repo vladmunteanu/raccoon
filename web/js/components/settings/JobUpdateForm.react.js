@@ -18,9 +18,15 @@ function getLocalState(jobId) {
     };
     if (localState.job) {
         let connector = ConnectorStore.getById(localState.job.connector);
-        localState.job.store = localState.connectorTypes[connector.type].store;
-        localState.job.jobValues = localState.job.store.jobValues();
-        localState.rowCount = localState.job.arguments.length;
+        if (connector) {
+            localState.job.store = localState.connectorTypes[connector.type].store;
+            localState.job.jobValues = localState.job.store.jobValues();
+        }
+        let rowCount = 1;
+        if (localState.job.arguments.length > 0) {
+            rowCount = localState.job.arguments.length
+        }
+        localState.rowCount = rowCount;
     }
     return localState;
 }
@@ -31,6 +37,7 @@ class JobUpdateForm extends JobForm {
         this.formName = 'Update job';
         this.state = getLocalState(this.props.params.id);
         this.onSubmit = this.onSubmit.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
