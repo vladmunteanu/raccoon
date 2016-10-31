@@ -105,7 +105,8 @@ class BaseController(object):
                 if hasattr(field, 'reference_type'):
                     if not value:
                         value = None
-                    value = ObjectId(value)
+                    else:
+                        value = ObjectId(value)
 
                 setattr(instance, key, value)
 
