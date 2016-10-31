@@ -63,7 +63,8 @@ class JenkinsInterface(BaseInterface):
         yield project.save()
 
         # send notification for project
-        request.broadcast(project.get_dict(), verb='put', resource='/api/v1/projects/')
+        request.broadcast(project.get_dict(), verb='put',
+                          resource='/api/v1/projects/')
 
         version = version + '-' + str(project.build_counter)
         kwargs.update({'version': version})
@@ -86,13 +87,14 @@ class JenkinsInterface(BaseInterface):
         kwargs['project'] = project.name
         kwargs['project_id'] = project.pk
 
-        yield self.trigger(request, callback_method=self.build_callback, *args, **kwargs)
+        yield self.trigger(request, callback_method=self.build_callback,
+                           *args, **kwargs)
 
     @classmethod
     @gen.coroutine
     def build_callback(cls, request, task, response):
         project_id = task.context.get('project_id')
-        branch_name = task.context.get('branch')
+        branch = task.context.get('branch')
         version = task.context.get('version')
 
         # get project
@@ -104,18 +106,20 @@ class JenkinsInterface(BaseInterface):
         yield project.load_references()
 
         # get commits and create changelog
-        changelog = yield project.connector.interface.commits(project=project, branch=branch_name)
+        changelog = yield project.connector.interface.commits(project=project,
+                                                              branch=branch)
 
         # create build
         build = Build(
             project=project.pk,
-            branch=branch_name,
+            branch=branch,
             version=version,
             changelog=changelog
         )
         yield build.save()
 
-        request.broadcast(build.get_dict(), verb='post', resource='/api/v1/builds/')
+        request.broadcast(build.get_dict(), verb='post',
+                          resource='/api/v1/builds/')
 
     @gen.coroutine
     def install(self, request, *args, **kwargs):
@@ -154,7 +158,8 @@ class JenkinsInterface(BaseInterface):
         kwargs['environment_id'] = environment.pk
         kwargs['version'] = build.version
 
-        yield self.trigger(request, callback_method=self.install_callback, *args, **kwargs)
+        yield self.trigger(request, callback_method=self.install_callback,
+                           *args, **kwargs)
 
     @classmethod
     @gen.coroutine
@@ -181,7 +186,8 @@ class JenkinsInterface(BaseInterface):
         install = Install(build=build, project=project, environment=env)
         yield install.save()
 
-        request.broadcast(install.get_dict(), verb='post', resource='/api/v1/installs/')
+        request.broadcast(install.get_dict(), verb='post',
+                          resource='/api/v1/installs/')
 
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
@@ -244,11 +250,8 @@ class JenkinsInterface(BaseInterface):
         yield task.save()
 
         # broadcast
-        # TODO (alexm): do something with this hack
-        request.request_id = 'notification'
-        request.verb = 'post'
-        request.resource = '/api/v1/tasks/'
-        request.broadcast(task.get_dict())
+        request.broadcast(task.get_dict(), verb='post',
+                          resource='/api/v1/tasks/')
 
         raise ReplyError(201)
 

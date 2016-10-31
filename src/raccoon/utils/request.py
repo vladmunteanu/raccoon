@@ -83,7 +83,8 @@ class Request(object):
         if not self.token:
             return
         try:
-            self.user_data = jwt.decode(self.token, SECRET, algorithms=['HS256'])
+            self.user_data = jwt.decode(self.token, SECRET,
+                                        algorithms=['HS256'])
         except jwt.DecodeError:
             log.warning(["Cannot decode token", self.token])
         else:
