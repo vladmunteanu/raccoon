@@ -114,7 +114,7 @@ class ActionForm extends React.Component {
         let projectPlacement = (
             <div className="form-group">
                 <label htmlFor="action-project" className="control-label">Project</label>
-                <select className="form-control" id="action-project" value={projectId}
+                <select className="form-control" id="action-project" value={projectId || ''}
                         onChange={this.onFormChange.bind(this, 'project')}>
                     <option key='default' value=''>All projects</option>
                     {
@@ -128,7 +128,7 @@ class ActionForm extends React.Component {
         let environmentPlacement = (
             <div className="form-group">
                 <label htmlFor="action-env" className="control-label">Environment</label>
-                <select className="form-control" id="action-env" value={envId}
+                <select className="form-control" id="action-env" value={envId || ''}
                         onChange={this.onFormChange.bind(this, 'environment')}>
                     <option key='default' value=''>All environments</option>
                     {
@@ -180,9 +180,9 @@ class ActionForm extends React.Component {
                         <label htmlFor="action-placement" className="control-label">Action placement</label>
                         <div className="form-inline" id="action-placement">
                             {
-                                placementTypes.map((plc) => {
+                                placementTypes.map((plc, idx) => {
                                     return (
-                                        <div className="form-inline">
+                                        <div className="form-inline" key={"action-placement-" + idx}>
                                             <input type="radio" name="placement-name" value={plc.type} checked={placement === plc.type}
                                                    onChange={this.onFormChange.bind(this, 'placement')} id={"radio-" + plc.type} />
                                             <label htmlFor={"radio-" + plc.type}>&nbsp;&nbsp;{plc.name}</label>
