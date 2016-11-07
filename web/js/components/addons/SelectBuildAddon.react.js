@@ -76,21 +76,35 @@ class SelectBuildAddon extends BaseAddon {
                     <ul className="media-list">
                         {
                             this.state.selectedBuild.changelog.map(commit => {
+                                let commit_date = new Date(commit.date);
                                 return (
-                                    <li key={`commit-${commit.sha}`} className="media">
-                                        <div className="media-left">
-                                            <img src={Utils.gravatarUrl(commit.author.email)}
-                                                 title={commit.author.name}
-                                                 style={{width: 17}}
-                                                 className="img-circle"
-                                                 data-toggle="tooltip"
-                                                 data-placement="bottom"
-                                                 data-html="true"
-                                                 data-original-title={commit.author.name}
-                                            />
-                                        </div>
-                                        <div className="media-body">
-                                            {commit.message}
+                                    <li key={`commit-${commit.sha}`} className="container-fluid">
+                                        <div className="row">
+                                            <div className="col-sm-1 col-md-1 col-lg-1">
+                                                <img src={Utils.gravatarUrl(commit.author.email)}
+                                                     title={commit.author.name}
+                                                     style={{width: 17}}
+                                                     className="img-circle"
+                                                     data-toggle="tooltip"
+                                                     data-placement="bottom"
+                                                     data-html="true"
+                                                     data-original-title={commit.author.name}
+                                                />
+                                            </div>
+                                            <div className="col-sd-9 col-md-9 col-lg-9">
+                                                <span>
+                                                    <b>{commit.author.name}</b>{" - " + commit.message}
+                                                </span>
+                                            </div>
+                                            <div className="col-sd-2 col-md-2 col-lg-2">
+                                                <small className="pull-right">
+                                                    <TimeAgo
+                                                        date={commit_date.getTime()}
+                                                        minPeriod={60}
+                                                        formatter={Utils.timeAgoFormatter}
+                                                    />
+                                                </small>
+                                            </div>
                                         </div>
                                     </li>
                                 )
