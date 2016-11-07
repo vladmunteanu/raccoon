@@ -50,8 +50,7 @@ class TasksController(BaseController):
                      task.pk, task.status)
             return
 
-        yield callback_method(request=request, task=task,
-                              response=kwargs.get('result'))
+        yield callback_method(task=task, response=kwargs.get('result'))
 
         # send the updated Task object
         request.broadcast(task.get_dict(), verb='PUT',

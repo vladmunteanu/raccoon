@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import logging
+import datetime
 from urllib.parse import urlencode, urlparse, urljoin
 
 from tornado import gen
@@ -8,6 +9,8 @@ from tornado import gen
 from .base import BaseInterface, REGISTERED
 from ..models import Task, Build, Project, Environment, Install, AuditLog
 from ..utils.exceptions import ReplyError
+from ..utils.request import broadcast
+from ..tasks.jenkins import JenkinsQueueWatcherTask, PENDING
 
 
 log = logging.getLogger(__name__)
@@ -92,7 +95,7 @@ class JenkinsInterface(BaseInterface):
 
     @classmethod
     @gen.coroutine
-    def build_callback(cls, request, task, response):
+    def build_callback(cls, task, response):
         project_id = task.context.get('project_id')
         branch = task.context.get('branch')
         version = task.context.get('version')
@@ -119,8 +122,8 @@ class JenkinsInterface(BaseInterface):
         )
         yield build.save()
 
-        request.broadcast(build.get_dict(), verb='post',
-                          resource='/api/v1/builds/')
+        broadcast(build.get_dict(), verb='post',
+                  resource='/api/v1/builds/')
 
     @gen.coroutine
     def install(self, request, *args, **kwargs):
@@ -164,7 +167,7 @@ class JenkinsInterface(BaseInterface):
 
     @classmethod
     @gen.coroutine
-    def install_callback(cls, request, task, response):
+    def install_callback(cls, task, response):
         project_id = task.context.get('project_id')
         build_id = task.context.get('build')
         env_id = task.context.get('environment_id')
@@ -188,13 +191,13 @@ class JenkinsInterface(BaseInterface):
                           environment=env, task=task)
         yield install.save()
 
-        request.broadcast(install.get_dict(), verb='post',
-                          resource='/api/v1/installs/')
+        broadcast(install.get_dict(), verb='post',
+                  resource='/api/v1/installs/')
 
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
         """
-            Creates and starts the Celery tasks for the current job.
+            Creates and starts the watcher tasks for the current job.
         :param request: HTTP request
         :param kwargs: parameters for jenkins job
         :param flow: Flow
@@ -236,20 +239,17 @@ class JenkinsInterface(BaseInterface):
             connector_type='jenkins',
             job=flow.job,
             context=kwargs,
+            status=PENDING,
+            date_added=datetime.datetime.utcnow()
         )
         task.add_callback(callback_method)
         yield task.save()
 
-        chain = self.tasks.jenkins_queue_watcher.s(id=task.pk,
-                                                   api_url=self.api_url,
-                                                   url=queue_url)
-        chain = chain | self.tasks.jenkins_job_watcher.s(id=task.pk,
-                                                         api_url=self.api_url)
-
-        chain_task = chain.delay()
-
-        task.tasks = [chain_task.id, chain_task.parent.id]
-        yield task.save()
+        # start local Jenkins jobs
+        job_watcher = JenkinsQueueWatcherTask(task, countdown=5,
+                                              api_url=self.api_url,
+                                              queue_url=queue_url)
+        yield job_watcher.delay()
 
         # broadcast
         request.broadcast(task.get_dict(), verb='post',

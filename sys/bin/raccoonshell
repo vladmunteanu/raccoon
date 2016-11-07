@@ -11,8 +11,6 @@ Raccoon interactive shell
 """
 
 PRELOAD = """
-from celery import Celery
-from raccoon.settings import DB
 from raccoon.models import Project, Connector, User, Task
 from raccoon.interfaces.github import GitHubInterface
 from raccoon.interfaces.jenkins import JenkinsInterface
@@ -21,15 +19,6 @@ from tornado.ioloop import IOLoop
 from motorengine.connection import connect
 
 from raccoon.settings import DB, APP, PORT
-
-# Initialize Celery app for Task model
-connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
-    scheme=DB['scheme'],
-    host=DB['host'],
-    port=DB['port'],
-    db_name=DB['name'],
-)
-celery = Celery('tasks', broker=connection_string, backend=connection_string)
 
 # Connect to DB
 io_loop = IOLoop.instance()

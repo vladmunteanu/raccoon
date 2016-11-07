@@ -89,3 +89,32 @@ class Request(object):
             log.warning(["Cannot decode token", self.token])
         else:
             self.is_admin = self.user_data.get('role') == 'admin'
+
+
+def broadcast(response=None, verb=None, resource=None, admin_only=False):
+    """
+        Broadcasts a message on all websocket connections.
+
+    :param response: message to send
+    :type response: dict
+    :param verb: verb used in the underlying protocol
+    :type verb: str
+    :param resource: the resource used in the underlying protocol
+    :type resource: str
+    :param admin_only: ensures that only admins will receive the message
+    :type admin_only: bool
+    """
+
+    data = {
+        'verb': verb,
+        'resource': resource,
+        'data': response,
+        'code': 200,
+        'message': 'OK',
+    }
+    for connection_id, socket in CLIENT_CONNECTIONS.items():
+        # mark the broadcast as notification for other users
+        data['requestId'] = 'notification'
+        if admin_only and not socket.is_admin:
+            continue
+        socket.write_message(json.dumps(data, default=json_serial))
