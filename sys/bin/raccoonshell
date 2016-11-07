@@ -11,7 +11,9 @@ Raccoon interactive shell
 """
 
 PRELOAD = """
-from raccoon.models import Project, Connector, User
+from celery import Celery
+from raccoon.settings import DB
+from raccoon.models import Project, Connector, User, Task
 from raccoon.interfaces.github import GitHubInterface
 from raccoon.interfaces.jenkins import JenkinsInterface
 
@@ -19,6 +21,15 @@ from tornado.ioloop import IOLoop
 from motorengine.connection import connect
 
 from raccoon.settings import DB, APP, PORT
+
+# Initialize Celery app for Task model
+connection_string = '{scheme}://{host}:{port}/{db_name}'.format(
+    scheme=DB['scheme'],
+    host=DB['host'],
+    port=DB['port'],
+    db_name=DB['name'],
+)
+celery = Celery('tasks', broker=connection_string, backend=connection_string)
 
 # Connect to DB
 io_loop = IOLoop.instance()
@@ -33,11 +44,16 @@ def init_shell(cls):
         """initialize the InteractiveShell instance"""
         sys.path.insert(0, '')
 
+        banner2 = "=" * 80 + "\n"
+        banner2 += "Imported objects:\n"
+        banner2 += "\tProject, Connector, User, Task\n"
+        banner2 += "\tGitHubInterface, JenkinsInterface\n"
+        banner2 += "=" * 80 + "\n\n"
+
         cls.shell = TerminalInteractiveShell.instance(
             config=cls.config,
             banner1='\nRaccoon Interactive Shell',
-            banner2='==========================\n'
-                    'Imported objects: Project, Connector, User, GitHubInterface, JenkinsInterface\n\n',
+            banner2=banner2,
             display_banner=False,
             profile_dir=cls.profile_dir,
             ipython_dir=cls.ipython_dir
@@ -45,6 +61,7 @@ def init_shell(cls):
         cls.shell.configurables.append(cls)
 
 TerminalIPythonApp.init_shell = init_shell
+
 
 def main():
     app = TerminalIPythonApp.instance()

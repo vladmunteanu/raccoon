@@ -28,7 +28,11 @@ class Sidebar extends React.Component {
                             <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.projects.map(project => {
+                                        this.props.projects.sort((a, b) => {
+                                            if(a.label < b.label) return -1;
+                                            if(a.label > b.label) return 1;
+                                            return 0;
+                                        }).map(project => {
                                             return <MenuItem
                                                 key={'dashboard-' + project.id}
                                                 item={project}
@@ -54,7 +58,11 @@ class Sidebar extends React.Component {
                             <div id="collapseEnvironments" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.environments.map(env => {
+                                        this.props.environments.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(env => {
                                             return <MenuItem
                                                 key={'dashboard-' + env.id}
                                                 item={env}

@@ -97,6 +97,11 @@ class BaseStore extends EventEmitter {
         });
     }
 
+    /**
+     * Method to lookup a certain instance locally, identified by its id.
+     * @param id: primary key
+     * @returns: instance identified by id
+     */
     getById(id) {
         if(!this.instances)
             return undefined;
@@ -104,6 +109,30 @@ class BaseStore extends EventEmitter {
         let instance = this.instances.find(function(element, index, array) {
             return element.id === id;
         });
+
+        return instance;
+    }
+
+    /**
+     * Method to retrieve a specific instance, identified by its id.
+     * If the instance is not found locally, then an HTTP request is performed
+     * to obtain that instance from the backend.
+     *
+     * @param id: instance primary key
+     * @returns {instance} Instance identified by id, or undefined.
+     */
+    fetchById(id) {
+        let instance = this.getById(id);
+        if (!instance) {
+            let wsConnection = new WebSocketConnection();
+            wsConnection.send({
+                verb: 'get',
+                resource: this.baseuri + id,
+            }, payload => {
+                this.instances.push(payload.data);
+                this.emitChange();
+            }, true);
+        }
 
         return instance;
     }

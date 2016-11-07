@@ -67,24 +67,24 @@ class Taskbar extends React.Component {
         return (
             <div className="container slidemenu slidemenu-vertical slidemenu-right" id="taskbar">
                 <ul className="nav nav-tabs" id="taskbar">
-                    <li className="active" role="presentation">
+                    <li className="active" role="presentation" key="recent-tasks">
                         <a className="heading-title" href="#tasks-content" data-toggle="tab">Recent tasks</a>
                     </li>
-                    <li role="presentation">
+                    <li role="presentation" key="audit-logs">
                         <a className="heading-title" href="#logs-content" data-toggle="tab">Audit logs</a>
                     </li>
                 </ul>
                 <div className="tab-content clearfix">
-                    <div className="tab-pane active" id="tasks-content">
+                    <div className="tab-pane active" id="tasks-content" key="recent-tasks">
                         <div className="list-group">
                             {
                                 this.state.tasks.sort((a, b) => {return b.date_added - a.date_added;}).map((data) => {
-                                    return <TaskItem key={data.id} data={data}/>;
+                                    return <TaskItem key={data.id} data={data} link={"/task/" + data.id}/>;
                                 })
                             }
                         </div>
                     </div>
-                    <div className="tab-pane" id="logs-content">
+                    <div className="tab-pane" id="logs-content" key="audit-logs">
                         <div className="list-group">
                             {
                                 this.state.logs.sort((a, b) => {return b.date_added - a.date_added;}).map((log) => {

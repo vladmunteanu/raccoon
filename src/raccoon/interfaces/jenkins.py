@@ -111,7 +111,8 @@ class JenkinsInterface(BaseInterface):
 
         # create build
         build = Build(
-            project=project.pk,
+            project=project,
+            task=task,
             branch=branch,
             version=version,
             changelog=changelog
@@ -183,7 +184,8 @@ class JenkinsInterface(BaseInterface):
         if not env:
             raise ReplyError(404)
 
-        install = Install(build=build, project=project, environment=env)
+        install = Install(build=build, project=project,
+                          environment=env, task=task)
         yield install.save()
 
         request.broadcast(install.get_dict(), verb='post',

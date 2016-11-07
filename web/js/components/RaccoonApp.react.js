@@ -19,6 +19,7 @@ import SettingsApp from './settings/SettingsApp.react';
 import Register from './auth/Register.react';
 import Flow from './dashboard/Flow.react';
 import CardsView from './dashboard/CardsView.react';
+import TaskView from './TaskView.react';
 
 import ActionForm from './settings/ActionForm.react';
 import ActionUpdateForm from './settings/ActionUpdateForm.react';
@@ -143,6 +144,7 @@ class RaccoonApp extends React.Component {
                     <Route path="action/:id/project/:project" component={Flow} onEnter={this.requireAuth} />
                     <Route path="action/:id/env/:env" component={Flow} onEnter={this.requireAuth} />
                     <Route path="action/:id" component={Flow} onEnter={this.requireAuth} />
+                    <Route path="task/:id" component={TaskView} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="*" component={NotFound} />
             </Router>

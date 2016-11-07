@@ -24,7 +24,11 @@ class Sidebar extends React.Component {
                             <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.projects.map(project => {
+                                        this.props.projects.sort((a, b) => {
+                                            if(a.label < b.label) return -1;
+                                            if(a.label > b.label) return 1;
+                                            return 0;
+                                        }).map(project => {
                                             return <MenuItem key={project.id} item={project} link={"/settings/project/" + project.id} />;
                                         })
                                     }
@@ -43,7 +47,11 @@ class Sidebar extends React.Component {
                             <div id="collapseEnvironments" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.environments.map(environment => {
+                                        this.props.environments.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(environment => {
                                             return <MenuItem key={environment.id} item={environment} link={"/settings/environment/" + environment.id} />;
                                         })
                                     }
@@ -62,7 +70,11 @@ class Sidebar extends React.Component {
                             <div id="collapseJobs" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.jobs.map(job => {
+                                        this.props.jobs.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(job => {
                                             return <MenuItem key={job.id} item={job} link={"/settings/job/" + job.id} />;
                                         })
                                     }
@@ -81,7 +93,11 @@ class Sidebar extends React.Component {
                             <div id="collapseFlows" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.flows.map(flow => {
+                                        this.props.flows.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(flow => {
                                             return <MenuItem key={flow.id} item={flow} link={"/settings/flow/" + flow.id} />;
                                         })
                                     }
@@ -100,7 +116,11 @@ class Sidebar extends React.Component {
                             <div id="collapseActions" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.actions.map(action => {
+                                        this.props.actions.sort((a, b) => {
+                                            if(a.label < b.label) return -1;
+                                            if(a.label > b.label) return 1;
+                                            return 0;
+                                        }).map(action => {
                                             return <MenuItem key={action.id} item={action} link={"/settings/action/" + action.id} />;
                                         })
                                     }
@@ -119,7 +139,11 @@ class Sidebar extends React.Component {
                             <div id="collapseConnectors" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.connectors.map(connector => {
+                                        this.props.connectors.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(connector => {
                                             return <MenuItem key={connector.id} item={connector} link={"/settings/connector/" + connector.id} />;
                                         })
                                     }
@@ -138,7 +162,11 @@ class Sidebar extends React.Component {
                             <div id="collapseUsers" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.users.map(user => {
+                                        this.props.users.sort((a, b) => {
+                                            if(a.name < b.name) return -1;
+                                            if(a.name > b.name) return 1;
+                                            return 0;
+                                        }).map(user => {
                                             return <MenuItem key={user.id} item={user} />;
                                         })
                                     }

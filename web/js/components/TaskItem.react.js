@@ -1,5 +1,6 @@
 import React from 'react'
 import TimeAgo from 'react-timeago'
+import { Link } from 'react-router';
 
 // stores
 import ProjectStore from '../stores/ProjectStore';
@@ -7,10 +8,8 @@ import ProjectStore from '../stores/ProjectStore';
 import RaccoonApp from './RaccoonApp.react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Utils from '../utils/Utils';
+import {TASK_READY_STATES, TASK_UNREADY_STATES} from '../constants/Constants';
 
-
-export const READY_STATES = new Set(['FAILURE', 'REVOKED', 'SUCCESS']);
-export const UNREADY_STATES = new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED']);
 
 function getLocalState(projectId) {
     let localState = {
@@ -44,7 +43,7 @@ export class TaskItem extends React.Component {
     }
 
     handleCancel() {
-        let build_number = this.props.data.response ? this.props.data.response.number : null;
+        let build_number = this.props.data.result ? this.props.data.result.number : null;
         if (build_number) {
             AppDispatcher.dispatch({
                 action: this.props.data.connector_type,
@@ -76,7 +75,7 @@ export class TaskItem extends React.Component {
         // progress bar
         let progressBar;
         let progressStyle = {width: progress + '%'};
-        if (UNREADY_STATES.has(data.status)) {
+        if (TASK_UNREADY_STATES.has(data.status)) {
             progressBar = (
                 <div className="materialize-progress">
                     <div className={data.status == 'PENDING' ? 'indeterminate' : 'determinate'} style={progressStyle}/>
@@ -86,12 +85,12 @@ export class TaskItem extends React.Component {
 
         // cancel button
         let cancelButton;
-        let build_number = data.response ? data.response.number : null;
+        let build_number = data.result ? data.result.number : null;
         if (
             build_number &&
             data.status != 'PENDING' &&
             data.user == this.state.user.id &&
-            UNREADY_STATES.has(data.status)
+            TASK_UNREADY_STATES.has(data.status)
         ) {
             cancelButton = (
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.handleCancel}>
@@ -107,27 +106,28 @@ export class TaskItem extends React.Component {
         }
 
         return (
-            <div className={`list-group-item ${taskClass}`}>
-                <div className="list-group-item-heading">
-                    <span className="title">
-                        {this.state.local.project.label || this.state.local.project.name}
-                    </span>
-                    { cancelButton }
+            <Link to={this.props.link} className="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                <div className={`list-group-item ${taskClass}`}>
+                    <div className="list-group-item-heading">
+                        <span className="title">
+                            {this.state.local.project.label || this.state.local.project.name}
+                        </span>
+                        { cancelButton }
+                    </div>
+                    <p className="list-group-item-text">
+                        { data.context.branch }<br />
+                        { data.status }
+                        <span className="time pull-right">
+                            <TimeAgo
+                                date={data.date_added * 1000}
+                                minPeriod={60}
+                                formatter={Utils.timeAgoFormatter}
+                                />
+                        </span>
+                    </p>
+                    { progressBar }
                 </div>
-                <p className="list-group-item-text">
-                    { data.context.branch }<br />
-                    { data.status }
-                    <span className="time pull-right">
-                        <TimeAgo
-                            date={data.date_added * 1000}
-                            minPeriod={60}
-                            formatter={Utils.timeAgoFormatter}
-                            />
-                    </span>
-                </p>
-
-                { progressBar }
-            </div>
+            </Link>
         );
     }
 }

@@ -30,7 +30,7 @@ def get_ws():
     Creates a websocket connection to the Raccoon backend.
     HOST and PORT are configured in raccoon/settings.py.
 
-    :return: websocket connection
+    :return: global websocket connection
     """
     global ws
 
@@ -64,7 +64,9 @@ def send(verb, resource, headers=None, body=None):
     :param resource: Resource, example: '/api/v1/tasks/<task_id>'
     :type resource: str
     :param headers: HTTP headers
+    :type headers: dict
     :param body: HTTP body
+    :type body: dict
     :return: None
     """
     ws_connection = get_ws()
@@ -81,6 +83,7 @@ def broadcast(data):
     Sends a message via websocket, to the broadcast endpoint.
 
     :param data: HTTP body
+    :type data: dict
     :return: None
     """
     ws_connection = get_ws()
@@ -91,20 +94,26 @@ def broadcast(data):
     }, default=json_serial))
 
 
-def fetch(url):
+def fetch(url, read_json_body=True):
     """
     Performs a GET request on the specified URL.
     The result is expected to be a JSON,
     which will be loaded and returned as body.
 
     :param url: URL to GET
+    :type url: str
+    :param read_json_body: Flag to turn off JSON decoding the response body
+    :type read_json_body: bool
     :return: (body, headers)
     :rtype: tuple
     """
     r = None
     try:
         r = requests.get(url, verify=False)
-        body = r.json()
+        if read_json_body:
+            body = r.json()
+        else:
+            body = r.text
         headers = r.headers
     except requests.RequestException:
         log.error("Error fetching URL {url}!", exc_info=True)
@@ -131,6 +140,11 @@ class JenkinsJobWatcherTask(BaseTask):
 
         response, headers = fetch(url)
 
+        # Fetch console output
+        console_output_url = '{}/consoleText/'.format(parsed_url.path.strip('/'))
+        console_output_url = urljoin(api_url, console_output_url)
+        resp_co, head_co = fetch(console_output_url, read_json_body=False)
+
         status = response.get('result') or states.STARTED
         status = to_celery_status(status)
 
@@ -142,7 +156,8 @@ class JenkinsJobWatcherTask(BaseTask):
                 'status': status,
                 'started_at': response.get('timestamp'),
                 'estimated_duration': response.get('estimatedDuration'),
-                'response': response,
+                'result': response,
+                'console_output': resp_co
             }
         })
 
@@ -150,7 +165,8 @@ class JenkinsJobWatcherTask(BaseTask):
             return {
                 'id': id,
                 'status': status,
-                'response': response,
+                'result': response,
+                'console_output': resp_co
             }
 
         raise self.retry(countdown=5, max_retries=None)
@@ -163,7 +179,7 @@ class JenkinsJobWatcherTask(BaseTask):
         send(
             verb='PUT',
             resource='/api/v1/tasks/{}'.format(retval.get('id')),
-            body=retval.get('response'),
+            body=retval,
         )
 
 
@@ -182,7 +198,7 @@ class JenkinsQueueWatcherTask(BaseTask):
                 'id': id,
                 'status': states.PENDING,
                 'why': response.get('why'),
-                'response': response,
+                'result': response,
             }
         })
 

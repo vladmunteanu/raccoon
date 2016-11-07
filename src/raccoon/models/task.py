@@ -24,6 +24,9 @@ class Task(BaseModel):
     callback_details = DictField(default={})
     date_added = DateTimeField(auto_now_on_insert=True)
 
+    result = DictField(default={})
+    console_output = StringField()
+
     @property
     def status(self):
         for item in self.tasks:
