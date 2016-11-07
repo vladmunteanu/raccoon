@@ -135,7 +135,7 @@ class TaskView extends React.Component {
                             <h3>{'Task '}
                                 <small>
                                     <TimeAgo
-                                        date={this.state.task.date_added * 1000}
+                                        date={this.state.task.date_added * 1000 - (task_date.getTimezoneOffset() * 60000)}
                                         minPeriod={60}
                                         formatter={Utils.timeAgoFormatter}
                                     />

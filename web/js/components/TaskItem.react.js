@@ -105,6 +105,8 @@ export class TaskItem extends React.Component {
             taskClass = 'old';
         }
 
+        let task_date = new Date();
+
         return (
             <Link to={this.props.link} className="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                 <div className={`list-group-item ${taskClass}`}>
@@ -119,7 +121,7 @@ export class TaskItem extends React.Component {
                         { data.status }
                         <span className="time pull-right">
                             <TimeAgo
-                                date={data.date_added * 1000}
+                                date={data.date_added * 1000 - (task_date.getTimezoneOffset() * 60000)}
                                 minPeriod={60}
                                 formatter={Utils.timeAgoFormatter}
                                 />
