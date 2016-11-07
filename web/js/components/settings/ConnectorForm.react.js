@@ -139,7 +139,7 @@ class ConnectorForm extends React.Component {
                             <option value='' disabled={true}>-- select an option --</option>
                             {
                                 Object.keys(ConnectorStore.types).map(key => {
-                                    return <option value={key}>{key}</option>;
+                                    return <option value={key} key={"connector-type-" + key}>{key}</option>;
                                 })
                             }
                         </select>

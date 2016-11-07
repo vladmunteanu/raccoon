@@ -13,9 +13,6 @@ import tornado.web
 from .settings import DB, APP, HOST, PORT
 from .handlers import WebHandler, ApiWebSocketHandler
 
-# !important tasks are imported and assigned to interfaces
-from .tasks import tasks
-
 log = logging.getLogger(__name__)
 
 
@@ -26,7 +23,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'^/websocket/?', ApiWebSocketHandler),
-            (r'^/static/(.*)/?', tornado.web.StaticFileHandler, dict(path=APP['static_path'])),
+            (r'^/static/(.*)/?', tornado.web.StaticFileHandler,
+             dict(path=APP['static_path'])),
 
             # web handler should be last because it's regex is generic
             (r'^/(.*)/?', WebHandler),

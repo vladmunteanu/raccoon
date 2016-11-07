@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import logging
 
-from celery.result import AsyncResult
 from motorengine import StringField, ListField, DateTimeField, ReferenceField
 
 from . import BaseModel, Job, User, Environment
@@ -24,17 +23,9 @@ class Task(BaseModel):
     callback_details = DictField(default={})
     date_added = DateTimeField(auto_now_on_insert=True)
 
+    status = StringField()
     result = DictField(default={})
     console_output = StringField()
-
-    @property
-    def status(self):
-        for item in self.tasks:
-            task = AsyncResult(item)
-            if task.status != 'SUCCESS':
-                return task.status
-
-        return 'SUCCESS'
 
     def get_dict(self):
         result = super().get_dict()

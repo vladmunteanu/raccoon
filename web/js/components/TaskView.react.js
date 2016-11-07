@@ -105,7 +105,8 @@ class TaskView extends React.Component {
             })
         }
 
-        let task_date = new Date(this.state.task.date_added * 1000);
+        let task_date = new Date();
+        task_date.setTime(this.state.task.date_added * 1000 - (task_date.getTimezoneOffset() * 60000));
         let progressBar = null;
 
         /* Check Task status and create the progress bar */
@@ -152,7 +153,7 @@ class TaskView extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-sm-6 col-md-6 col-lg-6">{"Created at: "}</div>
-                            <div className="col-sm-6 col-md-6 col-lg-6">{task_date.toUTCString()}</div>
+                            <div className="col-sm-6 col-md-6 col-lg-6">{task_date.toLocaleString()}</div>
                         </div>
                         <div className="row">
                             <div className="col-sm-6 col-md-6 col-lg-6">{"Status: "}</div>

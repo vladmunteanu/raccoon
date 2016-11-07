@@ -49,3 +49,17 @@ class ReplyError(Exception):
 
     def __str__(self):
         return self.to_json()
+
+
+class RetryException(Exception):
+    def __init__(self, countdown=None):
+        """
+            Raised when the task should be retried.
+        :param countdown: Timeout to wait before retry (seconds)
+        :type countdown: int
+        """
+        self.countdown = countdown
+
+
+class MaxRetriesExceeded(Exception):
+    pass
