@@ -80,18 +80,16 @@ class SelectBuildAddon extends BaseAddon {
                                 return (
                                     <li key={`commit-${commit.sha}`} className="container-fluid">
                                         <div className="row">
-                                            <div className="col-sm-1 col-md-1 col-lg-1">
+                                            <div className="col-sd-10 col-md-10 col-lg-10">
                                                 <img src={Utils.gravatarUrl(commit.author.email)}
                                                      title={commit.author.name}
-                                                     style={{width: 17}}
+                                                     style={{width: 17, marginRight: 8}}
                                                      className="img-circle"
                                                      data-toggle="tooltip"
                                                      data-placement="bottom"
                                                      data-html="true"
                                                      data-original-title={commit.author.name}
                                                 />
-                                            </div>
-                                            <div className="col-sd-9 col-md-9 col-lg-9">
                                                 <span>
                                                     <b>{commit.author.name}</b>{" - " + commit.message}
                                                 </span>
