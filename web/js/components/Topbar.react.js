@@ -43,7 +43,7 @@ class Topbar extends React.Component {
         }
 
         return (
-            <nav className="navbar navbar-default">
+            <nav className="navbar navbar-default" style={{"margin": "0px -15px"}}>
                 <Loader />
                 <div className="container-fluid">
                     <div className="navbar-header">
