@@ -2,6 +2,10 @@ import React from 'react';
 import Joi from 'joi';
 import validation from 'react-validation-mixin';
 import strategy from 'joi-validation-strategy';
+import AceEditor from 'react-ace';
+
+import 'brace/mode/json';
+import 'brace/theme/tomorrow';
 
 import ProjectStore from '../../stores/ProjectStore';
 import ConnectorStore from '../../stores/ConnectorStore';
@@ -17,6 +21,7 @@ function getLocalState() {
             repo_url: '',
             connector: '',
             version: '',
+            metadata: ''
         }
     };
     return localState;
@@ -40,6 +45,7 @@ class ProjectForm extends React.Component {
         this.getValidatorData = this.getValidatorData.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this._onChange = this._onChange.bind(this);
+        this.onMetadataChange = this.onMetadataChange.bind(this);
     }
 
     componentDidMount() {
@@ -68,6 +74,10 @@ class ProjectForm extends React.Component {
         this.props.validate(name);
     }
 
+    onMetadataChange(newMetadata) {
+        this.state.project.metadata = newMetadata;
+    }
+
     getValidatorData() {
         return this.state.project;
     }
@@ -76,14 +86,23 @@ class ProjectForm extends React.Component {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                ProjectStore.create({
-                    name: this.state.project.name,
-                    label: this.state.project.label,
-                    repo_url: this.state.project.repo_url,
-                    connector: this.state.project.connector,
-                    version: this.state.project.version
-                });
-                this.setState(getLocalState());
+                let metadata = this.state.project.metadata;
+                try {
+                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata) : metadata;
+                    ProjectStore.create({
+                        name: this.state.project.name,
+                        label: this.state.project.label,
+                        repo_url: this.state.project.repo_url,
+                        connector: this.state.project.connector,
+                        version: this.state.project.version,
+                        metadata: metadata
+                    });
+                    // reset form
+                    this.setState(getLocalState());
+                }
+                catch (err) {
+                    console.log(["Could not create project!", err]);
+                }
             }
         });
     }
@@ -100,10 +119,16 @@ class ProjectForm extends React.Component {
         let url = project.repo_url;
         let connectorId = project.connector;
         let version = project.version;
+        let metadata = project.metadata || '';
         let del;
 
         if (this.formName === 'Update project') {
             del = (<button type="button" className="btn btn-danger pull-left" onClick={this.onDelete.bind(this)}>Delete</button>);
+        }
+
+        // format metadata json
+        if (typeof metadata !== 'string') {
+            metadata = JSON.stringify(metadata, undefined, 4);
         }
 
         return (
@@ -160,6 +185,19 @@ class ProjectForm extends React.Component {
                                onChange={this.onFormChange.bind(this, 'version')}
                                onBlur={this.props.handleValidation('version')}/>
                         <FormValidationError key="form-errors-version" messages={this.props.getValidationMessages('version')}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="project-metadata" className="control-label">Metadata</label>
+                        <AceEditor
+                            id="project-metadata"
+                            mode="json"
+                            theme="tomorrow"
+                            name="project-meta"
+                            fontSize={12}
+                            height="10em"
+                            value={metadata}
+                            onChange={this.onMetadataChange}
+                          />
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Save" className="btn btn-info pull-right"/>

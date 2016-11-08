@@ -40,13 +40,21 @@ class ProjectUpdateForm extends ProjectForm {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
-                ProjectStore.updateById(this.state.project.id, {
-                    name: this.state.project.name,
-                    label: this.state.project.label,
-                    repo_url: this.state.project.repo_url,
-                    connector: this.state.project.connector,
-                    version: this.state.project.version
-                });
+                let metadata = this.state.project.metadata;
+                try {
+                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata) : metadata;
+                    ProjectStore.updateById(this.state.project.id, {
+                        name: this.state.project.name,
+                        label: this.state.project.label,
+                        repo_url: this.state.project.repo_url,
+                        connector: this.state.project.connector,
+                        version: this.state.project.version,
+                        metadata: metadata
+                    });
+                }
+                catch (err) {
+                    console.log(["Could not create project!", err]);
+                }
             }
         });
     }
@@ -58,7 +66,8 @@ class ProjectUpdateForm extends ProjectForm {
                 label: '',
                 repo_url: '',
                 connector: '',
-                version: ''
+                version: '',
+                metadata: ''
             }
         }
         return this.state.project;

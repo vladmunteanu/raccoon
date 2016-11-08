@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from urllib.parse import urlparse
 
 from motorengine import StringField, DateTimeField, URLField, ReferenceField, IntField
+from ..utils.dbfields import DictField
 from . import BaseModel, Connector
 
 
@@ -14,6 +15,7 @@ class Project(BaseModel):
     repo_url = URLField(required=True)
     version = StringField(default='1.0.0')
     connector = ReferenceField(reference_document_type=Connector, required=True)
+    metadata = DictField()
     date_added = DateTimeField(required=True, auto_now_on_insert=True)
 
     # Counter will automatically update on each build
