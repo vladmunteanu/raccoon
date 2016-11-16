@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from os import path
 
 HOST = ""
@@ -10,7 +8,7 @@ DB = {
     'scheme': 'mongodb',
     'host': '10.2.101.51',
     'port': 27017,
-    'name': 'raccoon',
+    'name': 'raccoon'
 }
 
 DEBUG = True
