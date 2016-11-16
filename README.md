@@ -56,8 +56,3 @@ Start server with:
 npm start
 ```
 
-Run celery with:
-```
-celery -A raccoon.tasks.tasks worker -l info --autoreload
-```
-
