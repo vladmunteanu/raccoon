@@ -1,16 +1,13 @@
-from __future__ import absolute_import
-
 import logging
 
 import jwt
 import bcrypt
-from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
 from tornado import gen
+from mongoengine.errors import NotUniqueError, InvalidDocumentError
 
-from ..settings import SECRET, LDAP_AUTH
-
-from .base import BaseController
+from . import BaseController
 from ..models import User
+from ..settings import SECRET, LDAP_AUTH
 from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
@@ -46,7 +43,7 @@ class UsersController(BaseController):
 
         try:
             user = yield cls.model.objects.create(**params)
-        except UniqueKeyViolationError as e:
+        except NotUniqueError as e:
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
             raise ReplyError(400, cls.model.get_message_from_exception(e))
@@ -55,8 +52,10 @@ class UsersController(BaseController):
             'id': str(user.pk),
             'role': user.role,
         }, SECRET, algorithm='HS256')
-        yield request.send({'token': token.decode('utf8'),
-                            'userId': str(user.pk)})
+        request.send({
+            'token': token.decode('utf8'),
+            'userId': str(user.pk)
+        })
 
 
 class MeController(UsersController):

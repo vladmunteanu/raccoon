@@ -1,1 +1,1 @@
-__author__ = 'alexm'
+from .base import BaseInterface, REGISTERED

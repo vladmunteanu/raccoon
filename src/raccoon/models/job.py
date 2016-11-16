@@ -1,17 +1,16 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import StringField, ListField, DateTimeField, ReferenceField
+from mongoengine import StringField, ListField, DateTimeField
+from mongoengine import ReferenceField, DictField
 
 from . import BaseModel, Connector
-from ..utils.dbfields import DictField
 
 
 class Job(BaseModel):
-    __collection__ = 'jobs'
 
     name = StringField(required=True)
-    connector = ReferenceField(reference_document_type=Connector)
+    connector = ReferenceField(document_type=Connector)
     action_type = StringField(required=True)
     job = StringField(required=True)
     arguments = ListField(DictField())
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)

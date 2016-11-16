@@ -1,12 +1,11 @@
-from __future__ import absolute_import
-
 import logging
 import datetime
 from urllib.parse import urlencode, urlparse, urljoin
 
 from tornado import gen
+from mongoengine.errors import DoesNotExist
 
-from .base import BaseInterface, REGISTERED
+from . import BaseInterface, REGISTERED
 from ..models import Task, Build, Project, Environment, Install, AuditLog
 from ..utils.exceptions import ReplyError
 from ..utils.request import broadcast
@@ -74,13 +73,14 @@ class JenkinsInterface(BaseInterface):
         branch = context.get('branch')
 
         # Get the project to build, and increment the build counter
-        project = yield Project.objects.get(id=project_id)
-        if not project:
+        try:
+            project = Project.objects.get(id=project_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
         project.version = version
         project.build_counter += 1
-        yield project.save()
+        project.save()
 
         # Create the new version and update the context with the correct values
         version += "-" + str(project.build_counter)
@@ -96,13 +96,14 @@ class JenkinsInterface(BaseInterface):
                           resource='/api/v1/projects/')
 
         # Log build started
-        user = yield request.get_user()
-        audit_log = AuditLog(user=user.email,
-                             action='build',
-                             project=project.name,
-                             message='Build {} started for branch {}.'.format(version,
-                                                                              branch))
-        yield audit_log.save()
+        user = request.user
+        audit_log = AuditLog(
+            user=user.email,
+            action='build',
+            project=project.name,
+            message='Build {} started for branch {}.'.format(version, branch)
+        )
+        audit_log.save()
 
         request.broadcast(audit_log.get_dict(),
                           verb='post', resource='/api/v1/auditlogs/',
@@ -131,10 +132,10 @@ class JenkinsInterface(BaseInterface):
         version = task.context.get('version')
 
         # get project
-        project = yield Project.objects.get(id=project_id)
-        if not project:
+        try:
+            project = Project.objects.get(id=project_id)
+        except DoesNotExist:
             raise ReplyError(404)
-        yield project.load_references()
 
         # Get commits and create changelog
         changelog = yield project.connector.interface.commits(project=project,
@@ -148,7 +149,7 @@ class JenkinsInterface(BaseInterface):
             version=version,
             changelog=changelog
         )
-        yield build.save()
+        build.save()
 
         # Notify clients about the new Build instance
         broadcast(build.get_dict(), verb='post', resource='/api/v1/builds/')
@@ -176,17 +177,20 @@ class JenkinsInterface(BaseInterface):
         environment_id = context.get('environment_id')
 
         # Get Project, Environment and Build to con
-        project = yield Project.objects.get(id=project_id)
-        if not project:
+        try:
+            project = Project.objects.get(id=project_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
-        environment = yield Environment.objects.get(id=environment_id)
-        if not environment:
+        try:
+            environment = Environment.objects.get(id=environment_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
         # Check the associated build
-        build = yield Build.objects.get(id=build_id)
-        if not build:
+        try:
+            build = Build.objects.get(id=build_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
         # Replace placeholders in Job arguments that are found in context
@@ -194,13 +198,15 @@ class JenkinsInterface(BaseInterface):
                                                                  context)})
 
         # Log the install
-        user = yield request.get_user()
-        audit_log = AuditLog(user=user.email,
-                             action='install',
-                             project=project.name,
-                             environment=environment.name,
-                             message='Install started for build {}'.format(build.version))
-        yield audit_log.save()
+        user = request.user
+        audit_log = AuditLog(
+            user=user.email,
+            action='install',
+            project=project.name,
+            environment=environment.name,
+            message='Install started for build {}'.format(build.version)
+        )
+        audit_log.save()
 
         request.broadcast(audit_log.get_dict(),
                           verb='post', resource='/api/v1/auditlogs/',
@@ -229,21 +235,24 @@ class JenkinsInterface(BaseInterface):
         env_id = task.context.get('environment_id')
 
         # Get Project, Build and Environment to create the Install object
-        project = yield Project.objects.get(id=project_id)
-        if not project:
+        try:
+            project = Project.objects.get(id=project_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
-        build = yield Build.objects.get(id=build_id)
-        if not build:
+        try:
+            build = Build.objects.get(id=build_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
-        env = yield Environment.objects.get(id=env_id)
-        if not env:
+        try:
+            env = Environment.objects.get(id=env_id)
+        except DoesNotExist:
             raise ReplyError(404)
 
         install = Install(build=build, project=project,
                           environment=env, task=task)
-        yield install.save()
+        install.save()
 
         # Notify clients about the new Install
         broadcast(install.get_dict(), verb='post', resource='/api/v1/installs/')
@@ -284,7 +293,7 @@ class JenkinsInterface(BaseInterface):
             url=url,
         )
 
-        user = yield request.get_user()
+        user = request.user
         task = Task(
             user=user,
             connector_type='jenkins',
@@ -294,7 +303,7 @@ class JenkinsInterface(BaseInterface):
             date_added=datetime.datetime.utcnow()
         )
         task.add_callback(callback_method)
-        yield task.save()
+        task.save()
 
         # Start local Jenkins watcher jobs
         # Get queue URL from Jenkins response headers

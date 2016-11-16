@@ -1,10 +1,8 @@
-from __future__ import absolute_import
-
 import json
 import logging
 
 import jwt
-from tornado import gen
+from mongoengine import DoesNotExist
 
 from ..models import User
 from .utils import json_serial
@@ -33,10 +31,13 @@ class Request(object):
 
         self._user = None
 
-    @gen.coroutine
-    def get_user(self):
+    @property
+    def user(self):
         if not self._user:
-            self._user = yield User.objects.get(self.user_data.get('id'))
+            try:
+                self._user = User.objects.get(id=self.user_data.get('id'))
+            except DoesNotExist:
+                self._user = None
         return self._user
 
     def serialize(self, data, verb=None, resource=None):
@@ -49,7 +50,6 @@ class Request(object):
             'message': 'OK',
         }
 
-    @gen.coroutine
     def send(self, response=None):
         data = self.serialize(response)
         self.socket.write_message(json.dumps(data, default=json_serial))

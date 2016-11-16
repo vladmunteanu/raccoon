@@ -1,22 +1,21 @@
-from __future__ import absolute_import
-
+import datetime
 from urllib.parse import urlparse
 
-from motorengine import StringField, DateTimeField, URLField, ReferenceField, IntField
-from ..utils.dbfields import DictField
+from mongoengine import StringField, DateTimeField, URLField, ReferenceField
+from mongoengine import IntField, DictField
+
 from . import BaseModel, Connector
 
 
 class Project(BaseModel):
-    __collection__ = 'projects'
 
     name = StringField(required=True, unique=True)
     label = StringField(required=True, unique=True)
     repo_url = URLField(required=True)
     version = StringField(default='1.0.0')
-    connector = ReferenceField(reference_document_type=Connector, required=True)
+    connector = ReferenceField(document_type=Connector, required=True)
     metadata = DictField()
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)
 
     # Counter will automatically update on each build
     build_counter = IntField(default=0)

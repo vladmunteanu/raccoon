@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import json
 import logging
 import traceback
@@ -7,9 +5,7 @@ from http.server import BaseHTTPRequestHandler
 
 from ..settings import DEBUG
 
-
 log = logging.getLogger(__name__)
-
 
 ERROR_MESSAGES = BaseHTTPRequestHandler.responses
 

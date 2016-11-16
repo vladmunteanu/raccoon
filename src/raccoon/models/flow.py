@@ -1,14 +1,13 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import StringField, DateTimeField, ListField, ReferenceField
+from mongoengine import StringField, DateTimeField, ListField, ReferenceField
 
 from . import BaseModel, Job
 
 
 class Flow(BaseModel):
-    __collection__ = 'flows'
 
     name = StringField(required=True, unique=True)
     steps = ListField(StringField())
-    job = ReferenceField(reference_document_type=Job)
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    job = ReferenceField(document_type=Job)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)

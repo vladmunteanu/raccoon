@@ -1,12 +1,10 @@
-from __future__ import absolute_import
-
 import logging
 import datetime
 
 from tornado import gen
-from motorengine import DESCENDING
+from mongoengine.errors import DoesNotExist
 
-from .base import BaseController
+from . import BaseController
 from ..models import AuditLog
 from ..utils.decorators import is_admin
 from ..utils.exceptions import ReplyError
@@ -36,16 +34,17 @@ class AuditlogsController(BaseController):
         :return: audit logs
         """
         if pk:
-            response = yield cls.model.objects.get(id=pk)
-            if not response:
+            try:
+                response = cls.model.objects.get(id=pk)
+            except DoesNotExist:
                 raise ReplyError(404)
 
             response = response.get_dict()
         else:
-            response = yield cls.model.objects.filter(
+            response = cls.model.objects.filter(
                 date_added__gte=(
                     datetime.datetime.utcnow() - datetime.timedelta(days=3)
-                )).order_by('date_added', direction=DESCENDING).find_all()
+                )).order_by('+date_added').all()
             response = [r.get_dict() for r in response]
 
-        yield request.send(response)
+        request.send(response)

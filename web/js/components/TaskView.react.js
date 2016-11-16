@@ -126,6 +126,18 @@ class TaskView extends React.Component {
             );
         }
 
+        let pending_reason = null;
+
+        if (this.state.task.status == 'PENDING') {
+            pending_reason = (
+                <div className="row">
+                    <div className="col-sm-6 col-md-6 col-lg-6">{"Pending reason: "}</div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                        {this.state.task.why}
+                    </div>
+                </div>
+            )
+        }
 
         return (
             <div className="container-fluid">
@@ -162,6 +174,7 @@ class TaskView extends React.Component {
                                 {progressBar}
                             </div>
                         </div>
+                        {pending_reason}
                         <br/>
                         <hr/>
                     </div>

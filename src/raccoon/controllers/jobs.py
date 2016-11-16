@@ -1,8 +1,6 @@
-from __future__ import absolute_import
-
 import logging
 
-from .base import BaseController
+from . import BaseController
 from ..models import Job
 
 log = logging.getLogger(__name__)

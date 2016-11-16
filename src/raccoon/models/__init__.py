@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-
-# !important keep order
-# no dep
 from .base import BaseModel
 from .auditlog import AuditLog
 from .connector import Connector

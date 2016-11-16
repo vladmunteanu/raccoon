@@ -8,7 +8,7 @@ class MenuItem extends React.Component {
     constructor(props) {
         super(props);
 
-        if (this.props.hasOwnProperty("store")) {
+        if (this.props.store) {
             this.state = {
                 checked: this.props.store.getToggle(this.props.item.id)
             }
@@ -62,7 +62,7 @@ class MenuItem extends React.Component {
                     this.props.actions.map((item) => {
                         return (
                             <li key={`menu-item-link-${item.id}`}>
-                                <Link to={'/action/' + item.id}>
+                                <Link to={'/action/' + item.id + '/' + this.props.itemType + '/' + this.props.item.id}>
                                     {item.label}
                                 </Link>
                             </li>

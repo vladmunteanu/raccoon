@@ -1,26 +1,23 @@
-from __future__ import absolute_import
-
 import logging
+import datetime
 
-from motorengine import StringField, DateTimeField, ReferenceField
+from mongoengine import StringField, DateTimeField, ReferenceField, DictField
 
-from . import BaseModel, Job, User, Environment
-from ..utils.dbfields import DictField
+from . import BaseModel, User, Job, Environment
 
 
 log = logging.getLogger(__name__)
 
 
 class Task(BaseModel):
-    __collection__ = 'tasks'
 
-    user = ReferenceField(reference_document_type=User, required=True)
+    user = ReferenceField(document_type=User, required=True)
     connector_type = StringField(required=True)
-    job = ReferenceField(reference_document_type=Job)
-    environment = ReferenceField(reference_document_type=Environment)
+    job = ReferenceField(document_type=Job)
+    environment = ReferenceField(document_type=Environment)
     context = DictField()
     callback_details = DictField(default={})
-    date_added = DateTimeField(auto_now_on_insert=True)
+    date_added = DateTimeField(default=datetime.datetime.now)
 
     status = StringField()
     result = DictField(default={})

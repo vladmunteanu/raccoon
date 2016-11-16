@@ -1,11 +1,10 @@
-from __future__ import absolute_import
-
 import logging
 
 from tornado import gen
+from mongoengine.errors import DoesNotExist
 
+from . import BaseController
 from ..interfaces.github import GitHubInterface
-from .base import BaseController
 from ..models import Project
 from ..utils.decorators import authenticated
 from ..utils.exceptions import ReplyError
@@ -46,12 +45,10 @@ class GitHubController(BaseController):
     @authenticated
     @gen.coroutine
     def get(cls, request, method=None, project=None, *args, **kwargs):
-        project = yield Project.objects.get(id=project)
-        if not project:
+        try:
+            project = Project.objects.get(id=project)
+        except DoesNotExist:
             raise ReplyError(422)
-
-        # load references
-        yield project.load_references()
 
         # create GitHub interface & select operation
         github = GitHubInterface(connector=project.connector)
@@ -61,4 +58,4 @@ class GitHubController(BaseController):
 
         response = yield method(project=project)
 
-        yield request.send(response)
+        request.send(response)

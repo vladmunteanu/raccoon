@@ -1,11 +1,10 @@
-from __future__ import absolute_import
-
 import logging
 
 from tornado import gen
+from mongoengine.errors import DoesNotExist
 
+from . import BaseController
 from ..models import Task
-from .base import BaseController
 from ..utils.exceptions import ReplyError
 from ..tasks.long_polling import FAILURE
 
@@ -29,19 +28,20 @@ class TasksController(BaseController):
         :param kwargs: Body of the HTTP request
         :return: None
         """
-        task = yield Task.objects.get(id=pk)
-        if not task:
+        try:
+            task = Task.objects.get(id=pk)
+        except DoesNotExist:
             log.error('Task %s does not exist, but status was reported', pk)
             raise ReplyError(404)
 
         task.result = kwargs.get('result')
         task.console_output = kwargs.get('console_output')
-        yield task.save()
+        task.save()
 
         # call callback for this task
         callback_method = task.callback
         if not callback_method:
-            yield request.send()
+            request.send()
             return
 
         if task.status == FAILURE:

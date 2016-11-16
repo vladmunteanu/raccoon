@@ -1,5 +1,5 @@
-from __future__ import absolute_import
 import re
+import logging
 
 from .controllers import *
 from .utils.exceptions import ReplyError

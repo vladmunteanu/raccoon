@@ -5,9 +5,9 @@ from urllib.parse import urlparse, urljoin
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
+from .long_polling import BaseLongPollingTask, READY_STATES, UNREADY_STATES
+from .long_polling import PENDING, STARTED, SUCCESS, FAILURE
 from ..utils.exceptions import RetryException
-from .long_polling import BaseLongPollingTask, STARTED, PENDING
-from .long_polling import SUCCESS, FAILURE, READY_STATES, UNREADY_STATES
 
 log = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
 
         self.url = url
         self.api_url = api_url
+        self.http_client = AsyncHTTPClient()
 
     @gen.coroutine
     def run(self):
@@ -36,7 +37,7 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        result = yield AsyncHTTPClient().fetch(HTTPRequest(
+        result = yield self.http_client.fetch(HTTPRequest(
             url=url,
             method="GET",
             validate_cert=False,
@@ -46,7 +47,7 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
         # Fetch console output
         console_output_url = '{}/consoleText/'.format(parsed_url.path.strip('/'))
         console_output_url = urljoin(api_url, console_output_url)
-        console_output = yield AsyncHTTPClient().fetch(HTTPRequest(
+        console_output = yield self.http_client.fetch(HTTPRequest(
             url=console_output_url,
             method="GET",
             validate_cert=False,
@@ -67,7 +68,7 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
             raise gen.Return()
 
         # Notify clients about the Task progress
-        yield self.task.save()
+        self.task.save()
         self.notify_clients(extra={
             'started_at': result_body.get('timestamp'),
             'estimated_duration': result_body.get('estimatedDuration'),
@@ -105,6 +106,7 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
 
         self.api_url = api_url
         self.queue_url = queue_url
+        self.http_client = AsyncHTTPClient()
 
     @gen.coroutine
     def run(self):
@@ -114,7 +116,7 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         queue_url = urljoin(api_url, path)
 
-        result = yield AsyncHTTPClient().fetch(HTTPRequest(
+        result = yield self.http_client.fetch(HTTPRequest(
             url=queue_url,
             method="GET",
             validate_cert=False,
@@ -130,7 +132,7 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
         if build_url:
             raise gen.Return(build_url)
 
-        yield self.task.save()
+        self.task.save()
 
         raise RetryException
 

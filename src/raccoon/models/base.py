@@ -1,37 +1,47 @@
-from copy import deepcopy
+import logging
 
-from motorengine import Document
-from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
+from mongoengine import Document
+from mongoengine.errors import InvalidDocumentError, NotUniqueError
+
+log = logging.getLogger(__name__)
 
 
 class BaseModel(Document):
-    ignore = []
+    meta = {
+        'abstract': True,
+    }
 
-    @property
-    def pk(self):
-        return self._id
+    # Add fields to ignore in the dict representation
+    ignore = ['_id']
 
     def get_dict(self):
-        result = deepcopy(super(Document, self).to_son())
-        result['id'] = self._id
-        for key in self.ignore:
-            result.pop(key, None)
+        """
+            Returns a dict representation of the object, adding the primary key.
+
+        :return: dict representation
+        :rtype: dict
+        """
+        result = self.to_mongo().to_dict()
+        result['id'] = str(self.pk)
+        for ignored_field in self.ignore:
+            result.pop(ignored_field, None)
         return result
 
     @classmethod
-    def get_field_names(cls, unique=False):
-        if unique:
-            return [k for (k, v) in cls._fields.items() if v.unique]
-        return cls._fields.keys()
-
-    @classmethod
     def get_message_from_exception(cls, e):
-        message = 'Unknown error on saving instance!!!'
-        fields = cls.get_field_names()
+        """
+            Parses the exception and returns an error message for this model.
 
-        if isinstance(e, UniqueKeyViolationError):
+        :param e: exception
+        :type e: Exception
+        :return: string message
+        :rtype: str
+        """
+        message = 'Unknown error on saving instance!!!'
+        fields = cls._fields
+
+        if isinstance(e, NotUniqueError):
             message = 'A {class_name} with the same {field} exists!'
-            fields = cls.get_field_names(unique=True)
 
         if isinstance(e, InvalidDocumentError):
             message = 'Invalid {field} for {class_name}!'

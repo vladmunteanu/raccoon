@@ -1,7 +1,7 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import StringField, EmailField, BooleanField
-from motorengine import ListField, DateTimeField, ReferenceField
+from mongoengine import StringField, EmailField, BooleanField, ListField
+from mongoengine import DateTimeField, ReferenceField
 
 from . import BaseModel, Right
 from ..settings import LDAP_AUTH
@@ -16,5 +16,5 @@ class User(BaseModel):
     password = StringField()
     active_directory = BooleanField(required=True, default=LDAP_AUTH)
     role = StringField(default='user')
-    rights = ListField(ReferenceField(reference_document_type=Right))
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    rights = ListField(ReferenceField(document_type=Right))
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)

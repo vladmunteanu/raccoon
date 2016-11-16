@@ -1,12 +1,13 @@
 import logging
 
 from tornado import gen
+from mongoengine.errors import DoesNotExist
 
-from ..utils.decorators import authenticated
-from ..utils.exceptions import ReplyError
-from .base import BaseController
+from . import BaseController
 from ..interfaces.salt import SaltStackInterface
 from ..models import Connector, AuditLog
+from ..utils.decorators import authenticated
+from ..utils.exceptions import ReplyError
 
 
 log = logging.getLogger(__name__)
@@ -21,7 +22,10 @@ class SaltController(BaseController):
     @authenticated
     @gen.coroutine
     def post(cls, request, method=None, connectorId=None, *args, **kwargs):
-        connector = yield Connector.objects.get(id=connectorId)
+        try:
+            connector = Connector.objects.get(id=connectorId)
+        except DoesNotExist:
+            raise ReplyError(404)
 
         salt_interface = SaltStackInterface(connector)
         method = getattr(salt_interface, method, None)
@@ -31,16 +35,16 @@ class SaltController(BaseController):
 
         response = yield method(**kwargs)
 
-        user = yield request.get_user()
+        user = request.user
         audit_log = AuditLog(user=user.email,
                              action=kwargs.get('fun'),
                              project=kwargs.get('service_type'),
                              environment=kwargs.get('target_env'),
                              message="Salt master operation")
-        yield audit_log.save()
+        audit_log.save()
 
         request.broadcast(audit_log.get_dict(),
                           verb="post", resource="/api/v1/auditlogs/",
                           admin_only=True)
 
-        yield request.send(response)
+        request.send(response)

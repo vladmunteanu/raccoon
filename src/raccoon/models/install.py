@@ -1,16 +1,14 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import DateTimeField, ReferenceField
+from mongoengine import DateTimeField, ReferenceField
 
 from . import BaseModel, Build, Environment, Project, Task
 
 
 class Install(BaseModel):
-    __collection__ = 'installs'
 
-    build = ReferenceField(required=True, reference_document_type=Build)
-    environment = ReferenceField(required=True,
-                                 reference_document_type=Environment)
-    project = ReferenceField(required=True, reference_document_type=Project)
-    task = ReferenceField(reference_document_type=Task)
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    build = ReferenceField(required=True, document_type=Build)
+    environment = ReferenceField(required=True, document_type=Environment)
+    project = ReferenceField(required=True, document_type=Project)
+    task = ReferenceField(document_type=Task)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)

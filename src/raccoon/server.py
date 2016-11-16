@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-
-from __future__ import absolute_import
-
 import logging
 
-from motorengine.connection import connect
 import tornado
 import tornado.ioloop
 import tornado.options
 import tornado.web
+from mongoengine import connect
 
 from .settings import DB, APP, HOST, PORT
 from .handlers import WebHandler, ApiWebSocketHandler
@@ -40,8 +37,7 @@ def main():
     app.listen(PORT, address=HOST)
 
     # Connect to MongoDB Server
-    io_loop = tornado.ioloop.IOLoop.instance()
-    connect(DB['name'], host=DB['host'], port=DB['port'], io_loop=io_loop)
+    connect(DB['name'], host=DB['host'], port=DB['port'])
 
     tornado.ioloop.IOLoop.current().start()
 

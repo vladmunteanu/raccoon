@@ -1,19 +1,17 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import StringField, DateTimeField
+from mongoengine import StringField, DateTimeField, DictField
 
 from . import BaseModel
-from ..utils.dbfields import DictField
 from ..interfaces.base import REGISTERED
 
 
 class Connector(BaseModel):
-    __collection__ = 'connectors'
 
     name = StringField(required=True)
     type = StringField(required=True)
     config = DictField()
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)
 
     @property
     def interface(self):

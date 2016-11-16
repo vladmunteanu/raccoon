@@ -1,13 +1,13 @@
-from __future__ import absolute_import
-
 import logging
-from tornado import gen
 
-from ..utils.decorators import authenticated
-from ..utils.exceptions import ReplyError
-from .base import BaseController
+from tornado import gen
+from mongoengine.errors import DoesNotExist
+
+from . import BaseController
 from ..interfaces.jenkins import JenkinsInterface
 from ..models import Flow, Connector, Job
+from ..utils.decorators import authenticated
+from ..utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class JenkinsController(BaseController):
     @authenticated
     @gen.coroutine
     def get(cls, request, method=None, *args, **kwargs):
-        results = yield Connector.objects.filter(type='jenkins').find_all()
+        results = Connector.objects.filter(type='jenkins').all()
         if not len(results):
             raise ReplyError(422)
 
@@ -58,7 +58,7 @@ class JenkinsController(BaseController):
             raise ReplyError(404)
 
         response = yield method(request=request, *args, **kwargs)
-        yield request.send(response)
+        request.send(response)
 
     @classmethod
     @authenticated
@@ -67,24 +67,23 @@ class JenkinsController(BaseController):
         job = None
         flow = None
         if flow_id:
-            flow = yield Flow.objects.get(id=flow_id)
-            if not flow:
+            try:
+                flow = Flow.objects.get(id=flow_id)
+            except DoesNotExist:
                 raise ReplyError(422)
 
-            # load references
-            yield flow.load_references()
-            yield flow.job.load_references()
             connector = flow.job.connector
         else:
-            results = yield Connector.objects.filter(type='jenkins').find_all()
+            results = Connector.objects.filter(type='jenkins').all()
             if not len(results):
                 raise ReplyError(422)
 
             connector = results[0]
 
         if job_id:
-            job = yield Job.objects.get(id=job_id)
-            if not job:
+            try:
+                job = Job.objects.get(id=job_id)
+            except DoesNotExist:
                 raise ReplyError(422)
 
         # create Jenkins interface
@@ -95,4 +94,4 @@ class JenkinsController(BaseController):
 
         response = yield method(request=request, flow=flow,
                                 job=job, *args, **kwargs)
-        yield request.send(response)
+        request.send(response)

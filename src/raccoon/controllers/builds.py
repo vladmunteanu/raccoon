@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
 import logging
 
 from tornado import gen
+from mongoengine.errors import DoesNotExist
 
-from .base import BaseController
+from . import BaseController
 from ..models import Build, Project
 from ..interfaces.github import GitHubInterface
 from ..utils.decorators import authenticated
@@ -27,12 +26,12 @@ class BuildsController(BaseController):
         branch_name = kwargs.get('branch')
 
         # get project
-        project = yield Project.objects.get(id=project_id)
-        if not project:
+        try:
+            project = Project.objects.get(id=project_id)
+        except DoesNotExist:
             raise ReplyError(400)
 
         # connect to github
-        yield project.load_references()
         github = GitHubInterface(project.connector)
 
         # get commits and create changelog

@@ -36,6 +36,7 @@ class Sidebar extends React.Component {
                                             return <MenuItem
                                                 key={'dashboard-' + project.id}
                                                 item={project}
+                                                itemType={"project"}
                                                 store = {ProjectStore}
                                                 action={ActionTypes.PROJECT_TOGGLE_VISIBLE}
                                                 switch={true}
@@ -66,6 +67,7 @@ class Sidebar extends React.Component {
                                             return <MenuItem
                                                 key={'dashboard-' + env.id}
                                                 item={env}
+                                                itemType={"env"}
                                                 store = {EnvironmentStore}
                                                 action={ActionTypes.ENVIRONMENT_TOGGLE_VISIBLE}
                                                 switch={true}

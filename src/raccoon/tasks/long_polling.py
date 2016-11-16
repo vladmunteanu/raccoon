@@ -93,7 +93,7 @@ class BaseLongPollingTask(object):
         """
 
         self.task.status = SUCCESS
-        yield self.task.save()
+        self.task.save()
         self.notify_clients()
 
     def _retry(self, countdown=None):
@@ -132,7 +132,7 @@ class BaseLongPollingTask(object):
         except:
             log.error("Task failed!", exc_info=True)
             self.task.status = FAILURE
-            yield self.task.save()
+            self.task.save()
             self.notify_clients()
 
     @gen.coroutine
@@ -151,7 +151,7 @@ class BaseLongPollingTask(object):
             )
         except:
             self.task.status = FAILURE
-            yield self.task.save()
+            self.task.save()
             self.notify_clients()
 
             log.error("Couldn't schedule task", exc_info=True)

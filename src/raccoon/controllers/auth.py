@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import logging
 
 import jwt
@@ -7,9 +5,10 @@ import bcrypt
 from tornado import gen
 from ldap3 import Server, Connection, ALL, AUTH_SIMPLE
 from ldap3.core.exceptions import LDAPBindError
+from mongoengine.errors import DoesNotExist
 
+from . import BaseController
 from ..settings import SECRET, LDAP_AUTH, LDAP_CONF
-from .base import BaseController
 from ..models import User
 from ..utils.exceptions import ReplyError
 
@@ -62,22 +61,26 @@ class AuthController(BaseController):
             except:
                 raise ReplyError(500, 'LDAP server error')
 
-            user = yield cls.model.objects.get(email=email)
-            if not user:
-                user = yield cls.model.objects.create(name=name, email=email,
-                                                      active_directory=True)
+            try:
+                user = cls.model.objects.get(email=email)
+            except DoesNotExist:
+                user = cls.model.objects.create(name=name, email=email,
+                                                active_directory=True)
         else:
             password = password.encode('utf-8')
-            user = yield cls.model.objects.get(email=email)
-            if not user or not bcrypt.checkpw(password, user.password.encode('utf-8')):
+            try:
+                user = cls.model.objects.get(email=email)
+            except DoesNotExist:
+                raise ReplyError(404, 'Invalid email or password!')
+
+            if not bcrypt.checkpw(password, user.password.encode('utf-8')):
                 raise ReplyError(404, 'Invalid email or password')
 
         token = jwt.encode({
             'id': str(user.pk),
             'role': user.role,
         }, SECRET, algorithm='HS256')
-        yield request.send({'token': token.decode('utf8'),
-                            'userId': str(user.pk)})
+        request.send({'token': token.decode('utf8'), 'userId': str(user.pk)})
 
     @classmethod
     @gen.coroutine

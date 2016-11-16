@@ -1,10 +1,8 @@
-from __future__ import absolute_import
-
 import logging
 
 from tornado import gen
 
-from .base import BaseInterface, REGISTERED
+from . import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 

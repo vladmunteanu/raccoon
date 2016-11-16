@@ -1,10 +1,10 @@
-from __future__ import absolute_import
-
 import logging
 
 from tornado import gen
-from motorengine.errors import UniqueKeyViolationError, InvalidDocumentError
-from bson.objectid import ObjectId
+from bson import ObjectId, DBRef
+from mongoengine import ReferenceField
+from mongoengine.errors import NotUniqueError, InvalidDocumentError
+from mongoengine.errors import DoesNotExist
 
 from ..utils.decorators import authenticated, is_admin
 from ..utils.exceptions import ReplyError
@@ -41,16 +41,17 @@ class BaseController(object):
             raise ReplyError(404)
 
         if pk:
-            response = yield cls.model.objects.get(id=pk)
-            if not response:
+            try:
+                response = cls.model.objects.get(id=pk)
+            except DoesNotExist:
                 raise ReplyError(404)
 
             response = response.get_dict()
         else:
-            response = yield cls.model.objects.find_all()
+            response = cls.model.objects.all()
             response = [r.get_dict() for r in response]
 
-        yield request.send(response)
+        request.send(response)
 
     @classmethod
     @authenticated
@@ -79,26 +80,36 @@ class BaseController(object):
             if value and hasattr(cls.model, key):
                 # !important
                 # Make value = ObjectId(value) if field is a reference field
-                field = cls.model.get_field_by_db_name(key)
-                if hasattr(field, 'reference_type'):
-                    value = ObjectId(value)
+                field = cls.model._fields.get(key)
+                if type(field) is ReferenceField:
+                    if not value:
+                        value = None
+                    else:
+                        model_name = field.document_type._get_collection().name
+                        value = DBRef(model_name, ObjectId(value))
 
                 params[key] = value
 
         try:
-            response = yield cls.model.objects.create(**params)
-        except UniqueKeyViolationError as e:
+            response = cls.model.objects.create(**params)
+        except NotUniqueError as e:
+            log.info("Failed to create {}: {}".format(cls.model.__name__, e),
+                     exc_info=True)
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
+            log.info("Invalid document {} error: {}".format(cls.model.__name__,
+                                                            e, exc_info=True))
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.get_user()
-            audit_log = AuditLog(user=user.email,
-                                 action='new {}'.format(cls.model.__name__),
-                                 message='{} {} added'.format(cls.model.__name__,
-                                                              kwargs.get('name')))
-            yield audit_log.save()
+            user = request.user
+            audit_log = AuditLog(
+                user=user.email,
+                action='new {}'.format(cls.model.__name__),
+                message='{} {} added'.format(cls.model.__name__,
+                                             kwargs.get('name'))
+            )
+            audit_log.save()
 
             request.broadcast(audit_log.get_dict(),
                               verb='post', resource='/api/v1/auditlogs/',
@@ -132,39 +143,43 @@ class BaseController(object):
         if not pk:
             raise ReplyError(400)
 
-        instance = yield cls.model.objects.get(id=pk)
-        if not instance:
+        try:
+            instance = cls.model.objects.get(id=pk)
+        except DoesNotExist:
             raise ReplyError(404)
-
-        yield instance.load_references()
 
         for key, value in kwargs.items():
             if hasattr(instance, key):
-                # !important
-                # Make value = ObjectId(value) if field is a reference field
-                field = instance.get_field_by_db_name(key)
-                if hasattr(field, 'reference_type'):
+                # Make value = DBRef(model, ObjectId(value))
+                # if field is a reference field
+                field = instance._fields.get(key)
+                if type(field) is ReferenceField:
                     if not value:
                         value = None
                     else:
-                        value = ObjectId(value)
+                        model_name = field.document_type._get_collection().name
+                        value = DBRef(model_name, ObjectId(value))
 
                 setattr(instance, key, value)
 
         try:
-            response = yield instance.save()
-        except UniqueKeyViolationError as e:
+            response = instance.save()
+        except NotUniqueError as e:
+            log.info(["Duplicate key:", e], exc_info=True)
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
+            log.info(["Invalid document error:", e], exc_info=True)
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.get_user()
-            audit_log = AuditLog(user=user.email,
-                                 action='update {}'.format(cls.model.__name__),
-                                 message='{} {} modified'.format(cls.model.__name__,
-                                                                 kwargs.get('name')))
-            yield audit_log.save()
+            user = request.user
+            audit_log = AuditLog(
+                user=user.email,
+                action='update {}'.format(cls.model.__name__),
+                message='{} {} modified'.format(cls.model.__name__,
+                                                kwargs.get('name'))
+            )
+            audit_log.save()
 
             request.broadcast(audit_log.get_dict(),
                               verb='post', resource='/api/v1/auditlogs/',
@@ -202,27 +217,29 @@ class BaseController(object):
         if not pk:
             raise ReplyError(400)
 
-        instance = yield cls.model.objects.get(id=pk)
-
-        if not instance:
+        try:
+            instance = cls.model.objects.get(id=pk)
+        except DoesNotExist:
             raise ReplyError(404)
 
-        yield instance.load_references()
-
         try:
-            yield instance.delete()
-        except UniqueKeyViolationError as e:
+            instance.delete()
+        except NotUniqueError as e:
+            log.info(["Not unique error:", e], exc_info=True)
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
+            log.info(["Invalid document error:", e], exc_info=True)
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
-            user = yield request.get_user()
-            audit_log = AuditLog(user=user.email,
-                                 action='delete {}'.format(cls.model.__name__),
-                                 message='{} {} deleted'.format(cls.model.__name__,
-                                                                getattr(instance, 'name', '')))
-            yield audit_log.save()
+            user = request.user
+            audit_log = AuditLog(
+                user=user.email,
+                action='delete {}'.format(cls.model.__name__),
+                message='{} {} deleted'.format(cls.model.__name__,
+                                               getattr(instance, 'name', ''))
+            )
+            audit_log.save()
 
             request.broadcast(audit_log.get_dict(),
                               verb='post', resource='/api/v1/auditlogs/',

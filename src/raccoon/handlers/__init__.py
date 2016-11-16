@@ -1,4 +1,2 @@
-from __future__ import absolute_import
-
-from .web import *
-from .api import *
+from .web import WebHandler
+from .api import ApiWebSocketHandler

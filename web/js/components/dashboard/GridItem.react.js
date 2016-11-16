@@ -78,13 +78,13 @@ class GridItem extends React.Component {
                 </div>
             );
 
-        let cardActions = ActionStore.filter(this.props.project,this.props.environment,"card");
+        let cardActions = ActionStore.filter(this.props.project, this.props.environment, "card");
         return (
             <div className="box pull-left">
                 <div className="header">
                     <div className="row">
                         <span className="version pull-left">{this.props.environment.name.toUpperCase()}</span>
-                        <span className="version pull-left">&nbsp;&nbsp;{this.props.project.name}</span>
+                        <span className="version pull-left">&nbsp;&nbsp;{this.props.project.label}</span>
                         <CardMenu project={this.props.project.id}
                                   environment={this.props.environment.id}
                                   actions={cardActions} />

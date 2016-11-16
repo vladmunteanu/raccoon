@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
 import logging
+
 from tornado import gen
 
+from . import BaseController
 from ..utils.exceptions import ReplyError
-from .base import BaseController
 
 log = logging.getLogger(__name__)
 

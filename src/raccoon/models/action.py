@@ -1,17 +1,16 @@
-from __future__ import absolute_import
+import datetime
 
-from motorengine import StringField, ReferenceField, DateTimeField
+from mongoengine import StringField, ReferenceField, DateTimeField
 
-from . import Project, Environment, Flow, BaseModel
+from . import BaseModel, Project, Environment, Flow
 
 
 class Action(BaseModel):
-    __collection__ = 'actions'
 
     name = StringField(required=True)
     label = StringField()
-    project = ReferenceField(reference_document_type=Project)
-    environment = ReferenceField(reference_document_type=Environment)
-    flow = ReferenceField(reference_document_type=Flow)
+    project = ReferenceField(document_type=Project)
+    environment = ReferenceField(document_type=Environment)
+    flow = ReferenceField(document_type=Flow)
     placement = StringField()
-    date_added = DateTimeField(required=True, auto_now_on_insert=True)
+    date_added = DateTimeField(required=True, default=datetime.datetime.now)

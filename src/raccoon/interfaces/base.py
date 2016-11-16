@@ -1,13 +1,10 @@
-from __future__ import absolute_import
-
-import logging
 import json
+import logging
 
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
 from ..utils.exceptions import ReplyError
-
 
 log = logging.getLogger(__name__)
 

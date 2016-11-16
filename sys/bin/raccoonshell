@@ -16,13 +16,12 @@ from raccoon.interfaces.github import GitHubInterface
 from raccoon.interfaces.jenkins import JenkinsInterface
 
 from tornado.ioloop import IOLoop
-from motorengine.connection import connect
+from mongoengine import connect
 
 from raccoon.settings import DB, APP, PORT
 
 # Connect to DB
-io_loop = IOLoop.instance()
-connect(DB['name'], host=DB['host'], port=DB['port'], io_loop=io_loop)
+connect(DB['name'], host=DB['host'], port=DB['port'])
 
 def run(func, *args, **kwargs):
     return IOLoop.instance().run_sync(lambda :func(*args, **kwargs))

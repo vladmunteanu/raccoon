@@ -1,29 +1,21 @@
-from __future__ import absolute_import
+from .base import BaseController
+from .auth import AuthController
+from .actions import ActionsController
+from .auditlogs import AuditlogsController
+from .builds import BuildsController
+from .connectors import ConnectorsController
+from .environments import EnvironmentsController
+from .installs import InstallsController
+from .jobs import JobsController
+from .projects import ProjectsController
+from .rights import RightsController
+from .users import UsersController, MeController
+from .flows import FlowsController
+from .tasks import TasksController
 
-# from raccoon.utils.imports import import_submodules
+from .notifications import NotificationsController
 
-from .auth import *
-from .actions import *
-from .auditlogs import *
-from .base import *
-from .builds import *
-from .connectors import *
-from .environments import *
-from .installs import *
-from .jobs import *
-from .projects import *
-from .rights import *
-from .users import *
-from .flows import *
-from .tasks import *
-
-from .notifications import *
-
-from .github import *
-from .bitbucket import *
-from .jenkins import *
+from .github import GitHubController
+from .bitbucket import BitbucketController
+from .jenkins import JenkinsController
 from .salt import SaltController
-
-
-# Import all submodules
-# import_submodules(globals(), __name__, __path__)

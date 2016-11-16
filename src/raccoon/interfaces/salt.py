@@ -3,7 +3,7 @@ from urllib import parse
 
 from tornado import gen
 
-from .base import BaseInterface
+from . import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 
@@ -58,3 +58,5 @@ class SaltStackInterface(BaseInterface):
         )
 
         raise gen.Return(response)
+
+REGISTERED['salt'] = SaltStackInterface
