@@ -63,9 +63,11 @@ class JenkinsController(BaseController):
     @classmethod
     @authenticated
     @gen.coroutine
-    def post(cls, request, method=None, flow=None, job=None, *args, **kwargs):
-        if flow:
-            flow = yield Flow.objects.get(id=flow)
+    def post(cls, request, method=None, flow_id=None, job_id=None, *args, **kwargs):
+        job = None
+        flow = None
+        if flow_id:
+            flow = yield Flow.objects.get(id=flow_id)
             if not flow:
                 raise ReplyError(422)
 
@@ -80,8 +82,8 @@ class JenkinsController(BaseController):
 
             connector = results[0]
 
-        if job:
-            job = yield Job.objects.get(id=job)
+        if job_id:
+            job = yield Job.objects.get(id=job_id)
             if not job:
                 raise ReplyError(422)
 

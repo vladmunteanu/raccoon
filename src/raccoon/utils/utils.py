@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import time
 
 from bson.objectid import ObjectId
-from celery import states
 from tornado import gen
 from tornado.ioloop import IOLoop
 
@@ -25,13 +24,20 @@ def sleep(milliseconds):
     )
 
 
-RACCOON_STATES = {
-    'ABORTED': states.REVOKED,
-}
+def translate_job_arguments(job_arguments, context):
+    """
+        Translates the Job arguments given by the user, replacing placeholders
+    with actual values from the context dictionary.
 
-
-def to_celery_status(status):
-    status = status.upper()
-    if status in states.ALL_STATES:
-        return status
-    return RACCOON_STATES.get(status)
+    :param job_arguments: list of Job arguments
+    :type job_arguments: list
+    :param context: dictionary of values sent by frontend at the end of a flow
+    :type context: dict
+    :return: dictionary of translated Job arguments
+    :rtype: dict
+    """
+    args = {}
+    for argument in job_arguments:
+        arg_value = str(argument['value'])
+        args[argument['name']] = arg_value.format(**context)
+    return args

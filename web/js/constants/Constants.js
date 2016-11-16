@@ -37,6 +37,6 @@ export default {
         TASKBAR_TOGGLE: null,
         TASKBAR_SHOW: null
     }),
-    TASK_READY_STATES: new Set(['FAILURE', 'REVOKED', 'SUCCESS']),
-    TASK_UNREADY_STATES: new Set(['PENDING', 'RECEIVED', 'RETRY', 'STARTED'])
+    TASK_READY_STATES: new Set(['FAILURE', 'SUCCESS']),
+    TASK_UNREADY_STATES: new Set(['PENDING', 'STARTED'])
 };

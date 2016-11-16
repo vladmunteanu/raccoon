@@ -26,6 +26,17 @@ class BaseController(object):
     @authenticated
     @gen.coroutine
     def get(cls, request, pk=None, *args, **kwargs):
+        """
+            Fetches all instances of that class, or a specific instance
+        if pk is given.
+
+        :param request: client request
+        :type request: raccoon.utils.request.Request
+        :param pk: primary key of an instance
+        :param args: not used
+        :param kwargs: not used
+        :return: None
+        """
         if not cls.model:
             raise ReplyError(404)
 
@@ -45,6 +56,21 @@ class BaseController(object):
     @authenticated
     @gen.coroutine
     def post(cls, request, *args, **kwargs):
+        """
+            Creates a new instance of the class, based on the body
+        received from the client.
+
+        If audit_logs is enabled on the class, then a log item will be created
+        for this action.
+
+        Broadcasts the action to all connected users.
+
+        :param request: client request
+        :type request: raccoon.utils.request.Request
+        :param args: not used
+        :param kwargs: instance body
+        :return: None
+        """
         if not cls.model:
             raise ReplyError(404)
 
@@ -85,6 +111,21 @@ class BaseController(object):
     @authenticated
     @gen.coroutine
     def put(cls, request, pk, *args, **kwargs):
+        """
+            Updates an instance of the class, identified by its primary key.
+
+        If audit_logs is enabled on the class, then a log item will be created
+        for this action.
+
+        Broadcasts the action to all connected users.
+
+        :param request: client request
+        :type request: raccoon.utils.request.Request
+        :param pk: primary key
+        :param args: not used
+        :param kwargs: instance body
+        :return: None
+        """
         if not cls.model:
             raise ReplyError(404)
 
@@ -142,6 +183,19 @@ class BaseController(object):
     @authenticated
     @gen.coroutine
     def delete(cls, request, pk):
+        """
+            Deletes an instance of the class, identified by its primary key.
+
+        If audit_logs is enabled on the class, then a log item will be created
+        for this action.
+
+        Broadcasts the action to all connected users.
+
+        :param request: client request
+        :type request: raccoon.utils.request.Request
+        :param pk: primary key
+        :return: None
+        """
         if not cls.model:
             raise ReplyError(404)
 

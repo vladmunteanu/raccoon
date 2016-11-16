@@ -10,11 +10,11 @@ import EnvironmentStore from '../../stores/EnvironmentStore';
 import Utils from '../../utils/Utils';
 
 
-function getLocalState(projectId, envId) {
+function getLocalState(project, env) {
     return {
-        builds: BuildStore.filter(projectId),
-        project: ProjectStore.getById(projectId),
-        environment: EnvironmentStore.getById(envId),
+        builds: BuildStore.filter(project.id),
+        project: project,
+        environment: env,
         selectedBuild: null
     }
 }
@@ -22,12 +22,17 @@ function getLocalState(projectId, envId) {
 class SelectBuildAddon extends BaseAddon {
     constructor(props) {
         super(props);
-        this.state = getLocalState(this.props.context.project, this.props.context.environment);
-        this._onChange = this._onChange.bind(this);
+        this.state = getLocalState(
+            this.addon_context.project,
+            this.addon_context.environment
+        );
 
-        if (this.state.environment) {
-            this.updateContext('environment', this.state.environment.id);
-        }
+        // add project_id and environment_id in the context
+        // for the jenkins Interface
+        this.updateContext('project_id', this.addon_context.project.id);
+        this.updateContext('environment_id', this.addon_context.environment.id);
+
+        this._onChange = this._onChange.bind(this);
     }
 
     componentDidMount() {
@@ -43,21 +48,20 @@ class SelectBuildAddon extends BaseAddon {
     }
 
     _onChange() {
-        let state = getLocalState(this.props.context.project, this.props.context.environment);
+        let state = getLocalState(
+            this.addon_context.project,
+            this.addon_context.environment
+        );
         this.setState(state);
-
-        if (this.state.environment) {
-            this.updateContext('environment', this.state.environment.id);
-        }
     }
     
     _onBuildSelect(buildId, event) {
         let build = BuildStore.getById(buildId);
-        this.state.selectedBuild = build;
-        this.updateContext('build', build.id);
+        this.updateContext('build', build);
+        this.updateContext('build_id', build.id);
         this.updateContext('branch', build.branch);
-        this.updateContext('version', build.version);
-        this.setState(this.state);
+
+        this.setState({selectedBuild: build});
     }
 
     /** Checks that a build is selected. */
@@ -69,7 +73,7 @@ class SelectBuildAddon extends BaseAddon {
     }
 
     render() {
-        let changelog = (<div>No build selected!!!</div>);
+        let changelog = (<div>Select a build to view the changelog associated with it.</div>);
         if (this.state.selectedBuild) {
             changelog = (
                 <div style={{height: 400, overflow: "auto"}}>
@@ -129,9 +133,9 @@ class SelectBuildAddon extends BaseAddon {
                                     {build.version}
                                     <small className="pull-right">
                                         <TimeAgo
-                                        date={build.date_added * 1000}
-                                        minPeriod={60}
-                                        formatter={Utils.timeAgoFormatter}
+                                            date={build.date_added * 1000}
+                                            minPeriod={60}
+                                            formatter={Utils.timeAgoFormatter}
                                         />
                                     </small>
                                     <br />

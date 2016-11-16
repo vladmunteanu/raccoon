@@ -30,6 +30,20 @@ class AuthController(BaseController):
     @classmethod
     @gen.coroutine
     def post(cls, request, email=None, password=None, **kwargs):
+        """
+            Authenticates a user given email and password.
+
+            If LDAP_AUTH is enabled in Raccoon settings, then the LDAP server
+        will be queried to check the user credentials.
+            Else, the user credentials are checked against the database and the
+        password encrypted with bcrypt.
+
+        :param request: client request
+        :param email: user credential email
+        :param password: user credential password
+        :param kwargs: not used
+        :return: None
+        """
         if not email or not password:
             raise ReplyError(400, 'Invalid email or password')
 

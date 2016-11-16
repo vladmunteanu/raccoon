@@ -1,22 +1,20 @@
 from __future__ import absolute_import
 
 import logging
-from celery.states import EXCEPTION_STATES
 
 from tornado import gen
 
 from ..models import Task
 from .base import BaseController
 from ..utils.exceptions import ReplyError
+from ..tasks.long_polling import FAILURE
 
 
 log = logging.getLogger(__name__)
 
 
 class TasksController(BaseController):
-    """
-    Tasks Controller
-    """
+    """ Tasks Controller """
     model = Task
 
     @classmethod
@@ -24,6 +22,7 @@ class TasksController(BaseController):
     def put(cls, request, pk, *args, **kwargs):
         """
             Updates a Task and executes the callback method.
+
         :param request: the client request
         :param pk: primary key
         :param args: not used
@@ -45,7 +44,7 @@ class TasksController(BaseController):
             yield request.send()
             return
 
-        if task.status in EXCEPTION_STATES:
+        if task.status == FAILURE:
             log.info('Task %s finished with status %s',
                      task.pk, task.status)
             return

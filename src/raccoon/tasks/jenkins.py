@@ -13,6 +13,13 @@ log = logging.getLogger(__name__)
 
 
 class JenkinsJobWatcherTask(BaseLongPollingTask):
+    """
+        Represents the Jenkins Job Watcher, periodically calling the API
+     to determine the current status of a STARTED job.
+        If the returned status is either SUCCESS or FAILURE,
+    or if an error occurs, the task is finished and the task status updated.
+        Clients are constantly notified about the task status.
+    """
 
     def __init__(self, task, url=None, api_url=None, *args, **kwargs):
         super(JenkinsJobWatcherTask, self).__init__(task, *args, **kwargs)
@@ -72,14 +79,26 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
 
     @gen.coroutine
     def on_success(self, result):
+        """
+            Called on status success to execute the task callback.
+        :param result: task result
+        :return: None
+        """
+        yield super(JenkinsJobWatcherTask, self).on_success(result)
+
         callback = self.task.callback
         if callback:
             yield callback(task=self.task, response=result)
 
-        yield super(JenkinsJobWatcherTask, self).on_success(result)
-
 
 class JenkinsQueueWatcherTask(BaseLongPollingTask):
+    """
+        Represents the Jenkins Queue Watcher, periodically calling the API
+    to determine the current status of a PENDING job.
+        When the job has been STARTED by Jenkins, a URL is provided in the
+    executable field of the HTTP response body. This URL will be used to start
+    a JenkinsJobWatcherTask instance.
+    """
 
     def __init__(self, task, api_url=None, queue_url=None, *args, **kwargs):
         super(JenkinsQueueWatcherTask, self).__init__(task, *args, **kwargs)
@@ -117,6 +136,10 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
 
     @gen.coroutine
     def on_success(self, result):
+        """
+            Called when the Jenkins Queue returns the executable url.
+            Starts the Jenkins Job watcher.
+        """
         next_task = JenkinsJobWatcherTask(self.task, countdown=self.countdown,
                                           url=result, api_url=self.api_url)
         yield next_task.delay()

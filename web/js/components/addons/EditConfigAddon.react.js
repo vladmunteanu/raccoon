@@ -31,8 +31,8 @@ class EditConfigAddon extends BaseAddon {
         super(props);
 
         this.state = {
-            project: ProjectStore.getById(this.addon_context.project),
-            environment: EnvironmentStore.getById(this.addon_context.environment),
+            project: this.addon_context.project,
+            environment: this.addon_context.environment,
             config: null,
             defaultConfig: null,
             localConfig: null,
@@ -60,34 +60,17 @@ class EditConfigAddon extends BaseAddon {
      * @private
      */
     _updateState() {
-        let project = this.state.project ? this.state.project : ProjectStore.getById(this.addon_context.project);
-        let environment = this.state.environment ? this.state.environment : EnvironmentStore.getById(this.addon_context.environment);
-        let action = this.state.action ? this.state.action : ActionStore.getById(this.addon_context.action);
+        let project = this.addon_context.project;
+        let environment = this.addon_context.environment;
+        let action = ActionStore.getById(this.addon_context.action);
 
-        let flow = this.state.flow;
-        if (action && !flow) {
-            flow = FlowStore.getById(action.flow);
-        }
+        let flow = FlowStore.getById(action.flow);
+        let job = JobStore.getById(flow.job);
 
-        let job = this.state.job;
-        if (flow && !job) {
-            job = JobStore.getById(flow.job);
-        }
+        let connectorId = job.connector;
 
-        let connectorId = this.state.connectorId;
-        if (job && !connectorId) {
-            connectorId = job.connector;
-        }
-
-        let install = this.state.install;
-        if (project && environment && !install) {
-            install = InstallStore.getLatestInstall(project, environment);
-        }
-
-        let build = this.state.build;
-        if (install && !build) {
-            build = BuildStore.getById(install.build);
-        }
+        let install = InstallStore.getLatestInstall(project, environment);
+        let build = install ? BuildStore.getById(install.build) : this.state.build;
 
         let branch = this.state.branch;
         if (build && !branch && !this.state.config) {
@@ -144,6 +127,7 @@ class EditConfigAddon extends BaseAddon {
 
     componentDidMount() {
         SaltStore.addListener(this._onChange);
+
         ActionStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
@@ -158,6 +142,7 @@ class EditConfigAddon extends BaseAddon {
 
     componentWillUnmount() {
         SaltStore.removeListener(this._onChange);
+
         ActionStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);

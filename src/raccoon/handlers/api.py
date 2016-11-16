@@ -3,14 +3,12 @@ from __future__ import absolute_import
 import logging
 import json
 
-import jwt
 from tornado import gen
 import tornado.websocket
 
 from ..urls import Router
 from ..utils.request import Request, CLIENT_CONNECTIONS
 from ..utils.exceptions import ReplyError
-from ..settings import SECRET
 
 log = logging.getLogger(__name__)
 

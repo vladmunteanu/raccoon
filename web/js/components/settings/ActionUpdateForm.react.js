@@ -50,12 +50,22 @@ class ActionUpdateForm extends ActionForm {
         event.preventDefault();
         this.props.validate((error) => {
             if (!error) {
+
+                let project = this.state.action.project;
+                let environment = this.state.action.environment;
+
+                if (this.state.action.placement === 'environment') {
+                    project = null;
+                }
+                else if (this.state.action.placement === 'project') {
+                    environment = null;
+                }
                 ActionStore.updateById(this.state.action.id, {
                     name: this.state.action.name,
                     label: this.state.action.label,
                     placement: this.state.action.placement,
-                    project: this.state.action.project,
-                    environment: this.state.action.environment,
+                    project: project,
+                    environment: environment,
                     flow: this.state.action.flow
                 });
             }

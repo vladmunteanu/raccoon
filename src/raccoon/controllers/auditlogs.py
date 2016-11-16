@@ -25,14 +25,14 @@ class AuditlogsController(BaseController):
     @gen.coroutine
     def get(cls, request, pk=None, *args, **kwargs):
         """
-            Fetches and returns audit logs from the past 3 days.
-            If pk is specified, then the result will be the audit log
-            corresponding to that private key.
+            Fetches and returns audit logs for the past 3 days.
+        If pk is specified, then the result will be the audit log
+        associated to that primary key.
 
         :param request: http request
-        :param pk: private key
-        :param args: arguments
-        :param kwargs: keyword arguments
+        :param pk: audit log primary key
+        :param args: not used
+        :param kwargs: not used
         :return: audit logs
         """
         if pk:
@@ -42,7 +42,10 @@ class AuditlogsController(BaseController):
 
             response = response.get_dict()
         else:
-            response = yield cls.model.objects.filter(date_added__gte=(datetime.datetime.utcnow() - datetime.timedelta(days=3))).order_by('date_added', direction=DESCENDING).find_all()
+            response = yield cls.model.objects.filter(
+                date_added__gte=(
+                    datetime.datetime.utcnow() - datetime.timedelta(days=3)
+                )).order_by('date_added', direction=DESCENDING).find_all()
             response = [r.get_dict() for r in response]
 
         yield request.send(response)

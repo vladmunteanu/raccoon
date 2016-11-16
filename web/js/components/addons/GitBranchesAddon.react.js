@@ -22,7 +22,7 @@ class BuildForm extends React.Component {
         this.state = {
             project: this.props.project,
             branches: this.props.branches,
-            version: this.props.project ? this.props.project.version : '1.0.0',
+            version: this.props.project.version,
             branch: ''
         };
 
@@ -95,9 +95,11 @@ class GitBranchesAddon extends BaseAddon {
         super(props);
 
         this.state = {
-            project: ProjectStore.getById(this.addon_context.project),
+            project: this.addon_context.project,
             branches: GitHubStore.branches
         };
+
+        this.updateContext('project_id', this.addon_context.project.id);
 
         this._onChange = this._onChange.bind(this);
     }
@@ -106,9 +108,7 @@ class GitBranchesAddon extends BaseAddon {
         ProjectStore.addListener(this._onChange);
         GitHubStore.addListener(this._onChange);
 
-        if (this.addon_context.project) {
-            GitHubStore.fetchBranches(this.addon_context.project);
-        }
+        GitHubStore.fetchBranches(this.addon_context.project.id);
     }
 
     componentWillUnmount() {
@@ -117,9 +117,8 @@ class GitBranchesAddon extends BaseAddon {
     }
 
     _updateState() {
-        let project = ProjectStore.getById(this.addon_context.project);
         this.setState({
-            project: project,
+            project: this.addon_context.project,
             branches: GitHubStore.branches,
         });
     }

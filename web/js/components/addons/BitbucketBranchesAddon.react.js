@@ -11,14 +11,15 @@ class BitbucketBranchesAddon extends BaseAddon {
     constructor(props) {
         super(props);
 
-        let project = ProjectStore.getById(this.addon_context.project);
         this.state = {
-            project: project,
+            project: this.addon_context.project,
             action: ActionStore.getById(this.addon_context.action),
             branches: BitbucketStore.branches,
             branch: '',
-            version: project ? project.version : '1.0.0'
+            version: this.addon_context.project.version
         };
+
+        this.updateContext('project_id', this.addon_context.project.id);
 
         this._onChange = this._onChange.bind(this);
         this._onChangeVersion = this._onChangeVersion.bind(this);
@@ -30,9 +31,7 @@ class BitbucketBranchesAddon extends BaseAddon {
         ActionStore.addListener(this._onChange);
         BitbucketStore.addListener(this._onChange);
 
-        if (this.addon_context.project) {
-            BitbucketStore.fetchBranches(this.addon_context.project);
-        }
+        BitbucketStore.fetchBranches(this.addon_context.project.id);
     }
 
     componentWillUnmount() {
@@ -41,32 +40,25 @@ class BitbucketBranchesAddon extends BaseAddon {
         BitbucketStore.removeListener(this._onChange);
     }
 
-    _updateState() {
-        let project = ProjectStore.getById(this.addon_context.project);
+    _onChange() {
         this.setState({
-            project: project,
+            project: this.addon_context.project,
             action: ActionStore.getById(this.addon_context.action),
             branches: BitbucketStore.branches,
-            version: project ? project.version : '1.0.0'
+            version: this.addon_context.project.version
         });
 
         this.updateContext('version', this.state.version);
     }
 
-    _onChange() {
-        this._updateState();
-    }
-
     _onChangeVersion(event) {
-        this.state.version = event.target.value;
-        this.setState(this.state);
         this.updateContext('version', event.target.value);
+        this.setState({version: event.target.value});
     }
 
     _onChangeBranch(event) {
-        this.state.branch = event.target.value;
-        this.setState(this.state);
         this.updateContext('branch', event.target.value);
+        this.setState({branch: event.target.value});
     }
 
     render() {

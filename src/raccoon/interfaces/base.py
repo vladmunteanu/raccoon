@@ -21,9 +21,23 @@ class BaseInterface(object):
         self.HTTPClient = AsyncHTTPClient()
 
     @gen.coroutine
-    def fetch(self, url, method='GET', body=None, headers=None,
-              follow_redirects=True, auth_username=None, auth_password=None,
-              timeout=15):
+    def fetch(self, url, method='GET', body=None, headers=None, timeout=15,
+              follow_redirects=True, auth_username=None, auth_password=None):
+        """
+            Perform and asynchronous HTTP request, deserialize the response
+        body as JSON and return tuple of body and headers.
+
+        :param url: HTTP url
+        :param method: HTTP method
+        :param body: HTTP body
+        :param headers: HTTP headers
+        :param timeout: request timeout
+        :param follow_redirects: request follow redirects
+        :param auth_username: Authentication username
+        :param auth_password: Authentication password
+        :return: tuple of JSON body and headers
+        :rtype: tuple
+        """
         body = body or 'no body' if method.upper() == 'POST' else None
         log.info(['BaseInterface.fetch', method, url])
 

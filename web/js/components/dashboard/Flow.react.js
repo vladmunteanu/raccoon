@@ -11,6 +11,8 @@ import FlowStore from '../../stores/FlowStore';
 import ActionStore from  '../../stores/ActionStore';
 import JobStore from  '../../stores/JobStore';
 import ConnectorStore from  '../../stores/ConnectorStore';
+import ProjectStore from '../../stores/ProjectStore';
+import EnvironmentStore from '../../stores/EnvironmentStore';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
@@ -22,10 +24,18 @@ function getLocalState(actionId, projectId=null, envId=null) {
     let job = flow ? JobStore.getById(flow.job) : null;
     let connector = job ? ConnectorStore.getById(job.connector) : null;
 
+    if (action) {
+        projectId = projectId ? projectId : action.project;
+        envId = envId ? envId : action.environment;
+    }
+
+    let project = ProjectStore.getById(projectId);
+    let environment = EnvironmentStore.getById(envId);
+
     let localState = {
         action: action,
-        project: projectId,
-        environment: envId,
+        project: project,
+        environment: environment,
         flow: flow,
         job: job,
         connector: connector,
@@ -39,14 +49,18 @@ class Flow extends React.Component {
 
     constructor(props) {
         super(props);
-        this.step = 0;
+
         this.state = getLocalState(
             this.props.params.id,
             this.props.params.project,
-            this.props.params.env);
+            this.props.params.env
+        );
+        this.state.finished = false;
+
         this._onChange = this._onChange.bind(this);
         this._handleBack = this._handleBack.bind(this);
         this._handleNext = this._handleNext.bind(this);
+        this._handleFinish = this._handleFinish.bind(this);
     }
 
     componentDidMount() {
@@ -54,6 +68,8 @@ class Flow extends React.Component {
         FlowStore.addListener(this._onChange);
         JobStore.addListener(this._onChange);
         ConnectorStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
 
         JobStore.fetchAll();
         ConnectorStore.fetchAll();
@@ -64,69 +80,134 @@ class Flow extends React.Component {
         FlowStore.removeListener(this._onChange);
         JobStore.removeListener(this._onChange);
         ConnectorStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
+        EnvironmentStore.removeListener(this._onChange);
     }
 
     componentWillReceiveProps(nextProps) {
         JobStore.fetchAll();
         ConnectorStore.fetchAll();
 
-        let state = getLocalState(nextProps.params.id, nextProps.params.project, nextProps.params.env);
-        this.step = state.step = 0;
+        let state = getLocalState(
+            nextProps.params.id,
+            nextProps.params.project,
+            nextProps.params.env
+        );
+        state.step = 0;
         this.setState(state);
     }
 
     _onChange() {
-        let state = getLocalState(this.props.params.id,
+        let state = getLocalState(
+            this.props.params.id,
             this.props.params.project,
-            this.props.params.env);
-        state.step = this.step;
+            this.props.params.env
+        );
+        state.step = this.state.step;
         this.setState(state);
     }
 
     _handleBack(event) {
         let state = getLocalState(this.props.params.id,
             this.props.params.project,
-            this.props.params.env);
-        this.step -= 1;
-        state.step = this.step;
+            this.props.params.env
+        );
+        state.step = this.state.step - 1;
         this.setState(state);
+    }
+
+    _displayAddonErrors(errors, enableNotifications) {
+        if (!this._notificationSystem) {
+            this._notificationSystem = this.refs.notificationSystem;
+        }
+        let errorMessage = "";
+        for (var key in errors) {
+            errorMessage += key + ": " + errors[key] + "\n";
+        }
+        if (enableNotifications) {
+            this._notificationSystem.addNotification({
+                level: 'error',
+                position: 'br',
+                title: "Cannot proceed to next step:",
+                message: errorMessage
+            });
+        }
     }
 
     _handleNext(event) {
         let currentAddon = this.refs[this.state.flow.id + '-LastStepAddon'];
 
-        currentAddon.validate((error, displayError) => {
+        currentAddon.validate((error, enableNotifications) => {
             if (!error) {
-                let state = getLocalState(
-                    this.props.params.id,
-                    this.props.params.project,
-                    this.props.params.env
-                );
-                this.step += 1;
-                state.step = this.step;
-                this.setState(state);
+                this.setState({step: this.state.step + 1});
             }
             else {
-                if (!this._notificationSystem) {
-                    this._notificationSystem = this.refs.notificationSystem;
-                }
-                let errorMessage = "";
-                for (var key in error) {
-                    errorMessage += key + ": " + error[key] + "\n";
-                }
-                if (displayError) {
-                    this._notificationSystem.addNotification({
-                        level: 'error',
-                        position: 'br',
-                        title: "Cannot proceed to next step:",
-                        message: errorMessage
-                    });
-                }
+                this._displayAddonErrors(errors, enableNotifications)
             }
         });
     }
 
+    _handleFinish(event) {
+        let currentStep = this.state.step;
+        let currentAddon = this.refs[this.state.flow.id + '-LastStepAddon'];
+
+        currentAddon.validate((error, enableNotifications) => {
+            if (!error) {
+                currentStep += 1;
+
+                let flow = this.state.flow;
+                let LastStepAddon = this.refs[flow.id + '-LastStepAddon'];
+
+                let lastContext = LastStepAddon.getContext();
+
+                if (currentStep > flow.steps.length - 1) {
+                    AppDispatcher.dispatch({
+                        action: this.state.connector.type,
+                        data: {
+                            method: this.state.job.action_type,
+                            args: lastContext
+                        }
+                    });
+
+                    // show the taskbar
+                    AppDispatcher.dispatch({
+                        action: ActionTypes.TASKBAR_SHOW
+                    });
+
+                    this.setState({finished: true, step: currentStep});
+                }
+            }
+            else {
+                this._displayAddonErrors(errors, enableNotifications)
+            }
+        });
+    }
+
+    translateJobArguments(context) {
+        let args = {};
+        for (var i = 0; i < this.state.job.arguments.length; i++) {
+            let arg = this.state.job.arguments[i];
+            if (arg.value[0] === '$') {
+                let argParts = arg.value.slice(1).split('.');
+                let ctx = context;
+                for (var j = 0; j < argParts.length; j++) {
+                    let part = argParts[j];
+                    ctx = ctx[part];
+                }
+                args[arg.name] = ctx;
+            }
+            else {
+                args[arg.name] = arg.value;
+            }
+        }
+        return args;
+    }
+
     render() {
+        if (this.state.finished) {
+            // finished
+            return (<div>Flow finished!</div>)
+        }
         if (!this.state.action || !this.state.flow || !this.state.connector) {
             // loading
             return (<div></div>);
@@ -139,28 +220,26 @@ class Flow extends React.Component {
         // create context
         let lastContext = {
             action: this.state.action.id,
-            project: this.state.project || this.state.action.project,
-            environment: this.state.environment || this.state.action.environment,
-            flow: this.state.action.flow
+            project: this.state.project,
+            environment: this.state.environment,
+            flow_id: this.state.flow.id,
+            job_id: this.state.job.id
         };
 
         if (LastStepAddon) {
             lastContext = LastStepAddon.getContext();
         }
 
-        // trigger action from FLOW
-        if (stepIndex > flow.steps.length - 1) {
-            AppDispatcher.dispatch({
-                action: this.state.connector.type,
-                data: {
-                    method: this.state.job.action_type,
-                    args: lastContext
-                }
-            });
-            AppDispatcher.dispatch({
-                action: ActionTypes.TASKBAR_SHOW
-            });
-            return (<div></div>);
+        let nextButton = (
+            <button type="button" className="btn btn-default" onClick={this._handleNext}>
+                Next <span aria-hidden="true">&rarr;</span>
+            </button>);
+        // set "next" button based on step
+        if (stepIndex == flow.steps.length - 1) {
+            nextButton = (
+            <button type="button" className="btn btn-default" onClick={this._handleFinish}>
+                Finish <span aria-hidden="true">&rarr;</span>
+            </button>);
         }
 
         let StepAddon = Addons.getAddon(flow.steps[stepIndex]);
@@ -186,9 +265,7 @@ class Flow extends React.Component {
                             </button>
                         </li>
                         <li className="next">
-                            <button type="button" className="btn btn-default" onClick={this._handleNext}>
-                                Next <span aria-hidden="true">&rarr;</span>
-                            </button>
+                            {nextButton}
                         </li>
                     </ul>
                 </nav>
