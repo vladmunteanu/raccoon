@@ -2,10 +2,16 @@ import React from 'react';
 
 import BaseStore from './BaseStore';
 import WebSocketConnection from '../utils/WebSocketConnection';
+import Utils from '../utils/Utils';
 
 let saltStore = null;
 
 
+/**
+ * Represents the Store for SaltStack.
+ * Offers two generic methods, runCommand and getResult,
+ * to execute commands on the Salt master, and view their results.
+ */
 class SaltStore extends BaseStore {
 
     constructor () {
@@ -17,70 +23,49 @@ class SaltStore extends BaseStore {
         }
 
         this.baseuri = "/api/v1/salt/";
-        this._conf = null;
-        this._saveInProgress = false;
+
+        this._command_results = {};
     }
 
-    isSaveInProgress()  {
-        return this._saveInProgress;
+    /**
+     * Returns the result of the command specified by commandId.
+     * @param {string} commandId: UUID obtained by executing runCommand
+     * @returns {object} Command result
+     */
+    getResult(commandId) {
+        return this._command_results[commandId];
     }
 
-    get config() {
-        return this._conf;
-    }
-
-    getConfig(connectorId, project, environment, branch) {
+    /**
+     * Sends the command to the Salt controller and returns a UUID associated
+     * with this command, which can be used later to view the result.
+     * When a response is received from the backend, the result is added
+     * in the map and all listeners are notified.
+     *
+     * @param {string} cmd: command to execute
+     * @param {object} args: arguments which will be sent to the controller
+     * @returns {string} UUID command Id.
+     */
+    runCommand(cmd, args) {
+        if (!cmd) return null;
         let wsConnection = new WebSocketConnection();
 
+        let commandBody = Object.assign({}, args, {fun: cmd});
+
+        // Generate a unique ID for this command
+        let commandId = Utils.uuid();
+
+        // Send the command and register an unique callback
         wsConnection.send({
             verb: 'post',
             resource: this.baseuri + 'run',
-            body: {
-                fun: 'oeconfig2.getconfig',
-                service_type: project.name,
-                target_env: environment.name,
-                git_branch: branch,
-                connectorId: connectorId
-            }
+            body: commandBody
         }, payload => {
-            console.log(payload);
-            this._conf = payload.data.return[0];
-            this.emitChange();
-        });
-    }
-    
-    setConfig(connectorId, project, environment, branch, configData) {
-        let wsConnection = new WebSocketConnection();
-
-        this._saveInProgress = true;
-        this.emitChange();
-
-        let mes = {
-            verb: 'post',
-            resource: this.baseuri + 'run',
-            body: {
-                fun: 'oeconfig2.setconfig',
-                service_type: project.name,
-                target_env: environment.name,
-                git_branch: branch,
-                config_data: window.btoa(configData),
-                connectorId: connectorId
-            }
-        };
-
-        wsConnection.send(mes, payload => {
-            if (payload.hasOwnProperty('code')) {
-                if (payload.code != 200) {
-                    console.log("Save config failed!");
-                }
-                else {
-                    console.log("Successfully saved config!")
-                }
-            }
-            console.log(["Save config result: ", payload]);
-            this._saveInProgress = false;
+            this._command_results[commandId] = payload.data.return[0];
             this.emitChange();
         }, true);
+
+        return commandId;
     }
 }
 

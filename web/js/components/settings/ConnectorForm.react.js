@@ -155,6 +155,7 @@ class ConnectorForm extends React.Component {
                             height="10em"
                             value={config}
                             onChange={this.onFormChange.bind(this, 'config')}
+                            editorProps={{$blockScrolling: Infinity}}
                           />
                         <FormValidationError key="form-errors-config" messages={this.props.getValidationMessages('config')}/>
                     </div>

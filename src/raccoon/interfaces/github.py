@@ -34,6 +34,27 @@ class GitHubInterface(BaseInterface):
             headers=headers,
         )
 
+        # Get all branches by traversing pages
+        link_header = _.get('Link')
+        while link_header:
+            links = link_header.split(',')
+            new_link = None
+            for link in links:
+                href, rel = link.split(';')
+                href = href.strip('<>')
+                rel = rel.strip()
+                if rel == 'rel="next"':
+                    page_response, page_headers = yield self.fetch(
+                        url=href,
+                        headers=headers
+                    )
+                    response.extend(page_response)
+                    new_link = page_headers.get('Link')
+
+            if not new_link or new_link == link_header:
+                break
+            link_header = new_link
+
         # extract needed information from response
         branches = []
         for item in response:

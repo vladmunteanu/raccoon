@@ -2,7 +2,6 @@ import React from 'react';
 import AceEditor from 'react-ace';
 
 import 'brace/mode/yaml';
-
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
 
@@ -34,8 +33,8 @@ class EditConfigAddon extends BaseAddon {
             project: this.addon_context.project,
             environment: this.addon_context.environment,
             config: null,
-            defaultConfig: null,
-            localConfig: null,
+            defaultConfig: '',
+            localConfig: '',
             action: ActionStore.getById(this.addon_context.action),
             flow: null,
             job: null,
@@ -43,11 +42,13 @@ class EditConfigAddon extends BaseAddon {
             build: null,
             branch: null,
             connectorId: null,
-            saveInProgress: SaltStore.isSaveInProgress()
+            getConfigId: null,
+            setConfigId: null,
+            result: null
         };
 
         this._onChange = this._onChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
+        this.onCommandResult = this.onCommandResult.bind(this);
         this.handleConfigChange = this.handleConfigChange.bind(this);
 
         if (!InstallStore.all) {
@@ -55,78 +56,9 @@ class EditConfigAddon extends BaseAddon {
         }
     }
 
-    /**
-     * Updates the internal state when stores emit changes.
-     * @private
-     */
-    _updateState() {
-        let project = this.addon_context.project;
-        let environment = this.addon_context.environment;
-        let action = ActionStore.getById(this.addon_context.action);
-
-        let flow = FlowStore.getById(action.flow);
-        let job = JobStore.getById(flow.job);
-
-        let connectorId = job.connector;
-
-        let install = InstallStore.getLatestInstall(project, environment);
-        let build = install ? BuildStore.getById(install.build) : this.state.build;
-
-        let branch = this.state.branch;
-        if (build && !branch && !this.state.config) {
-            branch = build.branch;
-            // get config since we have all the necessary parameters
-            SaltStore.getConfig(
-                connectorId,
-                project,
-                environment,
-                branch
-            );
-        }
-
-        if (connectorId && branch && !this.state.config) {
-            this.state.config = SaltStore.config;
-        }
-
-        /* Extract default and local configuration files */
-        let defaultConfig = this.state.defaultConfig;
-        let localConfig = this.state.localConfig;
-        if (this.state.config && !defaultConfig && !localConfig) {
-            // get the default config string
-            let startDefaultConfig = this.state.config.indexOf(DEFAULT_CONFIG_DELIMITER_START) + DEFAULT_CONFIG_DELIMITER_START.length;
-            let endDefaultConfig = this.state.config.indexOf(DEFAULT_CONFIG_DELIMITER_END);
-            defaultConfig = this.state.config.substr(
-                startDefaultConfig,
-                endDefaultConfig - startDefaultConfig
-            );
-
-            // get the local config string
-            let startLocalConfig = this.state.config.indexOf(LOCAL_CONFIG_DELIMITER_START) + LOCAL_CONFIG_DELIMITER_START.length;
-            let endLocalConfig = this.state.config.indexOf(LOCAL_CONFIG_DELIMITER_END);
-            localConfig = this.state.config.substr(
-                startLocalConfig,
-                endLocalConfig - startLocalConfig
-            );
-        }
-
-        this.setState({
-            project: project,
-            environment: environment,
-            action: action,
-            flow: flow,
-            job: job,
-            install: install,
-            build: build,
-            branch: branch,
-            connectorId: connectorId,
-            defaultConfig: defaultConfig,
-            localConfig: localConfig,
-            saveInProgress: SaltStore.isSaveInProgress()
-        });
-    }
-
+    /** Add listeners on stores */
     componentDidMount() {
-        SaltStore.addListener(this._onChange);
+        SaltStore.addListener(this.onCommandResult);
 
         ActionStore.addListener(this._onChange);
         FlowStore.addListener(this._onChange);
@@ -137,11 +69,12 @@ class EditConfigAddon extends BaseAddon {
         EnvironmentStore.addListener(this._onChange);
         BuildStore.addListener(this._onChange);
 
-        this._updateState();
+        this._onChange();
     }
 
+    /** Remove listeners from stores. */
     componentWillUnmount() {
-        SaltStore.removeListener(this._onChange);
+        SaltStore.removeListener(this.onCommandResult);
 
         ActionStore.removeListener(this._onChange);
         FlowStore.removeListener(this._onChange);
@@ -153,24 +86,159 @@ class EditConfigAddon extends BaseAddon {
         BuildStore.removeListener(this._onChange);
     }
 
-    _onChange() {
-        this._updateState();
+    /**
+     * Called when the SaltStore emits a change, that is, when a result has
+     * arrived from the backend for an executed command.
+     */
+    onCommandResult() {
+        let config = this.state.config;
+        let localConfig = this.state.localConfig;
+        let defaultConfig = this.state.defaultConfig;
+        let result = this.state.result;
+
+        /*
+            If the state config is null, and getConfigId is set,
+            SaltStore may contain the config, so we need to get, parse and set
+            it on state.
+         */
+        if (!config && this.state.getConfigId) {
+            config = SaltStore.getResult(this.state.getConfigId);
+
+            // Verify if the config arrived.
+            if (!config) return null;
+
+            // Split the config by delimiters
+            let startDefaultConfig = config.indexOf(DEFAULT_CONFIG_DELIMITER_START) + DEFAULT_CONFIG_DELIMITER_START.length;
+            let endDefaultConfig = config.indexOf(DEFAULT_CONFIG_DELIMITER_END);
+            defaultConfig = config.substr(
+                startDefaultConfig,
+                endDefaultConfig - startDefaultConfig
+            );
+
+            // Extract the local config string
+            let startLocalConfig = config.indexOf(LOCAL_CONFIG_DELIMITER_START) + LOCAL_CONFIG_DELIMITER_START.length;
+            let endLocalConfig = config.indexOf(LOCAL_CONFIG_DELIMITER_END);
+            localConfig = config.substr(
+                startLocalConfig,
+                endLocalConfig - startLocalConfig
+            );
+        }
+
+        // If setConfigId is set, the result may have arrived.
+        if (this.state.setConfigId) {
+            result = SaltStore.getResult(this.state.setConfigId);
+        }
+
+        // Update state
+        this.setState({
+            config: config,
+            localConfig: localConfig,
+            defaultConfig: defaultConfig,
+            result: result
+        })
     }
 
     /**
-     * Saves the modified local config.
+     * Get config by running the command "oeconfig2.getconfig".
+     *
+     * @param {string} project: project name
+     * @param {string} env: environment name
+     * @param {string} branch: branch
+     * @param {string} connectorId: connector primary key value
+     * @returns {null}
      */
-    handleSave() {
-        if (this.state.localConfig[this.state.localConfig.length - 1] != "\n") {
-            this.state.localConfig = "\n";
+    getConfig(project, env, branch, connectorId) {
+        // Do nothing if a command has been registered for getConfig already.
+        if (this.state.getConfigId) {
+            return null;
         }
-        SaltStore.setConfig(
-            this.state.connectorId,
-            this.state.project,
-            this.state.environment,
-            this.state.branch,
-            this.state.localConfig
+        else {
+            // Run the command and update state
+            let getConfigId = SaltStore.runCommand(
+                'oeconfig2.getconfig',
+                {
+                    service_type: project,
+                    target_env: env,
+                    git_branch: branch,
+                    connectorId: connectorId
+                }
+            );
+            this.setState({getConfigId: getConfigId});
+        }
+    }
+
+    /**
+     * Set config by running the command "oeconfig2.setconfig"
+     *
+     * @returns {null}
+     */
+    setConfig() {
+        // Do nothing if a command has been registered for setConfig already.
+        if (this.state.setConfigId) {
+            return null;
+        }
+        else {
+            // Add a new line at the end of the local config
+            let localConfig = this.state.localConfig;
+            if (localConfig[localConfig.length - 1] != "\n") {
+                localConfig = "\n";
+            }
+            // Run the command and update state
+            let setConfigId = SaltStore.runCommand(
+                'oeconfig2.setconfig',
+                {
+                    service_type: this.state.project.name,
+                    target_env: this.state.environment.name,
+                    git_branch: this.state.branch,
+                    config_data: window.btoa(localConfig),
+                    connectorId: this.state.job.connector
+                }
+            );
+            this.setState({setConfigId: setConfigId});
+        }
+    }
+
+    /**
+     * Called when other stores update.
+     * Fetches all needed data and executes getConfig.
+     * @private
+     */
+    _onChange() {
+        let action = ActionStore.getById(this.addon_context.action);
+
+        let flow = FlowStore.getById(action.flow);
+        let job = JobStore.getById(flow.job);
+
+        let connectorId = job.connector;
+
+        let install = InstallStore.getLatestInstall(
+            this.addon_context.project,
+            this.addon_context.environment
         );
+        let build = install ? BuildStore.getById(install.build) : this.state.build;
+
+        let branch = this.state.branch;
+        if (build && !branch && !this.state.getConfigId) {
+            branch = build.branch;
+            // Get config since all necessary parameters are set
+            this.getConfig(
+                this.addon_context.project.name,
+                this.addon_context.environment.name,
+                branch,
+                connectorId
+            );
+        }
+
+        // Update state
+        this.setState({
+            action: action,
+            flow: flow,
+            job: job,
+            install: install,
+            build: build,
+            branch: branch,
+            connectorId: connectorId,
+        });
     }
 
     /**
@@ -182,21 +250,59 @@ class EditConfigAddon extends BaseAddon {
     }
 
     render() {
-        let title = "";
-        if (this.state.project && this.state.environment) {
-            title = "Configure " + this.state.project.label;
-            title += " on " + this.state.environment.name.toUpperCase();
+        // Loading
+        if (!this.state.config) {
+            return (<div>Loading config...</div>);
+        }
+
+        // Create the post-save elements
+        if (this.state.setConfigId) {
+            let displayResult = (<h3>Saving config...</h3>);
+            if (this.state.result) {
+                displayResult = (
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                        <h3>Config saved!</h3>
+                        <div className="well well-sm">
+                            {
+                                this.state.result.split("\n").map((item, idx) => {
+                                    /*
+                                     replace [URL]...[/URL] lines with links.
+                                     TODO: this isn't generic at all, we should probably replace urls directly.
+                                     */
+                                    if (item.includes("[URL]")) {
+                                        item = item.replace(/\[\/?URL]/g, '');
+                                        item = (<a href={item}>{item}</a>);
+                                    }
+                                    return (
+                                        <span key={"console-line-" + idx} style={{"fontSize": "12px", "fontFamily": "Courier"}}>
+                                        {item}
+                                            <br/>
+                                    </span>
+                                    );
+                                })
+                            }
+                        </div>
+                    </div>
+                );
+            }
+            return (
+                <div className="container-fluid">
+                    <div className="row">
+                        {displayResult}
+                    </div>
+                </div>
+            );
         }
 
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-xs-12">
-                        <h3>{title}</h3>
-                    </div>
+                    <h3>
+                        {"Configure " + this.state.project.label + " on " + this.state.environment.name.toUpperCase()}
+                    </h3>
                 </div>
                 <div className="row">
-                    <div className="col-xs-6">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
                         <AceEditor
                             name="default-config"
                             theme="github"
@@ -208,10 +314,11 @@ class EditConfigAddon extends BaseAddon {
                             minLines={20}
                             maxLines={50}
                             readOnly={true}
-                            value={this.state.defaultConfig || ''}
+                            value={this.state.defaultConfig}
+                            editorProps={{$blockScrolling: Infinity}}
                         />
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
                         <AceEditor
                             name="local-config"
                             theme="github"
@@ -223,15 +330,14 @@ class EditConfigAddon extends BaseAddon {
                             minLines={20}
                             maxLines={50}
                             onChange={this.handleConfigChange}
-                            value={this.state.localConfig || ''}
+                            value={this.state.localConfig}
+                            editorProps={{$blockScrolling: Infinity}}
                         />
                     </div>
                 </div>
                 <br/>
                 <div className="row">
-                    <div className="col-xs-6">
-                        <button type="button" className={"btn btn-success" + (this.state.saveInProgress ? " disabled" : "")} aria-label="Save" onClick={this.handleSave}>Save</button>
-                    </div>
+                    <button type="button" className={"btn btn-success"} aria-label="Save" onClick={this.setConfig.bind(this)}>Save</button>
                 </div>
             </div>
         )

@@ -97,7 +97,7 @@ class WebSocketConnection {
              * If the includeRequestId flag was true when the message was sent
              * then we need to add the requestId in the payload
              */
-            if (this.uniqueRequests[message.requestId]) {
+            if (this.uniqueRequests[message.action + " " + message.requestId]) {
                 message.action += ' ' + message.requestId;
             }
 
@@ -107,9 +107,9 @@ class WebSocketConnection {
              * Delete the unique callback,
              * and unregister it from the AppDispatcher
              */
-            if (this.uniqueRequests[message.requestId]) {
-                AppDispatcher.unregister(this.uniqueRequests[message.requestId]);
-                delete this.uniqueRequests[message.requestId];
+            if (this.uniqueRequests[message.action]) {
+                AppDispatcher.unregister(this.uniqueRequests[message.action]);
+                delete this.uniqueRequests[message.action];
             }
         }
 
@@ -154,7 +154,7 @@ class WebSocketConnection {
             let registeredCallbackId = AppDispatcher.registerOnce(action, callback);
 
             if (includeRequestId) {
-                this.uniqueRequests[request.requestId] = registeredCallbackId;
+                this.uniqueRequests[action] = registeredCallbackId;
             }
         }
 

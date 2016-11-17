@@ -197,6 +197,7 @@ class ProjectForm extends React.Component {
                             height="10em"
                             value={metadata}
                             onChange={this.onMetadataChange}
+                            editorProps={{$blockScrolling: Infinity}}
                           />
                     </div>
                     <div className="form-group">
