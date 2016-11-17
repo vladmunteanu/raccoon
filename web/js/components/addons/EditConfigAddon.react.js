@@ -168,11 +168,12 @@ class EditConfigAddon extends BaseAddon {
     }
 
     /**
-     * Set config by running the command "oeconfig2.setconfig"
+     * Set config by running the command "oeconfig2.setconfig".
      *
+     * @param {boolean} restart: Set true to restart after config is set.
      * @returns {null}
      */
-    setConfig() {
+    setConfig(restart) {
         // Do nothing if a command has been registered for setConfig already.
         if (this.state.setConfigId) {
             return null;
@@ -184,6 +185,11 @@ class EditConfigAddon extends BaseAddon {
                 localConfig = "\n";
             }
             // Run the command and update state
+            let signal = 1; // update only
+            if (restart) {
+                signal = 15; // restart
+            }
+
             let setConfigId = SaltStore.runCommand(
                 'oeconfig2.setconfig',
                 {
@@ -191,7 +197,8 @@ class EditConfigAddon extends BaseAddon {
                     target_env: this.state.environment.name,
                     git_branch: this.state.branch,
                     config_data: window.btoa(localConfig),
-                    connectorId: this.state.job.connector
+                    connectorId: this.state.job.connector,
+                    signal: signal
                 }
             );
             this.setState({setConfigId: setConfigId});
@@ -338,6 +345,8 @@ class EditConfigAddon extends BaseAddon {
                 <br/>
                 <div className="row">
                     <button type="button" className={"btn btn-success"} aria-label="Save" onClick={this.setConfig.bind(this)}>Save</button>
+                    &nbsp;&nbsp;
+                    <button type="button" className={"btn btn-warning"} aria-label="Save&Restart" onClick={this.setConfig.bind(this, true)}>Save & Restart</button>
                 </div>
             </div>
         )
