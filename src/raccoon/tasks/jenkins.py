@@ -6,8 +6,8 @@ from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 from .long_polling import BaseLongPollingTask, READY_STATES, UNREADY_STATES
-from .long_polling import PENDING, STARTED, SUCCESS, FAILURE
-from ..utils.exceptions import RetryException
+from .long_polling import PENDING, STARTED, SUCCESS, FAILURE, ABORTED
+from ..utils.exceptions import RetryException, TaskAborted
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +60,9 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
 
         if self.task.status == FAILURE:
             raise Exception("Jenkins job failed!")
+
+        if self.task.status == ABORTED:
+            raise TaskAborted
 
         if self.task.status not in READY_STATES + UNREADY_STATES:
             raise Exception("Invalid status value {}".format(self.task.status))

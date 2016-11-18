@@ -5,6 +5,7 @@ import Utils from '../utils/Utils';
 import UserStore from '../stores/UserStore';
 import JobStore from '../stores/JobStore';
 import TaskStore from '../stores/TaskStore';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import {TASK_READY_STATES, TASK_UNREADY_STATES} from '../constants/Constants';
 
 
@@ -80,6 +81,23 @@ class TaskView extends React.Component {
         JobStore.removeListener(this._onChange);
     }
 
+    handleCancel() {
+        let build_number = this.state.task.result ? this.state.task.result.number : null;
+        if (build_number) {
+            AppDispatcher.dispatch({
+                action: this.state.task.connector_type,
+                data: {
+                    method: 'stop',
+                    args: {
+                        id: this.state.task.id,
+                        job_id: this.state.task.job,
+                        build_number: build_number
+                    }
+                }
+            });
+        }
+    }
+
     render() {
         if (!this.state.task || !this.state.user || !this.state.job) {
             return (<div>Loading task information...</div>);
@@ -139,6 +157,19 @@ class TaskView extends React.Component {
             )
         }
 
+        let cancelButton = null;
+        if (this.state.task.status == 'STARTED') {
+            cancelButton = (
+                <div className="row">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                        <button type="button" className="btn btn-sm btn-danger" aria-label="Close" onClick={this.handleCancel.bind(this)}>
+                            <span>Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            )
+        }
+
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -175,6 +206,7 @@ class TaskView extends React.Component {
                             </div>
                         </div>
                         {pending_reason}
+                        {cancelButton}
                         <br/>
                         <hr/>
                     </div>

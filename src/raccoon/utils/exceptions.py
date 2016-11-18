@@ -59,3 +59,7 @@ class RetryException(Exception):
 
 class MaxRetriesExceeded(Exception):
     pass
+
+
+class TaskAborted(Exception):
+    pass

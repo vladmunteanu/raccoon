@@ -51,7 +51,7 @@ export class TaskItem extends React.Component {
                     method: 'stop',
                     args: {
                         id: this.props.data.id,
-                        job: this.props.data.job,
+                        job_id: this.props.data.job,
                         build_number: build_number
                     }
                 }

@@ -4,7 +4,7 @@ import datetime
 from tornado.ioloop import IOLoop
 from tornado import gen
 
-from ..utils.exceptions import RetryException, MaxRetriesExceeded
+from ..utils.exceptions import RetryException, MaxRetriesExceeded, TaskAborted
 from ..utils.request import broadcast
 
 log = logging.getLogger(__name__)
@@ -13,8 +13,9 @@ PENDING = 'PENDING'
 STARTED = 'STARTED'
 SUCCESS = 'SUCCESS'
 FAILURE = 'FAILURE'
+ABORTED = 'ABORTED'
 
-READY_STATES = (SUCCESS, FAILURE)
+READY_STATES = (SUCCESS, FAILURE, ABORTED)
 UNREADY_STATES = (PENDING, STARTED)
 
 DEFAULT_COUNTDOWN = 5  # seconds to wait before retry
@@ -129,6 +130,11 @@ class BaseLongPollingTask(object):
                 yield self.on_success(retval)
             except RetryException as exc:
                 self._retry(exc.countdown)
+            except TaskAborted:
+                log.warning("Task aborted!")
+                self.task.status = ABORTED
+                self.task.save()
+                self.notify_clients()
         except:
             log.error("Task failed!", exc_info=True)
             self.task.status = FAILURE
