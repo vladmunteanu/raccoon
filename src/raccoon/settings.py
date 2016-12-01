@@ -6,7 +6,7 @@ ROOT_PATH = path.abspath(path.join(path.dirname(__file__), '../..'))
 
 DB = {
     'scheme': 'mongodb',
-    'host': '10.2.101.51',
+    'host': '127.0.0.1',
     'port': 27017,
     'name': 'raccoon'
 }
@@ -18,7 +18,7 @@ TEMPLATE_PATH = path.join(ROOT_PATH, 'web')
 # Enable and config LDAP authentication
 LDAP_AUTH = True
 LDAP_CONF = {
-    'uri': 'ldap://krusty.ad.avira.com',
+    'uri': '<ldap://uri>',
     'port': 3268
 }
 
