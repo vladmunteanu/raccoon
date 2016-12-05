@@ -7,7 +7,7 @@
   "main": "js/app.jsx",
   "repository": {
     "type": "git",
-    "url": "https://github.dtc.avira.com/racoon/raccoon"
+    "url": "https://github.com/Avira/raccoon"
   },
   "dependencies": {
     "classnames": "^2.2.3",
