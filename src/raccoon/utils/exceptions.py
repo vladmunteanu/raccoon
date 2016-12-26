@@ -36,7 +36,7 @@ class ReplyError(Exception):
         }
 
         if DEBUG and self.code == 500:
-            response['details'] = traceback.format_exc()
+            log.error(traceback.format_exc())
 
         return json.dumps(response)
 
