@@ -21,7 +21,7 @@ function getLocalState() {
             repo_url: '',
             connector: '',
             version: '',
-            metadata: ''
+            metadata: '{}'
         }
     };
     return localState;
@@ -119,7 +119,7 @@ class ProjectForm extends React.Component {
         let url = project.repo_url;
         let connectorId = project.connector;
         let version = project.version;
-        let metadata = project.metadata || '';
+        let metadata = project.metadata || '{}';
         let del;
 
         if (this.formName === 'Update project') {
