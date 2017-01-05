@@ -2,6 +2,8 @@ import React from 'react';
 import AceEditor from 'react-ace';
 
 import 'brace/mode/yaml';
+import 'brace/mode/php';
+import 'brace/mode/json';
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
 
@@ -25,7 +27,7 @@ let LOCAL_CONFIG_DELIMITER_END = "##END-LOCAL-CONFIG##";
 
 
 class EditConfigAddon extends BaseAddon {
-    
+
     constructor(props) {
         super(props);
 
@@ -44,7 +46,8 @@ class EditConfigAddon extends BaseAddon {
             connectorId: null,
             getConfigId: null,
             setConfigId: null,
-            result: null
+            result: null,
+            syntax: 'yaml'
         };
 
         this._onChange = this._onChange.bind(this);
@@ -256,6 +259,13 @@ class EditConfigAddon extends BaseAddon {
         this.setState({localConfig: newValue});
     }
 
+    /**
+     * Updates the language highlighting
+     */
+    handleSyntaxChange(event) {
+        this.setState({syntax: event.target.value});
+    }
+
     render() {
         // Loading
         if (!this.state.config) {
@@ -304,16 +314,26 @@ class EditConfigAddon extends BaseAddon {
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <h3>
-                        {"Configure " + this.state.project.label + " on " + this.state.environment.name.toUpperCase()}
-                    </h3>
+                    <div className="col-sm-11 col-md-11 col-lg-11">
+                        <h3>{"Configure " + this.state.project.label + " on " + this.state.environment.name.toUpperCase()}</h3>
+                    </div>
+                    <div className="col-sm-1 col-md-1 col-lg-1">
+                        <div className="form-group">
+                            <label htmlFor="code-syntax" className="control-label">Syntax:</label>
+                            <select className="form-control" id="code-syntax" onChange={this.handleSyntaxChange.bind(this)}>
+                                <option value="yaml">yaml</option>
+                                <option value="json">json</option>
+                                <option value="php">php</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div className="row">
                     <div className="col-sm-6 col-md-6 col-lg-6">
                         <AceEditor
                             name="default-config"
                             theme="github"
-                            mode="yaml"
+                            mode={this.state.syntax}
                             fontSize={12}
                             enableBasicAutocompletion={true}
                             enableLiveAutocompletion={true}
@@ -329,7 +349,7 @@ class EditConfigAddon extends BaseAddon {
                         <AceEditor
                             name="local-config"
                             theme="github"
-                            mode="yaml"
+                            mode={this.state.syntax}
                             fontSize={12}
                             enableBasicAutocompletion={true}
                             enableLiveAutocompletion={true}
