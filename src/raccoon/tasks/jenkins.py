@@ -3,7 +3,7 @@ import logging
 from urllib.parse import urlparse, urljoin
 
 from tornado import gen
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
 from .long_polling import BaseLongPollingTask, READY_STATES, UNREADY_STATES
 from .long_polling import PENDING, STARTED, SUCCESS, FAILURE, ABORTED
@@ -37,21 +37,34 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         url = urljoin(api_url, path)
 
-        result = yield self.http_client.fetch(HTTPRequest(
-            url=url,
-            method="GET",
-            validate_cert=False,
-        ))
-        result_body = json.loads(result.body.decode('utf-8'))
+        try:
+            result = yield self.http_client.fetch(HTTPRequest(
+                url=url,
+                method="GET",
+                validate_cert=False,
+            ))
+        except HTTPError as exc:
+            if exc.code >= 500:
+                raise RetryException
+            else:
+                raise
 
+        result_body = json.loads(result.body.decode('utf-8'))
         # Fetch console output
         console_output_url = '{}/consoleText/'.format(parsed_url.path.strip('/'))
         console_output_url = urljoin(api_url, console_output_url)
-        console_output = yield self.http_client.fetch(HTTPRequest(
-            url=console_output_url,
-            method="GET",
-            validate_cert=False,
-        ))
+        try:
+            console_output = yield self.http_client.fetch(HTTPRequest(
+                url=console_output_url,
+                method="GET",
+                validate_cert=False,
+            ))
+        except HTTPError as exc:
+            if exc.code >= 500:
+                raise RetryException
+            else:
+                raise
+
         console_output = console_output.body.decode('utf-8')
         self.task.console_output = console_output
 
@@ -119,11 +132,18 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
         path = '{}/api/json'.format(parsed_url.path.strip('/'))
         queue_url = urljoin(api_url, path)
 
-        result = yield self.http_client.fetch(HTTPRequest(
-            url=queue_url,
-            method="GET",
-            validate_cert=False,
-        ))
+        try:
+            result = yield self.http_client.fetch(HTTPRequest(
+                url=queue_url,
+                method="GET",
+                validate_cert=False,
+            ))
+        except HTTPError as exc:
+            if exc.code >= 500:
+                raise RetryException
+            else:
+                raise
+
         result_body = json.loads(result.body.decode('utf-8'))
 
         self.task.status = PENDING
