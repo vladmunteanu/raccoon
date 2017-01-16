@@ -42,8 +42,7 @@ class ProjectUpdateForm extends ProjectForm {
             if (!error) {
                 let metadata = this.state.project.metadata;
                 try {
-                    metadata = metadata || '{}';
-                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata) : metadata;
+                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata || '{}') : metadata;
                     ProjectStore.updateById(this.state.project.id, {
                         name: this.state.project.name,
                         label: this.state.project.label,
@@ -68,7 +67,7 @@ class ProjectUpdateForm extends ProjectForm {
                 repo_url: '',
                 connector: '',
                 version: '',
-                metadata: '{}'
+                metadata: ''
             }
         }
         return this.state.project;

@@ -21,7 +21,7 @@ function getLocalState() {
             repo_url: '',
             connector: '',
             version: '',
-            metadata: '{}'
+            metadata: ''
         }
     };
     return localState;
@@ -88,7 +88,7 @@ class ProjectForm extends React.Component {
             if (!error) {
                 let metadata = this.state.project.metadata;
                 try {
-                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata) : metadata;
+                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata || '{}') : metadata;
                     ProjectStore.create({
                         name: this.state.project.name,
                         label: this.state.project.label,
