@@ -35,9 +35,6 @@ class ReplyError(Exception):
             'resource': self.resource,
         }
 
-        if DEBUG and self.code == 500:
-            log.error(traceback.format_exc())
-
         return json.dumps(response)
 
     def __repr__(self):
