@@ -88,7 +88,7 @@ class ProjectForm extends React.Component {
             if (!error) {
                 let metadata = this.state.project.metadata;
                 try {
-                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata) : metadata;
+                    metadata = typeof metadata !== 'object' ? JSON.parse(metadata || '{}') : metadata;
                     ProjectStore.create({
                         name: this.state.project.name,
                         label: this.state.project.label,
@@ -119,7 +119,7 @@ class ProjectForm extends React.Component {
         let url = project.repo_url;
         let connectorId = project.connector;
         let version = project.version;
-        let metadata = project.metadata || '';
+        let metadata = project.metadata || '{}';
         let del;
 
         if (this.formName === 'Update project') {
