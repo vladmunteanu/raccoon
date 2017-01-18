@@ -1,13 +1,14 @@
 import logging
 
-from tornado import gen
 from mongoengine.errors import DoesNotExist
+from tornado import gen
 
 from . import BaseController
 from ..models import Build, Project
-from ..interfaces.github import GitHubInterface
 from ..utils.decorators import authenticated
 from ..utils.exceptions import ReplyError
+from ..external.interfaces.github import GitHubInterface
+
 
 log = logging.getLogger(__name__)
 

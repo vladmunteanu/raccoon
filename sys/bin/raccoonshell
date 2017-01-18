@@ -12,8 +12,8 @@ Raccoon interactive shell
 
 PRELOAD = """
 from raccoon.models import Project, Connector, User, Task
-from raccoon.interfaces.github import GitHubInterface
-from raccoon.interfaces.jenkins import JenkinsInterface
+from raccoon.external.interfaces.github import GitHubInterface
+from raccoon.external.interfaces.jenkins import JenkinsInterface
 
 from tornado.ioloop import IOLoop
 from mongoengine import connect
