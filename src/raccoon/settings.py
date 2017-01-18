@@ -16,7 +16,7 @@ STATIC_PATH = path.join(ROOT_PATH, 'web')
 TEMPLATE_PATH = path.join(ROOT_PATH, 'web')
 
 # Enable and config LDAP authentication
-LDAP_AUTH = True
+LDAP_AUTH = False
 LDAP_CONF = {
     'uri': '<ldap://uri>',
     'port': 3268
