@@ -14,8 +14,3 @@ from .flows import FlowsController
 from .tasks import TasksController
 
 from .notifications import NotificationsController
-
-from .github import GitHubController
-from .bitbucket import BitbucketController
-from .jenkins import JenkinsController
-from .salt import SaltController

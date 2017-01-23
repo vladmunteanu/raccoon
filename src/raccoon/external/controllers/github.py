@@ -1,26 +1,26 @@
 import logging
 
-from tornado import gen
 from mongoengine.errors import DoesNotExist
+from tornado import gen
 
-from . import BaseController
-from ..interfaces.bitbucket import BitbucketInterface
-from ..models import Project
-from ..utils.decorators import authenticated
-from ..utils.exceptions import ReplyError
+from ..interfaces.github import GitHubInterface
+from ...controllers import BaseController
+from ...models import Project
+from ...utils.decorators import authenticated
+from ...utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
-class BitbucketController(BaseController):
+class GitHubController(BaseController):
     """
-    Bitbucket Controller
+    Github Controller
 
     Request:
     ----------
     {
         "verb": "get",
-        "resource": "/api/v1/bitbucket/branches",
+        "resource": "/api/v1/github/branches",
         "args": {
             "project": "<project_id>"
         },
@@ -51,8 +51,8 @@ class BitbucketController(BaseController):
             raise ReplyError(422)
 
         # create GitHub interface & select operation
-        bitbucket = BitbucketInterface(connector=project.connector)
-        method = getattr(bitbucket, method, None)
+        github = GitHubInterface(connector=project.connector)
+        method = getattr(github, method, None)
         if not method:
             raise ReplyError(404)
 
