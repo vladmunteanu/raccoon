@@ -41,8 +41,14 @@ class UsersController(BaseController):
         password = bcrypt.hashpw(password, bcrypt.gensalt())
         params['password'] = password.decode('utf-8')
 
+        # if this is the first user make it admin
         try:
-            user = yield cls.model.objects.create(**params)
+            cls.model.objects.get()
+        except:
+            params['role'] = 'admin'
+
+        try:
+            user = cls.model.objects.create(**params)
         except NotUniqueError as e:
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
