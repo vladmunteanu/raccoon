@@ -30,7 +30,7 @@ Quickstart on Ubuntu
    $ cd <working_dir> && git clone git@github.com:Avira/raccoon.git
    ```
 
-5. Go to Raccoon image dir and vagrant
+5. Go to Raccoon image dir and start vagrant
 
    ```bash
    $ cd raccoon/image
