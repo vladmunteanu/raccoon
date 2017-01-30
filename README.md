@@ -7,7 +7,7 @@ Main repository for Raccoon
 Quickstart on Ubuntu
 --------------------
 
-1. Install dependencies ( [Virtual Box](https://www.virtualbox.org/wiki/Downloads), [Vagrant](https://www.vagrantup.com/downloads.html, [git](https://git-scm.com/downloads) )
+1. Install dependencies ([Virtual Box](https://www.virtualbox.org/wiki/Downloads), [Vagrant](https://www.vagrantup.com/downloads.html), [git](https://git-scm.com/downloads))
 
    ```bash
    $ sudo apt-get install virtualbox virtualbox-dkms vagrant git
