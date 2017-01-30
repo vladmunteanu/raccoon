@@ -8,9 +8,9 @@ Quickstart on Ubuntu
 --------------------
 
 1. Install [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
-	```bash
-	$ sudo apt-get install virtualbox virtualbox-dkms
-	```
+ ```bash
+ $ sudo apt-get install virtualbox virtualbox-dkms
+ ```
 2. Install [Vagrant](https://www.vagrantup.com/downloads.html)
 	```bash
 	$ sudo apt-get install vagrant
