@@ -5,17 +5,14 @@ PATH_VENV=/opt/venv
 PATH_RACCOON=/opt/raccoon
 PATH_SRC=${PATH_RACCOON}/src
 PATH_WEB=${PATH_RACCOON}/web
+export LC_ALL=C
 
 # redirect all output to /tmp/bootstrap.log
 &>/tmp/bootstrap.log
 
 # initial setup
-sudo apt-get --yes --allow-change-held-packages install python3
-sudo apt-get --yes --allow-change-held-packages install python3-pip
-sudo apt-get --yes --allow-change-held-packages install mongodb
-sudo apt-get --yes --allow-change-held-packages install npm
+sudo apt-get --yes --allow-change-held-packages install python3 python3-pip mongodb npm
 
-export LC_ALL=C
 pip3 install virtualenv
 
 sudo mkdir ${PATH_VENV}
