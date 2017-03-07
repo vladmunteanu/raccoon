@@ -38,7 +38,7 @@
     "babelify": "^6.1.3"
   },
   "scripts": {
-    "start": "raccoon & watchify -o assets/js/raccoon.js -v -d . &",
+    "start": "raccoon & watchify -o assets/js/raccoon.js -v -d .",
     "stop": "ps -ef | grep [r]accoon | awk '{print $2}' | xargs kill -9",
     "build": "browserify . -t [envify --NODE_ENV production] -o assets/js/raccoon.js",
     "test": "echo \"Error: no test specified\" && exit 1"

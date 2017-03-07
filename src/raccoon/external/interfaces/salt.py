@@ -1,4 +1,5 @@
 import logging
+import base64
 from urllib import parse
 
 from tornado import gen
@@ -47,6 +48,11 @@ class SaltStackInterface(BaseInterface):
 
         if tgt is not None:
             payload['tgt'] = tgt
+
+        if 'config_data' in payload:
+            payload['config_data'] = base64.b64encode(
+                bytes(payload['config_data'], 'utf-8')
+            )
 
         response, _ = yield self.fetch(
             url=self.api_url,

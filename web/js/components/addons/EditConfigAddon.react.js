@@ -4,6 +4,7 @@ import AceEditor from 'react-ace';
 import 'brace/mode/yaml';
 import 'brace/mode/php';
 import 'brace/mode/json';
+import 'brace/mode/javascript';
 import 'brace/theme/github';
 import 'brace/ext/searchbox';
 
@@ -199,7 +200,7 @@ class EditConfigAddon extends BaseAddon {
                     service_type: this.state.project.name,
                     target_env: this.state.environment.name,
                     git_branch: this.state.branch,
-                    config_data: window.btoa(localConfig),
+                    config_data: localConfig,
                     connectorId: this.state.job.connector,
                     signal: signal
                 }
@@ -324,6 +325,7 @@ class EditConfigAddon extends BaseAddon {
                                 <option value="yaml">yaml</option>
                                 <option value="json">json</option>
                                 <option value="php">php</option>
+                                <option value="javascript">javascript</option>
                             </select>
                         </div>
                     </div>
