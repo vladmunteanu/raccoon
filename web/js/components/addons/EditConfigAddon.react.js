@@ -366,7 +366,7 @@ class EditConfigAddon extends BaseAddon {
                 </div>
                 <br/>
                 <div className="row">
-                    <button type="button" className={"btn btn-success"} aria-label="Save" onClick={this.setConfig.bind(this)}>Save</button>
+                    <button type="button" className={"btn btn-success"} aria-label="Save" onClick={this.setConfig.bind(this, false)}>Save</button>
                     &nbsp;&nbsp;
                     <button type="button" className={"btn btn-warning"} aria-label="Save&Restart" onClick={this.setConfig.bind(this, true)}>Save & Restart</button>
                 </div>
