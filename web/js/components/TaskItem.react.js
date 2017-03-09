@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 
 // stores
 import ProjectStore from '../stores/ProjectStore';
+import EnvironmentStore from '../stores/EnvironmentStore';
 
 import RaccoonApp from './RaccoonApp.react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
@@ -11,12 +12,18 @@ import Utils from '../utils/Utils';
 import {TASK_READY_STATES, TASK_UNREADY_STATES} from '../constants/Constants';
 
 
-function getLocalState(projectId) {
+function getLocalState(projectId, envId) {
     let localState = {
         local: {
-            project: ProjectStore.getById(projectId)
+            project: ProjectStore.getById(projectId),
+            environment: null
         }
     };
+
+    if (envId) {
+        let env = EnvironmentStore.getById(envId);
+        localState['local']['environment'] = env.name;
+    }
 
     return RaccoonApp.getState(localState)
 }
@@ -24,21 +31,14 @@ function getLocalState(projectId) {
 export class TaskItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = getLocalState(this.props.data.context.project_id);
+        this.state = getLocalState(this.props.data.context.project_id, this.props.data.environment);
+
         this._onChange = this._onChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
 
-    componentDidMount() {
-        ProjectStore.addListener(this._onChange);
-    }
-
-    componentWillUnmount() {
-        ProjectStore.removeListener(this._onChange);
-    }
-
     _onChange() {
-        let state = getLocalState(this.props.data.context.project_id);
+        let state = getLocalState(this.props.data.context.project_id, this.props.data.environment);
         this.setState(state);
     }
 
@@ -107,12 +107,17 @@ export class TaskItem extends React.Component {
 
         let task_date = new Date();
 
+        let taskTitle = this.state.local.project.label || this.state.local.project.name;
+        if (this.state.local.environment) {
+            taskTitle += " > " + this.state.local.environment;
+        }
+
         return (
             <Link to={this.props.link} className="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                 <div className={`list-group-item ${taskClass}`}>
                     <div className="list-group-item-heading">
                         <span className="title">
-                            {this.state.local.project.label || this.state.local.project.name}
+                            {taskTitle}
                         </span>
                         { cancelButton }
                     </div>

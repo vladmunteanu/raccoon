@@ -296,14 +296,19 @@ class JenkinsInterface(BaseInterface):
         )
 
         user = request.user
-        task = Task(
-            user=user,
-            connector_type='jenkins',
-            job=flow.job,
-            context=kwargs,
-            status=PENDING,
-            date_added=datetime.datetime.utcnow()
-        )
+        task_kw = {
+            "user": user,
+            "connector_type": 'jenkins',
+            "job": flow.job,
+            "context": kwargs,
+            "status": PENDING,
+            "date_added": datetime.datetime.utcnow()
+        }
+
+        if 'environment' in kwargs:
+            task_kw['environment'] = kwargs['environment']['id']
+
+        task = Task(**task_kw)
         task.add_callback(callback_method)
         task.save()
 
