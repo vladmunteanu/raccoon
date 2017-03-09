@@ -114,27 +114,31 @@ class BaseStore extends EventEmitter {
     }
 
     /**
-     * Method to retrieve a specific instance, identified by its id.
-     * If the instance is not found locally, then an HTTP request is performed
-     * to obtain that instance from the backend.
+     * Trigger method to fetch a specific instance, identified by its id.
      *
      * @param id: instance primary key
-     * @returns {instance} Instance identified by id, or undefined.
      */
     fetchById(id) {
         let instance = this.getById(id);
+
+        // if we don't have the instance, fetch it
         if (!instance) {
             let wsConnection = new WebSocketConnection();
             wsConnection.send({
                 verb: 'get',
                 resource: this.baseuri + id,
             }, payload => {
-                this.instances.push(payload.data);
+                if (!this.getById(id)) {
+                    this.instances.push(payload.data);
+                }
                 this.emitChange();
             }, true);
         }
 
-        return instance;
+        // emit a change if we have the instance already
+        else {
+            this.emitChange();
+        }
     }
 
     updateById(id, data) {

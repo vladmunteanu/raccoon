@@ -114,8 +114,6 @@ class RaccoonApp extends React.Component {
         EnvironmentStore.fetchAll();
         ActionStore.fetchAll();
         FlowStore.fetchAll();
-        BuildStore.fetchAll();
-        InstallStore.fetchAll();
     }
 
     render() {

@@ -210,7 +210,7 @@ class Flow extends React.Component {
         }
         if (!this.state.action || !this.state.flow || !this.state.connector) {
             // loading
-            return (<div></div>);
+            return (<div>Loading addon...</div>);
         }
 
         let flow = this.state.flow;

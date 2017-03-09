@@ -1,9 +1,10 @@
 import React from 'react';
 
 import BaseStore from './BaseStore';
-
+import WebSocketConnection from '../utils/WebSocketConnection';
 
 let installStore = null;
+
 
 class InstallStore extends BaseStore {
 
@@ -33,6 +34,37 @@ class InstallStore extends BaseStore {
             return installs[0];
 
         return null;
+    }
+
+    /**
+     * Fetches installs with filters for project and / or environment.
+     *
+     * @param project (optional): project object
+     * @param env (optional): environment object
+     */
+    fetchInstalls(project, env) {
+        let wsConnection = new WebSocketConnection();
+
+        let args = {};
+        if (project) {
+            args['project'] = project.id;
+        }
+        if (env) {
+            args['env'] = env.id;
+        }
+
+        wsConnection.send({
+            verb: 'get',
+            resource: this.baseuri,
+            args: args
+        }, payload => {
+            payload.data.map(item => {
+                if (!this.getById(item.id)) {
+                    this.instances.push(item);
+                }
+            });
+            this.emitChange();
+        }, true);
     }
 }
 

@@ -1,57 +1,70 @@
 import React from 'react'
 import TimeAgo from 'react-timeago'
 
-import RaccoonApp from '../RaccoonApp.react';
 import CardMenu from './CardMenu.react';
 import Utils from '../../utils/Utils';
 
 import ActionStore from '../../stores/ActionStore';
-import ProjectStore from '../../stores/ProjectStore';
 import BuildStore from '../../stores/BuildStore';
 import InstallStore from '../../stores/InstallStore';
 
-
-function getLocalState(project, env) {
-    let localState = {
-        builds: BuildStore.filter(project.id),
-        install: InstallStore.getLatestInstall(project, env),
-        installedBuild: null
-    };
-
-    if (localState.install) {
-        let installedBuild = BuildStore.getById(localState.install.build);
-        if (installedBuild)
-            localState.installedBuild = installedBuild;
-    }
-
-    return RaccoonApp.getState(localState);
-}
 
 class GridItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = getLocalState(this.props.project, this.props.environment);
-        this._onChange = this._onChange.bind(this);
+
+        this.state = {
+            install: null,
+            installedBuild: null,
+            noInstalledBuild: false
+        };
+
+        this._onInstallChange = this._onInstallChange.bind(this);
+        this._onBuildChange = this._onBuildChange.bind(this);
     }
 
     componentWillMount() {
-        ActionStore.addListener(this._onChange);
-        BuildStore.addListener(this._onChange);
-        ProjectStore.addListener(this._onChange);
-        InstallStore.addListener(this._onChange);
+        InstallStore.addListener(this._onInstallChange);
+        BuildStore.addListener(this._onBuildChange);
+
+        InstallStore.fetchInstalls(this.props.project, this.props.environment)
     }
 
     componentWillUnmount() {
-        ActionStore.removeListener(this._onChange);
-        BuildStore.removeListener(this._onChange);
-        ProjectStore.removeListener(this._onChange);
-        InstallStore.removeListener(this._onChange);
+        InstallStore.removeListener(this._onInstallChange);
+        BuildStore.removeListener(this._onBuildChange);
     }
 
-    _onChange() {
-        let state = getLocalState(this.props.project, this.props.environment);
-        this.setState(state);
+    _onInstallChange() {
+        let install = InstallStore.getLatestInstall(
+            this.props.project, this.props.environment
+        );
+        if ((install && !this.state.install) || (install && this.state.install && install.id != this.state.install.id)) {
+            this.setState({
+                install: install,
+                installedBuild: null,
+                noInstalledBuild: false
+            }, () => {
+                BuildStore.fetchById(install.build);
+            });
+        }
+        else {
+            this.setState({
+                noInstalledBuild: true
+            })
+        }
+    }
+
+    _onBuildChange() {
+        if (this.state.install) {
+            let build = BuildStore.getById(this.state.install.build);
+            if (build) {
+                this.setState({
+                    installedBuild: build
+                });
+            }
+        }
     }
     
     render() {
@@ -59,9 +72,10 @@ class GridItem extends React.Component {
         if (this.state.installedBuild)
             installedBuild = this.state.installedBuild;
 
-        let content = (<h5 className="text-center">No builds for this project!</h5>);
-        if (this.state.builds.length)
-            content = (<h5 className="text-center">No build is installed!</h5>);
+        let content = (<h5 className="text-center">Loading...</h5>);
+        if (this.state.noInstalledBuild) {
+            content = (<h5 className="text-center">No build installed yet</h5>);
+        }
         if (this.state.installedBuild)
             content = (
                 <div>

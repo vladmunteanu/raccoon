@@ -13,72 +13,69 @@ class TaskView extends React.Component {
     constructor(props) {
         super(props);
 
-        let task = TaskStore.getById(this.props.params.id);
-        let user = null;
-        let job = null;
-
-        if (task) {
-            user = UserStore.fetchById(task.user);
-            job = JobStore.fetchById(task.job);
-        }
-
         this.state = {
-            task_id: this.props.params.id,
-            task: task,
-            user: user,
-            job: job
+            taskId: props.params.id,
+            task: null,
+            user: null,
+            job: null
         };
 
-        this._onChange = this._onChange.bind(this);
+        this._onUserChange = this._onUserChange.bind(this);
+        this._onJobChange = this._onJobChange.bind(this);
+        this._onTaskChange = this._onTaskChange.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.params.id !== nextProps.params.id) {
-            let task = TaskStore.getById(nextProps.params.id);
-            let user = null;
-            let job = null;
-
-            if (task) {
-                user = UserStore.fetchById(task.user);
-                job = JobStore.fetchById(task.job);
-            }
-
             this.setState({
-                task_id: nextProps.params.id,
-                task: task,
-                user: user,
-                job: job
+                taskId: nextProps.params.id,
+                task: null,
+                user: null,
+                job: null,
+            }, () => {
+                TaskStore.fetchById(nextProps.params.id);
             });
         }
     }
 
-    _onChange() {
-        let task = this.state.task || TaskStore.getById(this.state.task_id);
-        let user = this.state.user;
-        let job = this.state.job;
-
-        if (task) {
-            user = user ? user : UserStore.fetchById(task.user);
-            job = job ? job : JobStore.fetchById(task.job);
+    _onUserChange() {
+        let user = UserStore.getById(this.state.task.user);
+        if (user) {
+            this.setState({user: user});
         }
+    }
 
-        this.setState({
-            task: task,
-            user: user,
-            job: job
-        })
+    _onJobChange() {
+        let job = JobStore.getById(this.state.task.job);
+        if (job) {
+            this.setState({job: job});
+        }
+    }
+
+    _onTaskChange() {
+        let task = TaskStore.getById(this.props.params.id);
+        if (task) {
+            this.setState({
+                task: task
+            }, () => {
+                UserStore.fetchById(task.user);
+                JobStore.fetchById(task.job);
+            });
+        }
     }
 
     componentDidMount() {
-        UserStore.addListener(this._onChange);
-        TaskStore.addListener(this._onChange);
-        JobStore.addListener(this._onChange);
+        UserStore.addListener(this._onUserChange);
+        JobStore.addListener(this._onJobChange);
+        TaskStore.addListener(this._onTaskChange);
+
+        TaskStore.fetchById(this.props.params.id);
     }
 
     componentWillUnmount() {
-        UserStore.removeListener(this._onChange);
-        TaskStore.removeListener(this._onChange);
-        JobStore.removeListener(this._onChange);
+        UserStore.removeListener(this._onUserChange);
+        JobStore.removeListener(this._onJobChange);
+        TaskStore.removeListener(this._onTaskChange);
     }
 
     handleCancel() {

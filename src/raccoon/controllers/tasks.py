@@ -11,10 +11,29 @@ from ..tasks.long_polling import FAILURE
 
 log = logging.getLogger(__name__)
 
+PAGE_SIZE = 50
+
 
 class TasksController(BaseController):
     """ Tasks Controller """
     model = Task
+
+
+    @classmethod
+    @gen.coroutine
+    def get(cls, request, pk=None, *args, **kwargs):
+        if pk:
+            try:
+                response = Task.objects.get(id=pk)
+            except DoesNotExist:
+                raise ReplyError(404)
+
+            response = response.get_dict()
+        else:
+            response = Task.objects.order_by('-date_added')[:PAGE_SIZE]
+            response = [r.get_dict() for r in response]
+
+        request.send(response)
 
     @classmethod
     @gen.coroutine

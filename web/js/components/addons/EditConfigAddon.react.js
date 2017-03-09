@@ -14,10 +14,7 @@ import ActionStore from '../../stores/ActionStore';
 import FlowStore from '../../stores/FlowStore';
 import JobStore from '../../stores/JobStore';
 import InstallStore from '../../stores/InstallStore';
-import ConnectorStore from '../../stores/ConnectorStore';
 import BuildStore from '../../stores/BuildStore';
-import ProjectStore from '../../stores/ProjectStore';
-import EnvironmentStore from '../../stores/EnvironmentStore';
 
 
 // Constants used to extract different config files from the config string
@@ -32,62 +29,48 @@ class EditConfigAddon extends BaseAddon {
     constructor(props) {
         super(props);
 
+        let action = ActionStore.getById(this.addon_context.action);
+        let flow = FlowStore.getById(action.flow);
+        let job = JobStore.getById(flow.job);
+        this.connectorId = job.connector;
+
         this.state = {
-            project: this.addon_context.project,
-            environment: this.addon_context.environment,
             config: null,
             defaultConfig: '',
             localConfig: '',
-            action: ActionStore.getById(this.addon_context.action),
-            flow: null,
-            job: null,
             install: null,
             build: null,
             branch: null,
-            connectorId: null,
             getConfigId: null,
             setConfigId: null,
             result: null,
             syntax: 'yaml'
         };
 
-        this._onChange = this._onChange.bind(this);
+        this._onBuildChange = this._onBuildChange.bind(this);
+        this._onInstallChange = this._onInstallChange.bind(this);
+
         this.onCommandResult = this.onCommandResult.bind(this);
         this.handleConfigChange = this.handleConfigChange.bind(this);
-
-        if (!InstallStore.all) {
-            InstallStore.fetchAll();
-        }
     }
 
     /** Add listeners on stores */
     componentDidMount() {
         SaltStore.addListener(this.onCommandResult);
+        InstallStore.addListener(this._onInstallChange);
+        BuildStore.addListener(this._onBuildChange);
 
-        ActionStore.addListener(this._onChange);
-        FlowStore.addListener(this._onChange);
-        JobStore.addListener(this._onChange);
-        ConnectorStore.addListener(this._onChange);
-        InstallStore.addListener(this._onChange);
-        ProjectStore.addListener(this._onChange);
-        EnvironmentStore.addListener(this._onChange);
-        BuildStore.addListener(this._onChange);
-
-        this._onChange();
+        InstallStore.fetchInstalls(
+            this.addon_context.project,
+            this.addon_context.environment
+        );
     }
 
     /** Remove listeners from stores. */
     componentWillUnmount() {
         SaltStore.removeListener(this.onCommandResult);
-
-        ActionStore.removeListener(this._onChange);
-        FlowStore.removeListener(this._onChange);
-        JobStore.removeListener(this._onChange);
-        ConnectorStore.removeListener(this._onChange);
-        InstallStore.removeListener(this._onChange);
-        ProjectStore.removeListener(this._onChange);
-        EnvironmentStore.removeListener(this._onChange);
-        BuildStore.removeListener(this._onChange);
+        InstallStore.removeListener(this._onInstallChange);
+        BuildStore.removeListener(this._onBuildChange);
     }
 
     /**
@@ -148,10 +131,9 @@ class EditConfigAddon extends BaseAddon {
      * @param {string} project: project name
      * @param {string} env: environment name
      * @param {string} branch: branch
-     * @param {string} connectorId: connector primary key value
      * @returns {null}
      */
-    getConfig(project, env, branch, connectorId) {
+    getConfig(project, env, branch) {
         // Do nothing if a command has been registered for getConfig already.
         if (this.state.getConfigId) {
             return null;
@@ -164,7 +146,7 @@ class EditConfigAddon extends BaseAddon {
                     service_type: project,
                     target_env: env,
                     git_branch: branch,
-                    connectorId: connectorId
+                    connectorId: this.connectorId
                 }
             );
             this.setState({getConfigId: getConfigId});
@@ -197,11 +179,11 @@ class EditConfigAddon extends BaseAddon {
             let setConfigId = SaltStore.runCommand(
                 'oeconfig2.setconfig',
                 {
-                    service_type: this.state.project.name,
-                    target_env: this.state.environment.name,
+                    service_type: this.addon_context.project.name,
+                    target_env: this.addon_context.environment.name,
                     git_branch: this.state.branch,
                     config_data: localConfig,
-                    connectorId: this.state.job.connector,
+                    connectorId: this.connectorId,
                     signal: signal
                 }
             );
@@ -210,46 +192,42 @@ class EditConfigAddon extends BaseAddon {
     }
 
     /**
-     * Called when other stores update.
-     * Fetches all needed data and executes getConfig.
+     * Called when BuildStore emits a change.
      * @private
      */
-    _onChange() {
-        let action = ActionStore.getById(this.addon_context.action);
+    _onBuildChange() {
+        if (this.state.install) {
+            let build = BuildStore.getById(this.state.install.build);
+            if (build) {
+                this.setState({
+                    build: build,
+                    branch: build.branch
+                }, () => {
+                    if (!this.state.getConfigId) {
+                        this.getConfig(
+                            this.addon_context.project.name,
+                            this.addon_context.environment.name,
+                            build.branch
+                        );
+                    }
+                });
+            }
+        }
+    }
 
-        let flow = FlowStore.getById(action.flow);
-        let job = JobStore.getById(flow.job);
-
-        let connectorId = job.connector;
-
+    /**
+     * Called when InstallStore emits a change.
+     * @private
+     */
+    _onInstallChange() {
         let install = InstallStore.getLatestInstall(
             this.addon_context.project,
             this.addon_context.environment
         );
-        let build = install ? BuildStore.getById(install.build) : this.state.build;
-
-        let branch = this.state.branch;
-        if (build && !branch && !this.state.getConfigId) {
-            branch = build.branch;
-            // Get config since all necessary parameters are set
-            this.getConfig(
-                this.addon_context.project.name,
-                this.addon_context.environment.name,
-                branch,
-                connectorId
-            );
+        if (install) {
+            BuildStore.fetchById(install.build);
+            this.setState({install: install});
         }
-
-        // Update state
-        this.setState({
-            action: action,
-            flow: flow,
-            job: job,
-            install: install,
-            build: build,
-            branch: branch,
-            connectorId: connectorId,
-        });
     }
 
     /**
@@ -316,7 +294,7 @@ class EditConfigAddon extends BaseAddon {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-11 col-md-11 col-lg-11">
-                        <h3>{"Configure " + this.state.project.label + " on " + this.state.environment.name.toUpperCase()}</h3>
+                        <h3>{"Configure " + this.addon_context.project.label + " on " + this.addon_context.environment.name.toUpperCase()}</h3>
                     </div>
                     <div className="col-sm-1 col-md-1 col-lg-1">
                         <div className="form-group">
