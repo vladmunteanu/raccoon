@@ -1,3 +1,4 @@
+import ssl
 import json
 import logging
 from urllib.parse import urlparse, urljoin
@@ -59,6 +60,8 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
                 method="GET",
                 validate_cert=False,
             ))
+        except ssl.SSLError:
+            raise RetryException
         except HTTPError as exc:
             if exc.code >= 500:
                 raise RetryException
@@ -138,6 +141,8 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
                 method="GET",
                 validate_cert=False,
             ))
+        except ssl.SSLError:
+            raise RetryException
         except HTTPError as exc:
             if exc.code >= 500:
                 raise RetryException
