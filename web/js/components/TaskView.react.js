@@ -86,7 +86,7 @@ class TaskView extends React.Component {
                 data: {
                     method: 'stop',
                     args: {
-                        id: this.state.task.id,
+                        task_id: this.state.task.id,
                         job_id: this.state.task.job,
                         build_number: build_number
                     }

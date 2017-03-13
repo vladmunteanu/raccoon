@@ -373,6 +373,30 @@ class JenkinsInterface(BaseInterface):
 
         raise gen.Return(response)
 
+    @gen.coroutine
+    def stop(self, request, task_id, flow=None, job=None, *args, **kwargs):
+        verb, path = URLS.get('stop')
+        url = urljoin(self.api_url, path).format(
+            job_name=job.job,
+            **kwargs
+        )
+
+        try:
+            task = Task.objects.get(id=task_id)
+        except DoesNotExist:
+            raise ReplyError(404)
+
+        if request.user_data.get('id') != str(task.user.id) and not request.is_admin:
+            raise ReplyError(401)
+
+        response, headers = yield self.fetch(
+            method=verb,
+            url=url,
+            follow_redirects=False,
+        )
+
+        raise gen.Return(response)
+
     def __getattr__(self, method):
         return lambda *args, **kwargs: self.call(method, *args, **kwargs)
 
