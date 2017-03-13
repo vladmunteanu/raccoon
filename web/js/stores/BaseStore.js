@@ -19,26 +19,26 @@ class BaseStore extends EventEmitter {
     registerActions() {
         AppDispatcher.registerOnce('PUT ' + this.baseuri, payload => {
             if (payload.code == 200) {
-                let tmpObj = {};
+                let tmpObj = this.instances[payload.data.id] || {};
                 Object.keys(payload.data).forEach((key) => {
                     tmpObj[key] = payload.data[key];
                 });
-                this.instances[payload.data.id] = tmpObj;
+                this._addInstance(tmpObj);
                 this.emitChange();
             }
         });
 
         AppDispatcher.registerOnce('PATCH ' + this.baseuri, payload => {
-            let tmpObj = {};
+            let tmpObj = this.instances[payload.data.id] || {};
             Object.keys(payload.data).forEach((key) => {
                 tmpObj[key] = payload.data[key];
             });
-            this.instances[payload.data.id] = tmpObj;
+            this._addInstance(tmpObj);
             this.emitChange();
         });
 
         AppDispatcher.registerOnce('POST ' + this.baseuri, payload => {
-            this.instances[payload.data.id] = payload.data;
+            this._addInstance(payload.data);
             this.emitChange();
         });
 
@@ -79,7 +79,7 @@ class BaseStore extends EventEmitter {
             resource: this.baseuri
         }, payload => {
             payload.data.map(item => {
-                this.instances[item.id] = item;
+                this._addInstance(item);
             });
             this.emitChange();
         });
@@ -109,7 +109,7 @@ class BaseStore extends EventEmitter {
                 verb: 'get',
                 resource: this.baseuri + id,
             }, payload => {
-                this.instances[id] = payload.data;
+                this._addInstance(payload.data);
                 this.emitChange();
             }, true);
         }
@@ -149,6 +149,9 @@ class BaseStore extends EventEmitter {
         return [];
     }
 
+    _addInstance(instance) {
+        this.instances[instance.id] = instance;
+    }
 }
 
 BaseStore.contextTypes = {

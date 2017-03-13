@@ -51,23 +51,10 @@ class ProjectStore extends BaseStore {
         return project.visible;
     }
 
-    set all(data) {
-        if (data) {
-            data.map(item => {
-                item.visible = this.getToggle(item.id);
-                this.instances[item.id] = item;
-            });
-        }
-        else {
-            this.instances = {};
-        }
-        this.emitChange();
+    _addInstance(instance) {
+        this.instances[instance.id] = instance;
+        this.instances[instance.id].visible = this.getToggle(instance.id);
     }
-
-    get all() {
-        return Object.values(this.instances);
-    }
-
 }
 
 export default new ProjectStore();
