@@ -39,6 +39,8 @@ class SelectBuildAddon extends BaseAddon {
         BuildStore.addListener(this._onChange);
         ProjectStore.addListener(this._onChange);
         EnvironmentStore.addListener(this._onChange);
+
+        BuildStore.fetchBuilds(this.addon_context.project);
     }
 
     componentWillUnmount() {

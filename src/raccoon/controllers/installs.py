@@ -47,7 +47,7 @@ class InstallsController(BaseController):
             if env:
                 query_kw['environment'] = env
 
-            response = cls.model.objects(**query_kw).all()
+            response = cls.model.objects(**query_kw).order_by('-date_added')[:cls.page_size]
             response = [r.get_dict() for r in response]
 
         request.send(response)

@@ -8,16 +8,14 @@ from ..models import Task
 from ..utils.exceptions import ReplyError
 from ..tasks.long_polling import FAILURE
 
-
 log = logging.getLogger(__name__)
-
-PAGE_SIZE = 50
 
 
 class TasksController(BaseController):
     """ Tasks Controller """
     model = Task
 
+    page_size = 50
 
     @classmethod
     @gen.coroutine
@@ -30,7 +28,7 @@ class TasksController(BaseController):
 
             response = response.get_dict()
         else:
-            response = Task.objects.order_by('-date_added')[:PAGE_SIZE]
+            response = Task.objects.order_by('-date_added')[:cls.page_size]
             response = [r.get_dict() for r in response]
 
         request.send(response)

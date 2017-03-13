@@ -18,6 +18,7 @@ class BaseController(object):
     Base Controller
     """
     model = None
+    page_size = 30
 
     # Override this to enable audit logs for PUT, POST and DELETE
     audit_logs = False
