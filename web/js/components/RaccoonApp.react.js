@@ -33,6 +33,7 @@ import JobForm from './settings/JobForm.react.js';
 import JobUpdateForm from './settings/JobUpdateForm.react.js';
 import FlowForm from './settings/FlowForm.react';
 import FlowUpdateForm from './settings/FlowUpdateForm.react';
+import SetOrderWrapper from './settings/SetOrderWrapper.react';
 
 import Addons from "./addons/Addons";
 
@@ -132,6 +133,8 @@ class RaccoonApp extends React.Component {
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                     <Route path="flow/new" component={FlowForm} onEnter={this.requireAuth} />
                     <Route path="flow/:id" component={FlowUpdateForm} onEnter={this.requireAuth} />
+
+                    <Route path="order/:elemType" component={SetOrderWrapper} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />

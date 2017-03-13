@@ -17,6 +17,9 @@ class Project(BaseModel):
     metadata = DictField()
     date_added = DateTimeField(required=True, default=datetime.datetime.now)
 
+    # project position, for reordering
+    position = IntField(default=0)
+
     # Counter will automatically update on each build
     build_counter = IntField(default=0)
 

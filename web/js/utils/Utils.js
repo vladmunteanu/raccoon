@@ -37,6 +37,18 @@ class Utils {
 
         return `${value}${unit} ${suffix}`;
     }
+
+    static sortItems(items) {
+        return items.sort((a, b) => {
+            let a_name = a.label || a.name;
+            let b_name = b.label || b.name;
+            if (a.position < b.position) return -1;
+            if (a.position > b.position) return 1;
+            if (a_name < b_name) return -1;
+            if (a_name > b_name) return 1;
+            return 0;
+        })
+    }
 }
 
 export default Utils;

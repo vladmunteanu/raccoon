@@ -176,8 +176,10 @@ class BaseController(object):
             audit_log = AuditLog(
                 user=user.email,
                 action='update {}'.format(cls.model.__name__),
-                message='{} {} modified'.format(cls.model.__name__,
-                                                kwargs.get('name'))
+                message='{} {} modified'.format(
+                    cls.model.__name__,
+                    kwargs.get('name', getattr(instance, 'name', None))
+                )
             )
             audit_log.save()
 

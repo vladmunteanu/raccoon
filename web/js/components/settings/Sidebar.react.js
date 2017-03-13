@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 
 import UserProfile from './../UserProfile.react.js';
 import MenuItem from './../MenuItem.react.js';
+import Utils from '../../utils/Utils';
 
 import Constants from '../../constants/Constants';
 let ActionTypes = Constants.ActionTypes;
@@ -24,17 +25,18 @@ class Sidebar extends React.Component {
                             <div id="collapseProjects" className="collapse in">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.projects.sort((a, b) => {
-                                            if(a.label < b.label) return -1;
-                                            if(a.label > b.label) return 1;
-                                            return 0;
-                                        }).map(project => {
+                                        Utils.sortItems(this.props.projects).map(project => {
                                             return <MenuItem key={project.id} item={project} link={"/settings/project/" + project.id} />;
                                         })
                                     }
                                     <li>
                                         <Link to="/settings/project/new">
                                             <i className="fa fa-plus" /> Add new
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/settings/order/projects">
+                                            <i className="fa fa-arrows" /> Set order
                                         </Link>
                                     </li>
                                 </ul>
@@ -47,17 +49,18 @@ class Sidebar extends React.Component {
                             <div id="collapseEnvironments" className="collapse">
                                 <ul className="nav nav-submenu">
                                     {
-                                        this.props.environments.sort((a, b) => {
-                                            if(a.name < b.name) return -1;
-                                            if(a.name > b.name) return 1;
-                                            return 0;
-                                        }).map(environment => {
+                                        Utils.sortItems(this.props.environments).map(environment => {
                                             return <MenuItem key={environment.id} item={environment} link={"/settings/environment/" + environment.id} />;
                                         })
                                     }
                                     <li>
                                         <Link to="/settings/environment/new">
                                             <i className="fa fa-plus" /> Add new
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/settings/order/environments">
+                                            <i className="fa fa-arrows" /> Set order
                                         </Link>
                                     </li>
                                 </ul>
