@@ -62,7 +62,6 @@ class BitbucketBranchesAddon extends BaseAddon {
     }
 
     render() {
-
         return (
             <div>
                 <div className="form-group">
@@ -74,7 +73,13 @@ class BitbucketBranchesAddon extends BaseAddon {
                     <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
                         <option key="" disabled>-- select an option --</option>
                         {
-                            this.state.branches.map(branch => {
+                            this.state.branches.sort((a, b) => {
+                                if (a.name == 'master') return -1;
+                                if (b.name == 'master') return 1;
+                                if (a.name < b.name) return -1;
+                                if (a.name > b.name) return 1;
+                                return 0;
+                            }).map(branch => {
                                 return <option key={branch.name} value={branch.name}>{branch.name}</option>
                             })
                         }
