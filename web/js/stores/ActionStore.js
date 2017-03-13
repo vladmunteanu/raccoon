@@ -1,9 +1,6 @@
 import React from 'react';
 
-
 import BaseStore from './BaseStore';
-import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
 let actionStore = null;
 
@@ -25,7 +22,7 @@ class ActionStore extends BaseStore {
     }
 
     filter(project = null, env = null, placement = null) {
-        let result = this.all.filter(action => {
+        return this.all.filter(action => {
             if (action.placement == placement) {
                 switch (placement) {
                     case "project":
@@ -57,8 +54,6 @@ class ActionStore extends BaseStore {
             }
             return false;
         });
-
-        return result;
     }
 }
 

@@ -52,16 +52,20 @@ class ProjectStore extends BaseStore {
     }
 
     set all(data) {
-        this.instances = data || [];
-        this.instances.map(item => {
-            item.visible = this.getToggle(item.id)
-        });
-
+        if (data) {
+            data.map(item => {
+                item.visible = this.getToggle(item.id);
+                this.instances[item.id] = item;
+            });
+        }
+        else {
+            this.instances = {};
+        }
         this.emitChange();
     }
 
     get all() {
-        return this.instances || [];
+        return Object.values(this.instances);
     }
 
 }

@@ -5,7 +5,6 @@ import WebSocketConnection from '../utils/WebSocketConnection';
 
 let installStore = null;
 
-
 class InstallStore extends BaseStore {
 
     constructor() {
@@ -59,9 +58,7 @@ class InstallStore extends BaseStore {
             args: args
         }, payload => {
             payload.data.map(item => {
-                if (!this.getById(item.id)) {
-                    this.instances.push(item);
-                }
+                this.instances[item.id] = item;
             });
             this.emitChange();
         }, true);

@@ -1,13 +1,10 @@
 import React from 'react';
 import { EventEmitter } from 'events';
+import jwt_decode from 'jwt-decode';
 
 import BaseStore from './BaseStore';
 import WebSocketConnection from '../utils/WebSocketConnection';
 import Utils from '../utils/Utils';
-
-
-import jwt_decode from 'jwt-decode';
-
 
 let authStore = null;
 let _user = null;

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import BaseStore from './BaseStore';
+
 let auditlogStore = null;
 
 class AuditlogStore extends BaseStore {
@@ -18,12 +19,6 @@ class AuditlogStore extends BaseStore {
 
         // register actions
         this.registerActions();
-    }
-
-    filter(projectId) {
-        return this.all.filter(build => {
-            return build.project == projectId;
-        });
     }
 }
 

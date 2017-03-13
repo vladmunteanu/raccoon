@@ -5,8 +5,8 @@ import BaseStore from './BaseStore';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Constants from '../constants/Constants';
-let ActionTypes = Constants.ActionTypes;
 
+let ActionTypes = Constants.ActionTypes;
 
 // set localizations
 T.setTexts({
@@ -79,6 +79,8 @@ class NotificationStore extends BaseStore {
         } else {
             return notificationStore;
         }
+
+        this.instances = [];
 
         // register gui related actions
         AppDispatcher.registerOnce(ActionTypes.NOTIFICATION, payload => {

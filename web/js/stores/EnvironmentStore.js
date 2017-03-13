@@ -1,4 +1,5 @@
 import React from 'react';
+
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import RaccoonApp from './../components/RaccoonApp.react.js';
 import BaseStore from './BaseStore';
@@ -52,16 +53,20 @@ class EnvironmentStore extends BaseStore {
     }
 
     set all(data) {
-        this.instances = data || [];
-        this.instances.map(item => {
-            item.visible = this.getToggle(item.id)
-        });
-
+        if (data) {
+            data.map(item => {
+                item.visible = this.getToggle(item.id);
+                this.instances[item.id] = item;
+            });
+        }
+        else {
+            this.instances = {};
+        }
         this.emitChange();
     }
 
     get all() {
-        return this.instances || [];
+        return Object.values(this.instances);
     }
 
 }

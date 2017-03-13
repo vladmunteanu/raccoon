@@ -1,13 +1,8 @@
 import React from 'react';
-import FluxStore from 'flux';
-import AppDispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
-import assign from 'object-assign';
 
+import AppDispatcher from '../dispatcher/AppDispatcher';
 import WebSocketConnection from '../utils/WebSocketConnection';
-import AuthStore from './AuthStore';
-import Constants from '../constants/Constants';
-
 
 const MAX_LISTENERS = 100;
 
@@ -15,7 +10,7 @@ class BaseStore extends EventEmitter {
     constructor() {
         super();
         this.baseuri = null;
-        this.instances = [];
+        this.instances = {};
 
         // increase listeners limit
         this.setMaxListeners(MAX_LISTENERS);
@@ -24,42 +19,32 @@ class BaseStore extends EventEmitter {
     registerActions() {
         AppDispatcher.registerOnce('PUT ' + this.baseuri, payload => {
             if (payload.code == 200) {
-                this.instances = this.instances.map(instance => {
-                    if (instance.id === payload.data.id) {
-                        Object.keys(payload.data).forEach((key) => {
-                            instance[key] = payload.data[key];
-                        });
-                    }
-                    return instance;
+                let tmpObj = {};
+                Object.keys(payload.data).forEach((key) => {
+                    tmpObj[key] = payload.data[key];
                 });
+                this.instances[payload.data.id] = tmpObj;
                 this.emitChange();
             }
         });
 
         AppDispatcher.registerOnce('PATCH ' + this.baseuri, payload => {
-            this.instances = this.instances.map(instance => {
-                if (instance.id === payload.data.id) {
-                    Object.keys(payload.data).forEach((key) => {
-                        instance[key] = payload.data[key];
-                    });
-                }
-                return instance;
+            let tmpObj = {};
+            Object.keys(payload.data).forEach((key) => {
+                tmpObj[key] = payload.data[key];
             });
+            this.instances[payload.data.id] = tmpObj;
             this.emitChange();
         });
 
         AppDispatcher.registerOnce('POST ' + this.baseuri, payload => {
-            this.instances.push(payload.data);
+            this.instances[payload.data.id] = payload.data;
             this.emitChange();
         });
 
         AppDispatcher.registerOnce('DELETE ' + this.baseuri, payload => {
             if (payload.code == 200) {
-                this.instances = this.instances.filter(instance => {
-                    if (instance.id !== payload.data) {
-                        return instance
-                    }
-                });
+                delete this.instances[payload.data];
                 this.emitChange();
             }
         });
@@ -78,11 +63,11 @@ class BaseStore extends EventEmitter {
     }
 
     get all() {
-        return this.instances || [];
+        return Object.values(this.instances);
     }
 
     set all(data) {
-        this.instances = data || [];
+        this.instances = data || {};
         this.emitChange();
     }
 
@@ -93,7 +78,10 @@ class BaseStore extends EventEmitter {
             verb: 'get',
             resource: this.baseuri
         }, payload => {
-            this.all = payload.data;
+            payload.data.map(item => {
+                this.instances[item.id] = item;
+            });
+            this.emitChange();
         });
     }
 
@@ -103,14 +91,7 @@ class BaseStore extends EventEmitter {
      * @returns: instance identified by id
      */
     getById(id) {
-        if(!this.instances)
-            return undefined;
-
-        let instance = this.instances.find(function(element, index, array) {
-            return element.id === id;
-        });
-
-        return instance;
+        return this.instances[id];
     }
 
     /**
@@ -128,13 +109,10 @@ class BaseStore extends EventEmitter {
                 verb: 'get',
                 resource: this.baseuri + id,
             }, payload => {
-                if (!this.getById(id)) {
-                    this.instances.push(payload.data);
-                }
+                this.instances[id] = payload.data;
                 this.emitChange();
             }, true);
         }
-
         // emit a change if we have the instance already
         else {
             this.emitChange();
@@ -143,21 +121,11 @@ class BaseStore extends EventEmitter {
 
     updateById(id, data) {
         let wsConnection = new WebSocketConnection();
-
         wsConnection.send({
             verb: 'put',
             resource: this.baseuri + id,
             body: data
-        }/*, payload => {
-            this.instances = this.instances.map(instance => {
-                if (instance.id === payload.data.id) {
-                    return payload.data;
-                } else {
-                    return instance;
-                }
-            });
-            this.emitChange();
-        }*/);
+        });
     }
 
     create(data) {
@@ -166,10 +134,7 @@ class BaseStore extends EventEmitter {
             verb: 'post',
             resource: this.baseuri,
             body: data
-        });/*, payload => {
-            this.instances.push(payload.data);
-            this.emitChange();
-        });*/
+        });
     }
     
     deleteByid(id) {

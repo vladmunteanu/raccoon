@@ -6,14 +6,12 @@ class AddonStore {
 
     constructor() {
         if (!addonStore) {
-            //super();
             addonStore = this;
         } else {
             return addonStore;
         }
 
         this.addons = {};
-
     }
 
     register(addonName, addonClass) {

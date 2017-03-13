@@ -1,6 +1,7 @@
 import React from 'react';
 
 import BaseStore from './BaseStore';
+
 let buildStore = null;
 
 class BuildStore extends BaseStore {
