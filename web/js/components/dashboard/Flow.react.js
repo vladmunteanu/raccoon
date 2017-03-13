@@ -94,6 +94,7 @@ class Flow extends React.Component {
             nextProps.params.env
         );
         state.step = 0;
+        state.finished = false;
         this.setState(state);
     }
 
