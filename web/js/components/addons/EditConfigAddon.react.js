@@ -225,8 +225,11 @@ class EditConfigAddon extends BaseAddon {
             this.addon_context.environment
         );
         if (install) {
-            BuildStore.fetchById(install.build);
-            this.setState({install: install});
+            this.setState({
+                install: install
+            }, () => {
+                BuildStore.fetchById(install.build);
+            });
         }
     }
 
