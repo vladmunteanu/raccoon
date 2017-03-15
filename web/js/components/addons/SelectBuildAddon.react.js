@@ -122,7 +122,7 @@ class SelectBuildAddon extends BaseAddon {
         return (
             <div className="row">
                 <div className="col-lg-6 col-md-6 col-sm-6">
-                    <h3 className="text-center">Select a build</h3>
+                    <h3 className="text-center">Select a build to install on: { this.state.environment.name.toUpperCase() }</h3>
                     <div className="list-group" style={{height: 400, overflow: "auto"}}>
                     {
                         this.state.builds.sort((a, b) => {return b.date_added - a.date_added}).map(build => {
