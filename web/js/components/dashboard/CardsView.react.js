@@ -5,8 +5,8 @@ import ProjectStore from '../../stores/ProjectStore';
 import EnvironmentStore from '../../stores/EnvironmentStore';
 import AuthStore from '../../stores/AuthStore';
 import ActionStore from '../../stores/ActionStore';
-
 import GridItem from './GridItem.react';
+import Utils from '../../utils/Utils';
 
 
 class CardsView extends React.Component {
@@ -40,12 +40,12 @@ class CardsView extends React.Component {
         return (
             <div>
                 {
-                    this.state.projects.map(project => {
+                    Utils.sortItems(this.state.projects).map(project => {
                         if (project.visible) {
                             return (
                                 <div key={`section-${project.id}`} className="container-fluid grid-list">
                                     {
-                                        this.state.environments.map(environment => {
+                                        Utils.sortItems(this.state.environments).map(environment => {
                                             if (environment.visible) {
                                                 return <GridItem
                                                     key={`card-${project.id}-${environment.id}`}
