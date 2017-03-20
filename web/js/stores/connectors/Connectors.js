@@ -22,7 +22,7 @@ ConnectorStore.register('bitbucket', BitbucketStore, [
 ConnectorStore.register('jenkins', JenkinsStore, [
     {id: 'build', label: 'Build'},
     {id: 'install', label: 'Install'},
-    {id: 'config', label: 'Config'}
+    {id: 'generic', label: 'Generic Method'}
 ]);
 
 ConnectorStore.register('salt', SaltStore, [

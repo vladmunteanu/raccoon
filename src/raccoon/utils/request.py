@@ -57,6 +57,9 @@ class Request(object):
     def broadcast(self, response=None, verb=None, resource=None, admin_only=False):
         """
             Broadcasts a message on all websocket connections.
+            For the current request, the reply will contain the requestId so
+        a request-response cycle can be completed.
+            For other users, the requestId will be 'notification'.
 
         :param response: message to send
         :type response: dict
@@ -79,7 +82,7 @@ class Request(object):
             socket.write_message(json.dumps(data, default=json_serial))
 
     def _process_token(self):
-        """ Processes the JWT token and sets user_data and is_admin. """
+        """Processes the JWT token and sets user_data and is_admin."""
         if not self.token:
             return
         try:
@@ -106,6 +109,7 @@ def broadcast(response=None, verb=None, resource=None, admin_only=False):
     """
 
     data = {
+        'requestId': 'notification',
         'verb': verb,
         'resource': resource,
         'data': response,
@@ -113,8 +117,7 @@ def broadcast(response=None, verb=None, resource=None, admin_only=False):
         'message': 'OK',
     }
     for connection_id, socket in CLIENT_CONNECTIONS.items():
-        # mark the broadcast as notification for other users
-        data['requestId'] = 'notification'
+        # Skip normal users if we should only broadcast to admins
         if admin_only and not socket.is_admin:
             continue
         socket.write_message(json.dumps(data, default=json_serial))

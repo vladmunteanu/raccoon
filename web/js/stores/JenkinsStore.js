@@ -26,6 +26,7 @@ class JenkinsStore extends BaseStore {
         this.jobInstances = [];
 
         // register gui related actions
+        // this will actually be used when a flow finishes.
         AppDispatcher.registerOnce('jenkins', payload => {
             let method_name = payload.data.method;
             let args = payload.data.args;
@@ -55,6 +56,19 @@ class JenkinsStore extends BaseStore {
             body: args
         }, payload => {
             console.log("Installing...");
+            this.emitChange();
+        });
+    }
+
+    generic(args) {
+        let wsConnection = new WebSocketConnection();
+        console.log("Triggered generic job", args);
+        wsConnection.send({
+            verb: 'post',
+            resource: this.baseuri + 'generic',
+            body: args
+        }, payload => {
+            console.log("Generic job started...");
             this.emitChange();
         });
     }

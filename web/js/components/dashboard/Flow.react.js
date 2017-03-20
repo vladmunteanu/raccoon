@@ -161,6 +161,8 @@ class Flow extends React.Component {
 
                 let lastContext = LastStepAddon.getContext();
 
+                // if we reached the end of the flow, dispatch an action
+                // to any listener that is registered for the current connector
                 if (currentStep > flow.steps.length - 1) {
                     AppDispatcher.dispatch({
                         action: this.state.connector.type,

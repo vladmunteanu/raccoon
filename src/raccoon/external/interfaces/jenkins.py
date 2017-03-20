@@ -327,6 +327,26 @@ class JenkinsInterface(BaseInterface):
         raise ReplyError(201)
 
     @gen.coroutine
+    def generic(self, request, flow=None, job=None, *args, **kwargs):
+        """
+            Runs a generic job, starting the queue watcher and job watcher
+        tasks.
+
+        :param request: HTTP request
+        :type request: raccoon.utils.request.Request
+        :param flow: Flow object
+        :type flow: raccoon.models.flow.Flow
+        :param job: Job object
+        :type job: raccoon.models.job.Job
+        :param kwargs: parameters for jenkins job
+        """
+        context = kwargs.copy()
+        context.update({'job_arguments': translate_job_arguments(job.arguments,
+                                                                 context)})
+
+        yield self.trigger(request, flow, *args, **context)
+
+    @gen.coroutine
     def jobs(self, *args, **kwargs):
         """
             Retrieves the Jenkins Jobs from the API.

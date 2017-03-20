@@ -13,43 +13,16 @@ log = logging.getLogger(__name__)
 
 
 class JenkinsController(BaseController):
-    """
-        Jenkins Controller
-        
-        Request:
-        ----------
-        {
-            "verb": "get",
-            "resource": "/api/v1/jenkins/build",
-            "args": {
-                "action": "<action_id>"
-            },
-            "requestId": "abc123",
-            "headers": {
-                "Authorization": "Bearer <access_token>"
-            }
-        }
-        
-        Response:
-        ----------
-        {
-            "data": {
-            },
-            "requestId": "abc123",
-            "resource": "/api/v1/jenkins/build",
-            "verb": "get"
-        }
-        """
+    """Jenkins Controller, handles requests by calling methods on
+    JenkinsInterface"""
     
     @classmethod
     @authenticated
     @gen.coroutine
     def get(cls, request, method=None, *args, **kwargs):
-        results = Connector.objects.filter(type='jenkins').all()
-        if not len(results):
+        connector = Connector.objects.filter(type='jenkins').first()
+        if not connector:
             raise ReplyError(422)
-
-        connector = results[0]
 
         # create Jenkins interface
         jenkins = JenkinsInterface(connector)
@@ -74,11 +47,9 @@ class JenkinsController(BaseController):
 
             connector = flow.job.connector
         else:
-            results = Connector.objects.filter(type='jenkins').all()
-            if not len(results):
+            connector = Connector.objects.filter(type='jenkins').first()
+            if not connector:
                 raise ReplyError(422)
-
-            connector = results[0]
 
         if job_id:
             try:

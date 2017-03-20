@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import logging
 
 import tornado
@@ -14,9 +13,7 @@ log = logging.getLogger(__name__)
 
 
 class Application(tornado.web.Application):
-    """
-    Main Application
-    """
+    """Main Application"""
     def __init__(self):
         handlers = [
             (r'^/websocket/?', ApiWebSocketHandler),
