@@ -76,7 +76,7 @@ class GridItem extends React.Component {
         if (this.state.noInstalledBuild) {
             content = (<h5 className="text-center">No build installed yet</h5>);
         }
-        if (this.state.installedBuild)
+        if (this.state.installedBuild) {
             content = (
                 <div>
                     {installedBuild.version}
@@ -88,9 +88,36 @@ class GridItem extends React.Component {
                         />
                     </small>
                     <br />
-                    {installedBuild.branch}
+                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {installedBuild.branch}
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li className="dropdown-header">Changelog</li>
+                        {
+                            installedBuild.changelog.slice(0, 10).map((commit, i) => {
+                                return (
+                                    <li className="dropdown-item" key={"commit-" + i} style={{marginLeft: '3px'}}>
+                                        <span>
+                                            <b>{commit.author.name}</b>
+                                            {" - "}
+                                            <small>
+                                                <TimeAgo
+                                                    date={(new Date(commit.date)).getTime()}
+                                                    minPeriod={60}
+                                                    formatter={Utils.timeAgoFormatter}
+                                                />
+                                            </small>
+                                            {" - " + commit.message}
+                                        </span>
+
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
                 </div>
             );
+        }
 
         let cardActions = ActionStore.filter(this.props.project, this.props.environment, "card");
         return (
