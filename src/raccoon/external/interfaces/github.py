@@ -22,6 +22,7 @@ class GitHubInterface(BaseInterface):
         token = self.connector.config.get('token')
         headers = {
             'Authorization': 'token {}'.format(token),
+            'User-Agent': "raccoon/1.0.0",
         }
 
         url = '{api_url}/repos/{repo_name}/branches'.format(
@@ -91,6 +92,7 @@ class GitHubInterface(BaseInterface):
         token = self.connector.config.get('token')
         headers = {
             'Authorization': 'token {}'.format(token),
+            'User-Agent': "raccoon/1.0.0",
         }
 
         url = '{api_url}/repos/{repo_name}/commits?sha={branch}'.format(
