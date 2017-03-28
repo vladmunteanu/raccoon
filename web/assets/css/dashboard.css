@@ -187,7 +187,6 @@ body {
 
 .box .content {
     height: 70%;
-    overflow: auto;
     padding: 20px 10px;
 }
 

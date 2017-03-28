@@ -78,7 +78,7 @@ class GridItem extends React.Component {
         }
         if (this.state.installedBuild) {
             content = (
-                <div>
+                <div className="dropdown">
                     {installedBuild.version}
                     <small className="pull-right">
                         <TimeAgo
