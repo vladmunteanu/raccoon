@@ -60,7 +60,7 @@ class SaltStackInterface(BaseInterface):
             body=parse.urlencode(payload),
             method='POST',
             follow_redirects=False,
-            timeout=50
+            timeout=120
         )
 
         raise gen.Return(response)
