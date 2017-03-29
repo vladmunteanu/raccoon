@@ -4,9 +4,10 @@ import tornado
 import tornado.ioloop
 import tornado.options
 import tornado.web
+import tornado.httpserver
 from mongoengine import connect
 
-from .settings import DB, APP, HOST, PORT
+from .settings import DB, APP, HOST, PORT, SSL_OPTIONS
 from .handlers import WebHandler, ApiWebSocketHandler
 
 log = logging.getLogger(__name__)
@@ -31,7 +32,14 @@ class Application(tornado.web.Application):
 
 def main():
     app = Application()
-    app.listen(PORT, address=HOST)
+
+    server_options = {}
+    if SSL_OPTIONS['certfile'] and SSL_OPTIONS['keyfile']:
+        server_options['ssl_options'] = SSL_OPTIONS
+
+    server = tornado.httpserver.HTTPServer(app, **server_options)
+
+    server.listen(PORT, address=HOST)
 
     # Connect to MongoDB Server
     connect(DB['name'], host=DB['host'], port=DB['port'])

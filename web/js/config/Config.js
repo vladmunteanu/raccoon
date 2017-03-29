@@ -1,11 +1,10 @@
-//var keyMirror = require('keyMirror');
 
-//
-// Define constants
 class Config {
 
     constructor () {
-        this.WS_URL = 'ws://' + location.host + '/websocket';
+
+        this.WS_PREFIX = (location.protocol == 'https:' ? 'wss://' : 'ws://');
+        this.WS_URL = this.WS_PREFIX + location.host + '/websocket';
         this.CONNECTOR_TYPE = {
             "github": {
                 "url": "insert git url",

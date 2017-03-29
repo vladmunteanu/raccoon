@@ -28,4 +28,9 @@ APP = {
     'debug': DEBUG,
 }
 
+SSL_OPTIONS = {
+    'certfile': '',
+    'keyfile': ''
+}
+
 SECRET = 'secret'
