@@ -96,7 +96,7 @@ class GridItem extends React.Component {
                         {
                             installedBuild.changelog.slice(0, 10).map((commit, i) => {
                                 return (
-                                    <li className="dropdown-item" key={"commit-" + i} style={{marginLeft: '3px'}}>
+                                    <li className="dropdown-item" key={"commit-" + i} style={styles.changelogCommit}>
                                         <span>
                                             <b>{commit.author.name}</b>
                                             {" - "}
@@ -109,7 +109,7 @@ class GridItem extends React.Component {
                                             </small>
                                             {" - " + commit.message}
                                         </span>
-
+                                        <div className="divider" style={styles.changelogCommitDivider}/>
                                     </li>
                                 )
                             })
@@ -138,5 +138,15 @@ class GridItem extends React.Component {
         );
     }
 }
+
+const styles = {
+    changelogCommit: {
+        marginLeft: '3px',
+        marginRight: '3px',
+    },
+    changelogCommitDivider: {
+        margin: '3px 0'
+    }
+};
 
 export default GridItem;
