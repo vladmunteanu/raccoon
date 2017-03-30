@@ -76,7 +76,7 @@ class GridItem extends React.Component {
         if (this.state.noInstalledBuild) {
             content = (<h5 className="text-center">No build installed yet</h5>);
         }
-        if (this.state.installedBuild) {
+        if (installedBuild) {
             content = (
                 <div className="dropdown">
                     {installedBuild.version}
@@ -107,7 +107,8 @@ class GridItem extends React.Component {
                                                     formatter={Utils.timeAgoFormatter}
                                                 />
                                             </small>
-                                            {" - " + commit.message}
+                                            {" - "}
+                                            <a href={commit.url} target="_blank">{commit.message}</a>
                                         </span>
                                         <div className="divider" style={styles.changelogCommitDivider}/>
                                     </li>
