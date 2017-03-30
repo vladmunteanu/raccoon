@@ -9,6 +9,7 @@ from mongoengine import connect
 
 from .settings import DB, APP, HOST, PORT, SSL_OPTIONS
 from .handlers import WebHandler, ApiWebSocketHandler
+from .tasks.jenkins import resume_ongoing_tasks
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +44,8 @@ def main():
 
     # Connect to MongoDB Server
     connect(DB['name'], host=DB['host'], port=DB['port'])
+
+    resume_ongoing_tasks()
 
     tornado.ioloop.IOLoop.current().start()
 

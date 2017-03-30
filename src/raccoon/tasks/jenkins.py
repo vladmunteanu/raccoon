@@ -1,14 +1,18 @@
 import ssl
 import json
 import logging
+import datetime
 from urllib.parse import urlparse, urljoin
 
 from tornado import gen
+from tornado.ioloop import IOLoop
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
 from .long_polling import BaseLongPollingTask, READY_STATES, UNREADY_STATES
 from .long_polling import PENDING, STARTED, SUCCESS, FAILURE, ABORTED
 from ..utils.exceptions import RetryException, TaskAborted
+from ..models.task import Task
+from ..models.connector import Connector
 
 log = logging.getLogger(__name__)
 
@@ -173,3 +177,41 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
         next_task = JenkinsJobWatcherTask(self.task, countdown=self.countdown,
                                           url=result, api_url=self.api_url)
         yield next_task.delay()
+
+
+def resume_ongoing_tasks():
+    connector = Connector.objects.filter(type='jenkins').first()
+    tasks = Task.objects.filter(status__in=list(UNREADY_STATES)).all()
+
+    username = connector.config.get('username')
+    token = connector.config.get('token')
+
+    # compose the API url
+    url = connector.config.get('url')
+    url = urlparse(url)
+    api_url = '{scheme}://{username}:{token}@{netloc}'.format(
+        scheme=url.scheme,
+        username=username,
+        token=token,
+        netloc=url.netloc,
+    )
+
+    # go through each unfinished task and start a job watcher
+    for task in tasks:
+        # start watching tasks that are already running on jenkins master
+        if task.status == STARTED:
+            log.info("Starting job watcher for unfinished, STARTED task!")
+            watcher = JenkinsJobWatcherTask(task, countdown=5,
+                                            url=task.result['url'],
+                                            api_url=api_url)
+        # start watching tasks that are marked as pending
+        else:
+            log.info(["Starting queue watcher for unfinished, PENDING task!"])
+            # look for item in queue
+            watcher = JenkinsQueueWatcherTask(task, countdown=5,
+                                              queue_url=task.result['url'],
+                                              api_url=api_url)
+        IOLoop.current().add_timeout(
+            datetime.timedelta(seconds=1),
+            watcher.delay
+        )
