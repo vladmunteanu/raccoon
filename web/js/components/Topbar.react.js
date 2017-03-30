@@ -15,6 +15,7 @@ class Topbar extends React.Component {
         this.state = RaccoonApp.getState();
         this._onChange = this._onChange.bind(this);
         this.toggleTasks = this.toggleTasks.bind(this);
+        this.hideTasks = this.hideTasks.bind(this);
     }
 
     componentDidMount() {
@@ -33,6 +34,12 @@ class Topbar extends React.Component {
     toggleTasks() {
         AppDispatcher.dispatch({
             action: ActionTypes.TASKBAR_TOGGLE
+        })
+    }
+
+    hideTasks() {
+        AppDispatcher.dispatch({
+            action: ActionTypes.TASKBAR_HIDE
         })
     }
 
@@ -60,7 +67,7 @@ class Topbar extends React.Component {
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">
-                            <li><Link to="/">Dashboard</Link></li>
+                            <li><Link to="/" onClick={this.hideTasks}>Dashboard</Link></li>
                             { settingsButton }
                             <li><a href="javascript: void(0);">Help</a></li>
                             <li><Link to="/logout">Log Out</Link></li>

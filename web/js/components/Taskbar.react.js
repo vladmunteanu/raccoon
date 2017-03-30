@@ -31,6 +31,9 @@ class Taskbar extends React.Component {
         AppDispatcher.registerOnce(ActionTypes.TASKBAR_SHOW, _ => {
             $('#taskbar').addClass('slidemenu-open');
         });
+        AppDispatcher.registerOnce(ActionTypes.TASKBAR_HIDE, _ => {
+            $('#taskbar').removeClass('slidemenu-open');
+        });
     }
 
     componentDidMount() {

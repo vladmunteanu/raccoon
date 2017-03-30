@@ -35,7 +35,8 @@ export default {
 
         // tasks
         TASKBAR_TOGGLE: null,
-        TASKBAR_SHOW: null
+        TASKBAR_SHOW: null,
+        TASKBAR_HIDE: null
     }),
     TASK_READY_STATES: new Set(['FAILURE', 'SUCCESS']),
     TASK_UNREADY_STATES: new Set(['PENDING', 'STARTED'])
