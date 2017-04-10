@@ -6,6 +6,7 @@ import SelectBuildAddon from './SelectBuildAddon.react';
 import EditConfigAddon from './EditConfigAddon.react';
 import HealthCheckAddon from './HealthCheckAddon.react';
 import E2ETestDesktopAddon from './E2ETestDesktopAddon.react';
+import DesktopUrlsAddon from './DesktopUrlsAddon.react';
 
 
 AddonStore.register('DummyAddon', DummyAddon);
@@ -15,5 +16,6 @@ AddonStore.register('SelectBuildAddon', SelectBuildAddon);
 AddonStore.register('EditConfig', EditConfigAddon);
 AddonStore.register('HealthCheckAddon', HealthCheckAddon);
 AddonStore.register('E2ETestDesktopAddon', E2ETestDesktopAddon);
+AddonStore.register('DesktopUrlsAddon', DesktopUrlsAddon);
 
 export default AddonStore;
