@@ -18,9 +18,6 @@ class BitbucketBranchesAddon extends BaseAddon {
             branch: '',
             version: this.addon_context.project.version
         };
-
-        this.updateContext('project_id', this.addon_context.project.id);
-
         this._onChange = this._onChange.bind(this);
         this._onChangeVersion = this._onChangeVersion.bind(this);
         this._onChangeBranch = this._onChangeBranch.bind(this);

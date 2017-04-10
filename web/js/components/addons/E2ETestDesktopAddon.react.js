@@ -15,8 +15,6 @@ class E2ETestDesktopAddon extends BaseAddon {
             feature_list: ''
         };
 
-        this.updateContext('project', this.state.project);
-        this.updateContext('project_id', this.state.project.id);
         this.updateContext('env', this.state.env);
         this.updateContext('browser', this.state.browser);
         this.updateContext('is_smoke', this.state.is_smoke);

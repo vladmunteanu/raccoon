@@ -31,14 +31,14 @@ function getLocalState(projectId, envId) {
 export class TaskItem extends React.Component {
     constructor(props, context) {
         super(props, context);
-        this.state = getLocalState(this.props.data.context.project_id, this.props.data.environment);
+        this.state = getLocalState(this.props.data.context.project.id, this.props.data.environment);
 
         this._onChange = this._onChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
 
     _onChange() {
-        let state = getLocalState(this.props.data.context.project_id, this.props.data.environment);
+        let state = getLocalState(this.props.data.context.project.id, this.props.data.environment);
         this.setState(state);
     }
 

@@ -11,7 +11,6 @@ class HealthCheckAddon extends BaseAddon {
         };
 
         this.updateContext('mode', this.state.mode);
-        this.updateContext('project_id', this.addon_context.project.id);
         this.onModeChanged = this.onModeChanged.bind(this);
     }
 

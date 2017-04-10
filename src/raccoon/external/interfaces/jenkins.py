@@ -68,7 +68,7 @@ class JenkinsInterface(BaseInterface):
         :return: None
         """
         context = kwargs.copy()
-        project_id = context.get('project_id')
+        project_id = context.get('project', {}).get('id')
         version = context.get('version')
         branch = context.get('branch')
 
@@ -129,7 +129,7 @@ class JenkinsInterface(BaseInterface):
         :param response: The result of the task. Not used.
         :return: None
         """
-        project_id = task.context.get('project_id')
+        project_id = task.context.get('project', {}).get('id')
         branch = task.context.get('branch')
         version = task.context.get('version')
 
@@ -174,9 +174,9 @@ class JenkinsInterface(BaseInterface):
         :return: None
         """
         context = kwargs.copy()
-        project_id = context.get('project_id')
+        project_id = context.get('project', {}).get('id')
         build_id = context.get('build_id')
-        environment_id = context.get('environment_id')
+        environment_id = context.get('environment', {}).get('id')
 
         # Get Project, Environment and Build to con
         try:
@@ -232,9 +232,9 @@ class JenkinsInterface(BaseInterface):
         :param response: The result of the task.
         :return: None
         """
-        project_id = task.context.get('project_id')
+        project_id = task.context.get('project', {}).get('id')
         build_id = task.context.get('build_id')
-        env_id = task.context.get('environment_id')
+        env_id = task.context.get('environment', {}).get('id')
 
         # Get Project, Build and Environment to create the Install object
         try:

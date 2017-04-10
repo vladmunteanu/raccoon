@@ -29,7 +29,6 @@ class SelectBuildAddon extends BaseAddon {
 
         // add project_id and environment_id in the context
         // for the jenkins Interface
-        this.updateContext('project_id', this.addon_context.project.id);
         this.updateContext('environment_id', this.addon_context.environment.id);
 
         this._onChange = this._onChange.bind(this);
