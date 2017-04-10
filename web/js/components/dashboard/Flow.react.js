@@ -181,7 +181,7 @@ class Flow extends React.Component {
                 }
             }
             else {
-                this._displayAddonErrors(errors, enableNotifications)
+                this._displayAddonErrors(error, enableNotifications)
             }
         });
     }
