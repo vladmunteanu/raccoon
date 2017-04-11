@@ -167,8 +167,8 @@ class EditConfigAddon extends BaseAddon {
         else {
             // Add a new line at the end of the local config
             let localConfig = this.state.localConfig;
-            if (localConfig[localConfig.length - 1] != "\n") {
-                localConfig = "\n";
+            if (localConfig[localConfig.length - 1] !== "\n") {
+                localConfig += "\n";
             }
             // Run the command and update state
             let signal = 1; // update only
