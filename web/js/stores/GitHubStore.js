@@ -29,7 +29,6 @@ class GitHubStore extends BaseStore {
     fetchBranches(project_id) {
         // reset current branches
         this._branches = [];
-        this.emitChange();
 
         let wsConnection = new WebSocketConnection();
 
@@ -42,17 +41,16 @@ class GitHubStore extends BaseStore {
         }, payload => {
             this._branches = payload.data;
             this.emitChange();
-        });
+        }, true);
     }
 
     get commits() {
         return this._commits;
     }
 
-    fetchCommits(project_id) {
+    fetchCommits(project_id, branch) {
         // reset current commits
         this._commits = [];
-        this.emitChange();
 
         let wsConnection = new WebSocketConnection();
 
@@ -60,14 +58,13 @@ class GitHubStore extends BaseStore {
             verb: 'get',
             resource: this.baseuri + 'commits',
             args: {
-                project: project_id
+                project: project_id,
+                branch: branch
             }
         }, payload => {
-            if (this._commits != payload.data) {
-                this._commits = payload.data;
-                this.emitChange();
-            }
-        });
+            this._commits = payload.data;
+            this.emitChange();
+        }, true);
     }
 
 }

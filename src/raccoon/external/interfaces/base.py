@@ -19,7 +19,8 @@ class BaseInterface(object):
 
     @gen.coroutine
     def fetch(self, url, method='GET', body=None, headers=None, timeout=15,
-              follow_redirects=True, auth_username=None, auth_password=None):
+              follow_redirects=True, auth_username=None, auth_password=None,
+              connection_timeout=5):
         """
             Perform and asynchronous HTTP request, deserialize the response
         body as JSON and return tuple of body and headers.
@@ -32,6 +33,7 @@ class BaseInterface(object):
         :param follow_redirects: request follow redirects
         :param auth_username: Authentication username
         :param auth_password: Authentication password
+        :param connection_timeout: Number of seconds to wait for a connection
         :return: tuple of JSON body and headers
         :rtype: tuple
         """
@@ -49,7 +51,8 @@ class BaseInterface(object):
                 validate_cert=False,
                 auth_username=auth_username,
                 auth_password=auth_password,
-                request_timeout=timeout
+                request_timeout=timeout,
+                connect_timeout=connection_timeout
             ))
         except HTTPError as exc:
             raise ReplyError(exc.code, str(exc))

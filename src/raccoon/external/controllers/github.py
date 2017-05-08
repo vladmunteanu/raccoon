@@ -56,6 +56,6 @@ class GitHubController(BaseController):
         if not method:
             raise ReplyError(404)
 
-        response = yield method(project=project)
+        response = yield method(project=project, **kwargs)
 
         request.send(response)

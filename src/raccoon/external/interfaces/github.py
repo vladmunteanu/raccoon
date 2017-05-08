@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 class GitHubInterface(BaseInterface):
 
     @gen.coroutine
-    def branches(self, project):
+    def branches(self, project, **kwargs):
         """
             Fetches the list of branches for a project, from GitHub.
 
