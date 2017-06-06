@@ -121,15 +121,6 @@ class GitBranchesAddon extends BaseAddon {
         GitHubStore.removeListener(this._onChange);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.branch = null;
-        this.setState({
-            project: this.addon_context.project.id,
-            branches: [],
-            commits: []
-        }, () => GitHubStore.fetchBranches(this.addon_context.project.id));
-    }
-
     _updateState() {
         let commits = [];
         if (this.branch !== null) {
