@@ -29,11 +29,14 @@ class WebSocketConnection {
         this.connected = false;
         this.pendingRequests = [];
         this.pendingCallbacks = [];
-        this.currentMessageId = 0;
         this.uniqueRequests = {};
 
         this.ws = null;
         this.connect();
+
+        // initialize the loop which will check the connection
+        this.keepConnectionAlive = this.keepConnectionAlive.bind(this);
+        setInterval(this.keepConnectionAlive, 10000);
     }
 
     connect() {
@@ -45,6 +48,16 @@ class WebSocketConnection {
             this.ws.onerror = WebSocketConnection.onError;
 
             console.log("Socket connected!");
+        }
+    }
+
+    keepConnectionAlive() {
+        if (!this.connected) {
+            console.log("Trying to reconnect");
+            this.connect();
+            if (!this.connected) {
+                console.log("Failed, retrying in 10 seconds");
+            }
         }
     }
 
@@ -65,13 +78,13 @@ class WebSocketConnection {
 
     static onClose() {
         connector.ws = null;
-        this.connected = false;
+        connector.connected = false;
         console.log("Connection closed!");
     }
 
     static onError() {
         connector.ws = null;
-        this.connected = false;
+        connector.connected = false;
         console.log("Connection error!");
     }
 
@@ -114,7 +127,7 @@ class WebSocketConnection {
         }
 
         // dispatch notifications
-        if (message.hasOwnProperty('code') && message.requestId != 'notification') {
+        if (message.hasOwnProperty('code') && message.requestId !== 'notification') {
             message.action = ActionTypes.NOTIFICATION;
             AppDispatcher.dispatch(message);
         }
