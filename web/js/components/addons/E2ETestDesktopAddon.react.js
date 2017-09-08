@@ -10,26 +10,34 @@ class E2ETestDesktopAddon extends BaseAddon {
         this.state = {
             project: this.addon_context.project,
             env: this.addon_context.environment.name,
+            server: "chrome-002",
             browser: "chrome",
             is_smoke: false,
             feature_list: ''
         };
 
         this.updateContext('env', this.state.env);
+        this.updateContext('server', this.state.server);
         this.updateContext('browser', this.state.browser);
         this.updateContext('is_smoke', this.state.is_smoke);
         this.updateContext('feature_list', this.state.feature_list);
 
+        this._onChangeServer = this._onChangeServer.bind(this);
         this._onChangeBrowser = this._onChangeBrowser.bind(this);
         this._onChangeSmoke = this._onChangeSmoke.bind(this);
         this._onChangeFeatureList = this._onChangeFeatureList.bind(this);
     }
 
+    _onChangeServer(event) {
+        this.setState({server: event.target.value, });
+        let t_value = event.target.value;
+        this.updateContext('server', t_value);
+    }
+
     _onChangeBrowser(event) {
         this.setState({browser: event.target.value, });
         let t_value = event.target.value;
-        let value = t_value.replace("00", "-00");
-        this.updateContext('browser', value);
+        this.updateContext('browser', t_value);
     }
 
     _onChangeSmoke(event) {
@@ -48,20 +56,37 @@ class E2ETestDesktopAddon extends BaseAddon {
 
     render() {
         let changelog = (<div>Select a browswer to run tests on.</div>);
+        let server_list = {
+            "chrome": "Chrome",
+            "firefox": "Firefox",
+            "ie11": "Internet explorer 11 (ie11.oe.avira.org)",
+            "chrome-001": "Chrome 001 (chrome-001.oe.avira.org)",
+            "chrome-002": "Chrome 002 (chrome-002.oe.avira.org)",
+            "firefox-001": "Firefox 001 (firefox-001.oe.avira.org)",
+            "firefox-002": "Firefox 002 (firefox-002.oe.avira.org)",
+            "edge-001": "Edge 001 (edge-001.oe.avira.org)",
+        };
+
         let browser_list = {
             chrome: "Chrome",
             firefox: "Firefox",
-            ie11: "Internet explorer 11 (ie11.oe.avira.org)",
-            chrome001: "Chrome 001 (chrome-001.oe.avira.org)",
-            chrome002: "Chrome 002 (chrome-002.oe.avira.org)",
-            firefox001: "Firefox 001 (firefox-001.oe.avira.org)",
-            firefox002: "Firefox 002 (firefox-002.oe.avira.org)",
-            edge001: "Edge 001 (edge-001.oe.avira.org)",
+            edge: "Edge",
         };
+
         return (
             <div className="container-fluid">
                 <div className="row form-group">
                     <div className="input-group col-lg-6 col-md-6 col-xs-6">
+                        <label htmlFor="server">Select your server</label>
+                        <select className="form-control" value={this.state.server} id="server" onChange={this._onChangeServer}>
+                            <option key="" disabled>-- select a server --</option>
+                            {
+                                Object.keys(server_list).map(b_name => {
+                                    return <option key={b_name} value={b_name}>{server_list[b_name]}</option>;
+                                })
+                            }
+                        </select>
+                        <br/>
                         <label htmlFor="browser">Select your browser</label>
                         <select className="form-control" value={this.state.browser} id="browser" onChange={this._onChangeBrowser}>
                             <option key="" disabled>-- select a browser --</option>
@@ -71,7 +96,6 @@ class E2ETestDesktopAddon extends BaseAddon {
                                 })
                             }
                         </select>
-
                     </div>
                     <div>
                         <label>
