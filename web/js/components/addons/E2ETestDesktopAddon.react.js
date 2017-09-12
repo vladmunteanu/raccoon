@@ -103,7 +103,7 @@ class E2ETestDesktopAddon extends BaseAddon {
                         </label>
                     </div>
                     <div>
-                        <label>Feature list: <input name="feature_list" type="text" value={this.state.feature_list} onChange={this._onChangeFeatureList}/></label>
+                        <label>Additional parameters: <input name="feature_list" type="text" value={this.state.feature_list} onChange={this._onChangeFeatureList}/></label>
                     </div>
                 </div>
             </div>
