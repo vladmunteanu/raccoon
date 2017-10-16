@@ -181,6 +181,10 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
 
 def resume_ongoing_tasks():
     connector = Connector.objects.filter(type='jenkins').first()
+    if not connector:
+        # if no jenkins connector defined then skip polling
+        return
+
     tasks = Task.objects.filter(status__in=list(UNREADY_STATES)).all()
 
     username = connector.config.get('username')

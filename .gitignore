@@ -98,6 +98,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# Vagrant
+*/**/.vagrant
+
 #Others
 .DS_Store
 */**/.DS_Store
