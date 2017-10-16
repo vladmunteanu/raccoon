@@ -11,6 +11,7 @@ export LC_ALL=C
 &>/tmp/bootstrap.log
 
 # initial setup
+sudo apt-get update
 sudo apt-get --yes --allow-change-held-packages install python3 python3-pip mongodb npm
 
 pip3 install virtualenv
