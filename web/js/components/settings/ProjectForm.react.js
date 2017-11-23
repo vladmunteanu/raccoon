@@ -35,7 +35,7 @@ class ProjectForm extends React.Component {
         this.state = getLocalState();
         this.validatorTypes = {
             name: Joi.string().min(3).max(50).required().label('Project name'),
-            label: Joi.string().min(3).max(50).required().label('Project label'),
+            label: Joi.string().min(3).max(22).required().label('Project label'),
             repo_url: Joi.string().uri({
                 scheme: ['http', 'https']
             }).required().label('Repository url'),
