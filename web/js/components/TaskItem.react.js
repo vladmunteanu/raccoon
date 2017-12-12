@@ -161,6 +161,31 @@ export class TaskItem extends React.Component {
             </div>
         );
 
+        let branchElement = null;
+        if (data.context.branch) {
+            branchElement = (
+                <div>
+                    {"branch: " + data.context.branch}<br/>
+                </div>
+            )
+        }
+
+        let version = null;
+        if (data.context.version) {
+            version = data.context.version;
+        }
+        else if (data.context.build) {
+            version = data.context.build.version;
+        }
+        let versionElement = null;
+        if (version) {
+            versionElement = (
+                <div>
+                    {"version: " + version}<br/>
+                </div>
+            )
+        }
+
         return (
             <Link to={this.props.link} className="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                 <div className={`list-group-item ${taskClass}`}>
@@ -171,7 +196,8 @@ export class TaskItem extends React.Component {
                         { cancelButton }
                     </div>
                     <div className="list-group-item-text">
-                        { data.context.branch }<br />
+                        { branchElement }
+                        { versionElement }
                         { data.status }
                         <span className="time pull-right">
                             <TimeAgo
