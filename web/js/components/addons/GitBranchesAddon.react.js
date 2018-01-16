@@ -3,6 +3,7 @@ import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
 import TimeAgo from 'react-timeago';
+import Select from 'react-select';
 
 import BaseAddon from './BaseAddon.react';
 
@@ -32,7 +33,6 @@ class BuildForm extends React.Component {
             version: Joi.string().required().label('Version')
         };
         this.getValidatorData = this.getValidatorData.bind(this);
-
         this._onChangeVersion = this._onChangeVersion.bind(this);
         this._onChangeBranch = this._onChangeBranch.bind(this);
     }
@@ -56,29 +56,39 @@ class BuildForm extends React.Component {
     }
 
     _onChangeBranch(event) {
-        let branchName = event.target.value;
+        let branchName = event;
         this.setState({branch: branchName}, () => { this.props.onBranchChange(branchName) });
     }
 
     render() {
+        let options = [];
+        this.state.branches.sort((a, b) => {
+            if (a.name == 'master') return -1;
+            if (b.name == 'master') return 1;
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        }).map(branch => {
+            options.push({
+                'value': branch.name,
+                'label': branch.name
+            })
+        })
+    
         return (
             <div className="container-fluid">
                 <div className="row form-group">
                     <label htmlFor="build-branches">Select your branch</label>
-                    <select className="form-control" value={this.state.branch} id="build-branches" onChange={this._onChangeBranch}>
-                        <option key="" disabled>-- select an option --</option>
-                        {
-                            this.state.branches.sort((a, b) => {
-                                if (a.name === 'master') return -1;
-                                if (b.name === 'master') return 1;
-                                if (a.name < b.name) return -1;
-                                if (a.name > b.name) return 1;
-                                return 0;
-                            }).map(branch => {
-                                return <option key={branch.name} value={branch.name}>{branch.name}</option>
-                            })
-                        }
-                    </select>
+                    <Select 
+                        id="build-branches" 
+                        ref="selectBranch"
+                        autoFocus
+                        options={options}
+                        simpleValue
+                        value={this.state.branch}
+                        onChange={this._onChangeBranch}
+                        searchable={this.state.searchable}
+                    />
                     <FormValidationError key="form-errors-branch" messages={this.props.getValidationMessages('branch')}/>
                 </div>
                 <div className="row form-group">
