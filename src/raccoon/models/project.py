@@ -44,6 +44,8 @@ class Project(BaseModel):
         elif parse.hostname == 'bitbucket.org':
             netloc = 'api.bitbucket.org'
             path = ''
+        elif 'avira.org' in parse.hostname:
+            path = ''
 
         url = '{scheme}://{netloc}/{path}'.format(
             scheme=parse.scheme,

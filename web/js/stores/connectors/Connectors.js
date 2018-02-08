@@ -1,6 +1,7 @@
 import ConnectorStore from '../../stores/ConnectorStore';
 import GitHubStore from '../../stores/GitHubStore';
 import BitbucketStore from '../../stores/BitbucketStore';
+import BitbucketServerStore from '../../stores/BitbucketServerStore';
 import JenkinsStore from '../../stores/JenkinsStore';
 import SaltStore from '../../stores/SaltStore';
 /*
@@ -14,6 +15,10 @@ ConnectorStore.register('github', GitHubStore, [
 ]);
 
 ConnectorStore.register('bitbucket', BitbucketStore, [
+    {id: 'branches', label: 'Branches'}
+]);
+
+ConnectorStore.register('bitbucketserver', BitbucketServerStore, [
     {id: 'branches', label: 'Branches'}
 ]);
 
