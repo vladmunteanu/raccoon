@@ -85,8 +85,12 @@ class BitbucketServerInterface(BaseInterface):
         values = response.get('values')
         if values:
             for item in values:
-                author_raw = item['author']['displayName']
-                author_name = item['author']['displayName']
+                if 'displayName' in item['author']:
+                    author_raw = item['author']['displayName']
+                    author_name = item['author']['displayName']
+                else:
+                    author_raw = item['author']['name']
+                    author_name = item['author']['name']
                 author_email = item['author']['emailAddress']
                 commit_url = "{api_url}/projects/{project_name}/repos/{repo_name}/commits/{commit_id}".format(
                     api_url=project.api_url,
