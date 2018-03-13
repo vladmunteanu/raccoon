@@ -3,8 +3,8 @@ import datetime
 from mongoengine import StringField, EmailField, BooleanField, ListField
 from mongoengine import DateTimeField, ReferenceField
 
-from . import BaseModel, Right
-from ..settings import LDAP_AUTH
+from raccoon.models import BaseModel, Right
+from raccoon.settings import LDAP_AUTH
 
 
 class User(BaseModel):

@@ -7,18 +7,15 @@ from ldap3 import Server, Connection, ALL, AUTH_SIMPLE
 from ldap3.core.exceptions import LDAPBindError
 from mongoengine.errors import DoesNotExist
 
-from . import BaseController
-from ..settings import SECRET, LDAP_AUTH, LDAP_CONF
-from ..models import User
-from ..utils.exceptions import ReplyError
+from raccoon.controllers import BaseController
+from raccoon.settings import SECRET, LDAP_AUTH, LDAP_CONF
+from raccoon.models import User
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
 class AuthController(BaseController):
-    """
-    Auth Controller
-    """
     model = User
 
     @classmethod
@@ -30,11 +27,11 @@ class AuthController(BaseController):
     @gen.coroutine
     def post(cls, request, email=None, password=None, **kwargs):
         """
-            Authenticates a user given email and password.
+        Authenticates a user given email and password.
 
-            If LDAP_AUTH is enabled in Raccoon settings, then the LDAP server
+        If LDAP_AUTH is enabled in Raccoon settings, then the LDAP server
         will be queried to check the user credentials.
-            Else, the user credentials are checked against the database and the
+        Else, the user credentials are checked against the database and the
         password encrypted with bcrypt.
 
         :param request: client request
@@ -50,11 +47,15 @@ class AuthController(BaseController):
             try:
                 server = Server(LDAP_CONF['uri'], port=LDAP_CONF['port'],
                                 get_info=ALL)
-                with Connection(server, authentication=AUTH_SIMPLE, user=email,
-                                password=password, auto_bind=True) as conn:
-                    conn.search(search_base='DC=ad,DC=avira,DC=com',
-                                search_filter='(userPrincipalName=%s)' % email,
-                                attributes=['displayName'])
+                with Connection(
+                    server, authentication=AUTH_SIMPLE, user=email,
+                    password=password, auto_bind=True
+                ) as conn:
+                    conn.search(
+                        search_base='DC=ad,DC=avira,DC=com',
+                        search_filter='(userPrincipalName=%s)' % email,
+                        attributes=['displayName']
+                    )
                     name = str(conn.entries[0].displayName)
             except LDAPBindError:
                 raise ReplyError(404, 'LDAP invalid credentials')
@@ -64,8 +65,9 @@ class AuthController(BaseController):
             try:
                 user = cls.model.objects.get(email=email)
             except DoesNotExist:
-                user = cls.model.objects.create(name=name, email=email,
-                                                active_directory=True)
+                user = cls.model.objects.create(
+                    name=name, email=email, active_directory=True
+                )
         else:
             password = password.encode('utf-8')
             try:
@@ -76,10 +78,10 @@ class AuthController(BaseController):
             if not bcrypt.checkpw(password, user.password.encode('utf-8')):
                 raise ReplyError(404, 'Invalid email or password')
 
-        token = jwt.encode({
-            'id': str(user.pk),
-            'role': user.role,
-        }, SECRET, algorithm='HS256')
+        token = jwt.encode(
+            {'id': str(user.pk), 'role': user.role},
+            SECRET, algorithm='HS256'
+        )
         request.send({'token': token.decode('utf8'), 'userId': str(user.pk)})
 
     @classmethod

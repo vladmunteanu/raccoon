@@ -2,7 +2,7 @@ import logging
 
 from tornado import gen
 
-from .exceptions import ReplyError
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 

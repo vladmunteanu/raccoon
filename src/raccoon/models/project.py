@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from mongoengine import StringField, DateTimeField, URLField, ReferenceField
 from mongoengine import IntField, DictField
 
-from . import BaseModel, Connector
+from raccoon.models import BaseModel, Connector
 
 
 class Project(BaseModel):

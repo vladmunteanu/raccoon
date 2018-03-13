@@ -4,18 +4,15 @@ import datetime
 from tornado import gen
 from mongoengine.errors import DoesNotExist
 
-from . import BaseController
-from ..models import AuditLog
-from ..utils.decorators import is_admin
-from ..utils.exceptions import ReplyError
+from raccoon.controllers import BaseController
+from raccoon.models import AuditLog
+from raccoon.utils.decorators import is_admin
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
 class AuditlogsController(BaseController):
-    """
-    Auditlogs Controller
-    """
     model = AuditLog
 
     @classmethod
@@ -23,7 +20,7 @@ class AuditlogsController(BaseController):
     @gen.coroutine
     def get(cls, request, pk=None, *args, **kwargs):
         """
-            Fetches and returns audit logs for the past 3 days.
+        Fetches and returns audit logs for the past 3 days.
         If pk is specified, then the result will be the audit log
         associated to that primary key.
 
@@ -44,7 +41,8 @@ class AuditlogsController(BaseController):
             response = cls.model.objects.filter(
                 date_added__gte=(
                     datetime.datetime.utcnow() - datetime.timedelta(days=3)
-                )).order_by('+date_added').all()
+                )
+            ).order_by('+date_added').all()
             response = [r.get_dict() for r in response]
 
         request.send(response)

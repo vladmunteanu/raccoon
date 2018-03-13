@@ -3,7 +3,7 @@ import logging
 
 from tornado import gen
 
-from . import BaseInterface, REGISTERED
+from raccoon.external.interfaces import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 

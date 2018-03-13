@@ -3,7 +3,7 @@ import datetime
 
 from mongoengine import StringField, DateTimeField, ReferenceField, DictField
 
-from . import BaseModel, User, Job, Environment
+from raccoon.models import BaseModel, User, Job, Environment
 
 
 log = logging.getLogger(__name__)

@@ -4,13 +4,13 @@ from urllib import parse
 
 from tornado import gen
 
-from . import BaseInterface, REGISTERED
+from raccoon.external.interfaces import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 
 
 class SaltStackInterface(BaseInterface):
-    """Interface for the SaltStack API"""
+    """ Interface for the SaltStack API """
 
     def __init__(self, connector):
         super().__init__(connector)
@@ -23,7 +23,7 @@ class SaltStackInterface(BaseInterface):
     @gen.coroutine
     def run(self, fun=None, eauth='pam', tgt=None, **kwargs):
         """
-            Runs a command on Salt, and returns the result.
+        Runs a command on Salt, and returns the result.
 
         :param fun: command to run, defaults to None
         :param eauth: authentication method, defaults to 'pam'

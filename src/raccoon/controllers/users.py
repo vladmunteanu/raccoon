@@ -5,18 +5,15 @@ import bcrypt
 from tornado import gen
 from mongoengine.errors import NotUniqueError, InvalidDocumentError
 
-from . import BaseController
-from ..models import User
-from ..settings import SECRET, LDAP_AUTH
-from ..utils.exceptions import ReplyError
+from raccoon.controllers import BaseController
+from raccoon.models import User
+from raccoon.settings import SECRET, LDAP_AUTH
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
 class UsersController(BaseController):
-    """
-    Users Controller
-    """
     model = User
 
     @classmethod

@@ -2,8 +2,8 @@ import logging
 
 from tornado import gen
 
-from . import BaseController
-from ..utils.exceptions import ReplyError
+from raccoon.controllers import BaseController
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 class NotificationsController(BaseController):
     """
         Notifications Controller
-        
+
         Request:
         ----------
         {
@@ -23,13 +23,13 @@ class NotificationsController(BaseController):
                 "body": {}
             }
         }
-        
+
         Response:
         ----------
         200 OK
 
     """
-    
+
     @classmethod
     @gen.coroutine
     def get(cls, request, *args, **kwargs):

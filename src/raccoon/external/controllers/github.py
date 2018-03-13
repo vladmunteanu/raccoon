@@ -3,11 +3,11 @@ import logging
 from mongoengine.errors import DoesNotExist
 from tornado import gen
 
-from ..interfaces.github import GitHubInterface
-from ...controllers import BaseController
-from ...models import Project
-from ...utils.decorators import authenticated
-from ...utils.exceptions import ReplyError
+from raccoon.external.interfaces.github import GitHubInterface
+from raccoon.controllers import BaseController
+from raccoon.models import Project
+from raccoon.utils.decorators import authenticated
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 

@@ -1,14 +1,11 @@
 import logging
 
-from . import BaseController
-from ..models import Job
+from raccoon.controllers import BaseController
+from raccoon.models import Job
 
 log = logging.getLogger(__name__)
 
 
 class JobsController(BaseController):
-    """
-    Jobs Controller
-    """
     model = Job
     audit_logs = True

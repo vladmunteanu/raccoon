@@ -4,9 +4,9 @@ import json
 from tornado import gen
 import tornado.websocket
 
-from ..urls import Router
-from ..utils.request import Request, CLIENT_CONNECTIONS
-from ..utils.exceptions import ReplyError
+from raccoon.urls import Router
+from raccoon.utils.request import Request, CLIENT_CONNECTIONS
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -24,9 +24,7 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     @property
     def connection_id(self):
-        """
-        Returns a unique connection id
-        """
+        """ Returns a unique connection id """
         return self.request.headers.get('Sec-Websocket-Key')
 
     def check_authorization(self):
@@ -99,8 +97,9 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 log.error('Possible error detected', exc_info=True)
             self.write_message(str(e))
         except Exception:
-            ex = ReplyError(500, request_id=request_id,
-                            verb=verb, resource=resource)
+            ex = ReplyError(
+                500, request_id=request_id, verb=verb, resource=resource
+            )
             self.write_message(str(ex))
             log.error('Internal server error', exc_info=True)
 

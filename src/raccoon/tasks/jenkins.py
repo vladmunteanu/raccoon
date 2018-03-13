@@ -8,22 +8,23 @@ from tornado import gen
 from tornado.ioloop import IOLoop
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
-from .long_polling import BaseLongPollingTask, READY_STATES, UNREADY_STATES
-from .long_polling import PENDING, STARTED, SUCCESS, FAILURE, ABORTED
-from ..utils.exceptions import RetryException, TaskAborted
-from ..models.task import Task
-from ..models.connector import Connector
+from raccoon.tasks.long_polling import (BaseLongPollingTask, READY_STATES,
+                                        UNREADY_STATES, PENDING, STARTED,
+                                        SUCCESS, FAILURE, ABORTED)
+from raccoon.utils.exceptions import RetryException, TaskAborted
+from raccoon.models.task import Task
+from raccoon.models.connector import Connector
 
 log = logging.getLogger(__name__)
 
 
 class JenkinsJobWatcherTask(BaseLongPollingTask):
     """
-        Represents the Jenkins Job Watcher, periodically calling the API
-     to determine the current status of a STARTED job.
-        If the returned status is either SUCCESS or FAILURE,
+    Represents the Jenkins Job Watcher, periodically calling the API
+    to determine the current status of a STARTED job.
+    If the returned status is either SUCCESS or FAILURE,
     or if an error occurs, the task is finished and the task status updated.
-        Clients are constantly notified about the task status.
+    Clients are constantly notified about the task status.
     """
 
     def __init__(self, task, url=None, api_url=None, *args, **kwargs):
@@ -52,18 +53,22 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
             if exc.code >= 500:
                 raise RetryException
             else:
-                raise
+                raise exc
 
         result_body = json.loads(result.body.decode('utf-8'))
         # Fetch console output
-        console_output_url = '{}/consoleText/'.format(parsed_url.path.strip('/'))
+        console_output_url = '{}/consoleText/'.format(
+            parsed_url.path.strip('/')
+        )
         console_output_url = urljoin(api_url, console_output_url)
         try:
-            console_output = yield self.http_client.fetch(HTTPRequest(
-                url=console_output_url,
-                method="GET",
-                validate_cert=False,
-            ))
+            console_output = yield self.http_client.fetch(
+                HTTPRequest(
+                    url=console_output_url,
+                    method="GET",
+                    validate_cert=False,
+                )
+            )
         except ssl.SSLError:
             raise RetryException
         except HTTPError as exc:
@@ -92,19 +97,21 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
 
         # Notify clients about the Task progress
         self.task.save()
-        self.notify_clients(extra={
-            'started_at': result_body.get('timestamp'),
-            'estimated_duration': result_body.get('estimatedDuration'),
-            'result': result_body,
-            'console_output': console_output
-        })
+        self.notify_clients(
+            extra={
+                'started_at': result_body.get('timestamp'),
+                'estimated_duration': result_body.get('estimatedDuration'),
+                'result': result_body,
+                'console_output': console_output
+            }
+        )
 
         raise RetryException
 
     @gen.coroutine
     def on_success(self, result):
         """
-            Called on status success to execute the task callback.
+        Called on status success to execute the task callback.
         :param result: task result
         :return: None
         """
@@ -117,9 +124,9 @@ class JenkinsJobWatcherTask(BaseLongPollingTask):
 
 class JenkinsQueueWatcherTask(BaseLongPollingTask):
     """
-        Represents the Jenkins Queue Watcher, periodically calling the API
+    Represents the Jenkins Queue Watcher, periodically calling the API
     to determine the current status of a PENDING job.
-        When the job has been STARTED by Jenkins, a URL is provided in the
+    When the job has been STARTED by Jenkins, a URL is provided in the
     executable field of the HTTP response body. This URL will be used to start
     a JenkinsJobWatcherTask instance.
     """
@@ -140,18 +147,20 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
         queue_url = urljoin(api_url, path)
 
         try:
-            result = yield self.http_client.fetch(HTTPRequest(
-                url=queue_url,
-                method="GET",
-                validate_cert=False,
-            ))
+            result = yield self.http_client.fetch(
+                HTTPRequest(
+                    url=queue_url,
+                    method="GET",
+                    validate_cert=False,
+                )
+            )
         except ssl.SSLError:
             raise RetryException
         except HTTPError as exc:
             if exc.code >= 500:
                 raise RetryException
             else:
-                raise
+                raise exc
 
         result_body = json.loads(result.body.decode('utf-8'))
 
@@ -171,11 +180,13 @@ class JenkinsQueueWatcherTask(BaseLongPollingTask):
     @gen.coroutine
     def on_success(self, result):
         """
-            Called when the Jenkins Queue returns the executable url.
-            Starts the Jenkins Job watcher.
+        Called when the Jenkins Queue returns the executable url.
+        Starts the Jenkins Job watcher.
         """
-        next_task = JenkinsJobWatcherTask(self.task, countdown=self.countdown,
-                                          url=result, api_url=self.api_url)
+        next_task = JenkinsJobWatcherTask(
+            self.task, countdown=self.countdown,
+            url=result, api_url=self.api_url
+        )
         yield next_task.delay()
 
 
@@ -205,16 +216,17 @@ def resume_ongoing_tasks():
         # start watching tasks that are already running on jenkins master
         if task.status == STARTED:
             log.info("Starting job watcher for unfinished, STARTED task!")
-            watcher = JenkinsJobWatcherTask(task, countdown=5,
-                                            url=task.result['url'],
-                                            api_url=api_url)
+            watcher = JenkinsJobWatcherTask(
+                task, countdown=5, url=task.result['url'], api_url=api_url
+            )
         # start watching tasks that are marked as pending
         else:
-            log.info(["Starting queue watcher for unfinished, PENDING task!"])
+            log.info("Starting queue watcher for unfinished, PENDING task!")
             # look for item in queue
-            watcher = JenkinsQueueWatcherTask(task, countdown=5,
-                                              queue_url=task.result['url'],
-                                              api_url=api_url)
+            watcher = JenkinsQueueWatcherTask(
+                task, countdown=5,
+                queue_url=task.result['url'], api_url=api_url
+            )
         IOLoop.current().add_timeout(
             datetime.timedelta(seconds=1),
             watcher.delay

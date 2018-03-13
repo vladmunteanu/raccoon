@@ -2,8 +2,8 @@ import datetime
 
 from mongoengine import StringField, DateTimeField, DictField
 
-from ..external.interfaces.base import REGISTERED
-from . import BaseModel
+from raccoon.external.interfaces.base import REGISTERED
+from raccoon.models import BaseModel
 
 
 class Connector(BaseModel):

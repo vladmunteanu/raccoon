@@ -3,19 +3,17 @@ import logging
 from mongoengine.errors import DoesNotExist
 from tornado import gen
 
-from ..interfaces.jenkins import JenkinsInterface
-from ...controllers import BaseController
-from ...models import Flow, Connector, Job
-from ...utils.decorators import authenticated
-from ...utils.exceptions import ReplyError
+from raccoon.external.interfaces.jenkins import JenkinsInterface
+from raccoon.controllers import BaseController
+from raccoon.models import Flow, Connector, Job
+from raccoon.utils.decorators import authenticated
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
 class JenkinsController(BaseController):
-    """Jenkins Controller, handles requests by calling methods on
-    JenkinsInterface"""
-    
+
     @classmethod
     @authenticated
     @gen.coroutine
@@ -63,6 +61,7 @@ class JenkinsController(BaseController):
         if not method:
             raise ReplyError(404)
 
-        response = yield method(request=request, flow=flow,
-                                job=job, *args, **kwargs)
+        response = yield method(
+            request=request, flow=flow, job=job, *args, **kwargs
+        )
         request.send(response)

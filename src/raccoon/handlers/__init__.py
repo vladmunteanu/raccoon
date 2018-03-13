@@ -1,2 +1,2 @@
-from .web import WebHandler
-from .api import ApiWebSocketHandler
+from raccoon.handlers.web import WebHandler
+from raccoon.handlers.api import ApiWebSocketHandler

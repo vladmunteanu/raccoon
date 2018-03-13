@@ -6,17 +6,15 @@ from mongoengine import ReferenceField
 from mongoengine.errors import NotUniqueError, InvalidDocumentError
 from mongoengine.errors import DoesNotExist
 
-from ..utils.decorators import authenticated, is_admin
-from ..utils.exceptions import ReplyError
-from ..models import AuditLog
+from raccoon.utils.decorators import authenticated, is_admin
+from raccoon.utils.exceptions import ReplyError
+from raccoon.models import AuditLog
 
 log = logging.getLogger(__name__)
 
 
 class BaseController(object):
-    """
-    Base Controller
-    """
+    """ Base Controller """
     model = None
     page_size = 30
 
@@ -28,7 +26,7 @@ class BaseController(object):
     @gen.coroutine
     def get(cls, request, pk=None, *args, **kwargs):
         """
-            Fetches all instances of that class, or a specific instance
+        Fetches all instances of that class, or a specific instance
         if pk is given.
 
         :param request: client request
@@ -59,7 +57,7 @@ class BaseController(object):
     @gen.coroutine
     def post(cls, request, *args, **kwargs):
         """
-            Creates a new instance of the class, based on the body
+        Creates a new instance of the class, based on the body
         received from the client.
 
         If audit_logs is enabled on the class, then a log item will be created
@@ -94,12 +92,16 @@ class BaseController(object):
         try:
             response = cls.model.objects.create(**params)
         except NotUniqueError as e:
-            log.info("Failed to create {}: {}".format(cls.model.__name__, e),
-                     exc_info=True)
+            log.info(
+                "Failed to create {}".format(cls.model.__name__),
+                exc_info=True
+            )
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
-            log.info("Invalid document {} error: {}".format(cls.model.__name__,
-                                                            e, exc_info=True))
+            log.info(
+                "Invalid document {}".format(cls.model.__name__),
+                exc_info=True
+            )
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
@@ -107,14 +109,17 @@ class BaseController(object):
             audit_log = AuditLog(
                 user=user.email,
                 action='new {}'.format(cls.model.__name__),
-                message='{} {} added'.format(cls.model.__name__,
-                                             kwargs.get('name'))
+                message='{} {} added'.format(
+                    cls.model.__name__, kwargs.get('name')
+                )
             )
             audit_log.save()
 
-            request.broadcast(audit_log.get_dict(),
-                              verb='post', resource='/api/v1/auditlogs/',
-                              admin_only=True)
+            request.broadcast(
+                audit_log.get_dict(),
+                verb='post', resource='/api/v1/auditlogs/',
+                admin_only=True
+            )
 
         request.broadcast(response.get_dict())
 
@@ -124,7 +129,7 @@ class BaseController(object):
     @gen.coroutine
     def put(cls, request, pk, *args, **kwargs):
         """
-            Updates an instance of the class, identified by its primary key.
+        Updates an instance of the class, identified by its primary key.
 
         If audit_logs is enabled on the class, then a log item will be created
         for this action.
@@ -166,10 +171,10 @@ class BaseController(object):
         try:
             response = instance.save()
         except NotUniqueError as e:
-            log.info(["Duplicate key:", e], exc_info=True)
+            log.info("Duplicate key", exc_info=True)
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
-            log.info(["Invalid document error:", e], exc_info=True)
+            log.info("Invalid document error:", exc_info=True)
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
@@ -184,9 +189,11 @@ class BaseController(object):
             )
             audit_log.save()
 
-            request.broadcast(audit_log.get_dict(),
-                              verb='post', resource='/api/v1/auditlogs/',
-                              admin_only=True)
+            request.broadcast(
+                audit_log.get_dict(),
+                verb='post', resource='/api/v1/auditlogs/',
+                admin_only=True
+            )
 
         request.broadcast(response.get_dict())
 
@@ -202,7 +209,7 @@ class BaseController(object):
     @gen.coroutine
     def delete(cls, request, pk):
         """
-            Deletes an instance of the class, identified by its primary key.
+        Deletes an instance of the class, identified by its primary key.
 
         If audit_logs is enabled on the class, then a log item will be created
         for this action.
@@ -228,10 +235,10 @@ class BaseController(object):
         try:
             instance.delete()
         except NotUniqueError as e:
-            log.info(["Not unique error:", e], exc_info=True)
+            log.info("Not unique error", exc_info=True)
             raise ReplyError(409, cls.model.get_message_from_exception(e))
         except InvalidDocumentError as e:
-            log.info(["Invalid document error:", e], exc_info=True)
+            log.info("Invalid document error", exc_info=True)
             raise ReplyError(400, cls.model.get_message_from_exception(e))
 
         if cls.audit_logs:
@@ -239,13 +246,16 @@ class BaseController(object):
             audit_log = AuditLog(
                 user=user.email,
                 action='delete {}'.format(cls.model.__name__),
-                message='{} {} deleted'.format(cls.model.__name__,
-                                               getattr(instance, 'name', ''))
+                message='{} {} deleted'.format(
+                    cls.model.__name__, getattr(instance, 'name', '')
+                )
             )
             audit_log.save()
 
-            request.broadcast(audit_log.get_dict(),
-                              verb='post', resource='/api/v1/auditlogs/',
-                              admin_only=True)
+            request.broadcast(
+                audit_log.get_dict(),
+                verb='post', resource='/api/v1/auditlogs/',
+                admin_only=True
+            )
 
         request.broadcast(pk)
