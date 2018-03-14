@@ -45,8 +45,10 @@ class AuthController(BaseController):
 
         if LDAP_AUTH:
             try:
-                server = Server(LDAP_CONF['uri'], port=LDAP_CONF['port'],
-                                get_info=ALL)
+                server = Server(
+                    LDAP_CONF['uri'], port=LDAP_CONF['port'],
+                    get_info=ALL
+                )
                 with Connection(
                     server, authentication=AUTH_SIMPLE, user=email,
                     password=password, auto_bind=True
@@ -82,7 +84,10 @@ class AuthController(BaseController):
             {'id': str(user.pk), 'role': user.role},
             SECRET, algorithm='HS256'
         )
-        request.send({'token': token.decode('utf8'), 'userId': str(user.pk)})
+        request.send({
+            'token': token.decode('utf8'),
+            'userId': str(user.pk)
+        })
 
     @classmethod
     @gen.coroutine
