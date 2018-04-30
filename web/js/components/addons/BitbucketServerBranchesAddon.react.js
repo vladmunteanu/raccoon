@@ -6,6 +6,7 @@ import TimeAgo from 'react-timeago';
 import Select from 'react-select';
 
 import BaseAddon from './BaseAddon.react';
+import CommitItem from '../CommitItem.react';
 
 // stores
 import BitbucketServerStore from '../../stores/BitbucketServerStore';
@@ -184,37 +185,8 @@ class BitbucketServerBranchesAddon extends BaseAddon {
                 <div className="col-sm-6 col-md-6 col-lg-6" style={{height: 400, overflow: "auto"}}>
                     <ul className="media-list">
                         {
-                            this.state.commits.map(commit => {
-                                let commit_date = new Date(commit.date);
-                                return (
-                                    <li key={`commit-${commit.sha}`} className="container-fluid">
-                                        <div className="row">
-                                            <div className="col-sd-10 col-md-10 col-lg-10">
-                                                <img src={Utils.gravatarUrl(commit.author.email)}
-                                                     title={commit.author.name}
-                                                     style={{width: 17, marginRight: 8}}
-                                                     className="img-circle"
-                                                     data-toggle="tooltip"
-                                                     data-placement="bottom"
-                                                     data-html="true"
-                                                     data-original-title={commit.author.name}
-                                                />
-                                                <span>
-                                                    <b>{commit.author.name}</b>{" - " + commit.message}
-                                                </span>
-                                            </div>
-                                            <div className="col-sd-2 col-md-2 col-lg-2">
-                                                <small className="pull-right">
-                                                    <TimeAgo
-                                                        date={commit_date.getTime()}
-                                                        minPeriod={60}
-                                                        formatter={Utils.timeAgoFormatter}
-                                                    />
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                )
+                            this.state.commits.map((commit, i) => {
+                                return <CommitItem key={'commit-' + i} commit={commit}/>;
                             })
                         }
                     </ul>

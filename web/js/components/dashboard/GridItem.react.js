@@ -66,7 +66,7 @@ class GridItem extends React.Component {
             }
         }
     }
-    
+
     render() {
         let installedBuild = null;
         if (this.state.installedBuild)
@@ -95,6 +95,11 @@ class GridItem extends React.Component {
                         <li className="dropdown-header">Changelog</li>
                         {
                             installedBuild.changelog.slice(0, 10).map((commit, i) => {
+                                let msg = commit.message.split('\n');
+                                let commitTitle = commit.message;
+                                if (msg && msg.length > 0) {
+                                    commitTitle = msg[0]
+                                }
                                 return (
                                     <li className="dropdown-item" key={"commit-" + i} style={styles.changelogCommit}>
                                         <span>
@@ -108,7 +113,7 @@ class GridItem extends React.Component {
                                                 />
                                             </small>
                                             {" - "}
-                                            <a href={commit.url} target="_blank">{commit.message}</a>
+                                            <a href={commit.url} target="_blank">{commitTitle}</a>
                                         </span>
                                         <div className="divider" style={styles.changelogCommitDivider}/>
                                     </li>
