@@ -2,6 +2,8 @@ import logging
 import json
 
 from tornado import gen
+from tornado import ioloop
+from tornado.concurrent import Future
 import tornado.websocket
 
 from ..urls import Router
@@ -38,7 +40,6 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
         CLIENT_CONNECTIONS[self.connection_id] = self
         log.info(['WebSocket opened', CLIENT_CONNECTIONS.keys()])
 
-    @gen.coroutine
     def on_message(self, message):
         """
         javascript
@@ -88,7 +89,30 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 socket=self
             )
             self.is_admin = req.is_admin
-            yield method(req, **params)
+
+            def future_done(f):
+                try:
+                    f.result()
+                except ReplyError as exc:
+                    exc.request_id = request_id
+                    exc.verb = verb
+                    exc.resource = resource
+
+                    # log error
+                    if exc.code >= 400:
+                        log.error('Possible error detected', exc_info=True)
+                    self.write_message(str(exc))
+                except Exception:
+                    exc = ReplyError(
+                        500, request_id=request_id,
+                        verb=verb, resource=resource
+                    )
+                    self.write_message(str(exc))
+                    log.error('Internal server error', exc_info=True)
+
+            result = method(req, **params)
+            if isinstance(result, Future):
+                ioloop.IOLoop.current().add_future(result, future_done)
         except ReplyError as e:
             e.request_id = request_id
             e.verb = verb
@@ -99,8 +123,10 @@ class ApiWebSocketHandler(tornado.websocket.WebSocketHandler):
                 log.error('Possible error detected', exc_info=True)
             self.write_message(str(e))
         except Exception:
-            ex = ReplyError(500, request_id=request_id,
-                            verb=verb, resource=resource)
+            ex = ReplyError(
+                500, request_id=request_id,
+                verb=verb, resource=resource
+            )
             self.write_message(str(ex))
             log.error('Internal server error', exc_info=True)
 
