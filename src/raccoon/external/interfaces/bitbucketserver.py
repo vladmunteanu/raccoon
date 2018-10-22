@@ -1,4 +1,3 @@
-import time
 import logging
 
 from tornado import gen
@@ -84,10 +83,8 @@ class BitbucketServerInterface(BaseInterface):
         if values:
             for item in values:
                 if 'displayName' in item['author']:
-                    author_raw = item['author']['displayName']
                     author_name = item['author']['displayName']
                 else:
-                    author_raw = item['author']['name']
                     author_name = item['author']['name']
                 author_email = item['author']['emailAddress']
                 commit_url = "{}/projects/{}/repos/{}/commits/{}".format(
