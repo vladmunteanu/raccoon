@@ -18,7 +18,7 @@ class BaseStore extends EventEmitter {
 
     registerActions() {
         AppDispatcher.registerOnce('PUT ' + this.baseuri, payload => {
-            if (payload.code == 200) {
+            if (payload.code === 200) {
                 let tmpObj = this.instances[payload.data.id] || {};
                 Object.keys(payload.data).forEach((key) => {
                     tmpObj[key] = payload.data[key];
@@ -43,7 +43,7 @@ class BaseStore extends EventEmitter {
         });
 
         AppDispatcher.registerOnce('DELETE ' + this.baseuri, payload => {
-            if (payload.code == 200) {
+            if (payload.code === 200) {
                 delete this.instances[payload.data];
                 this.emitChange();
             }

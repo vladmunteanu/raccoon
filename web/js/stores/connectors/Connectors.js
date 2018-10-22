@@ -10,6 +10,11 @@ import SaltStore from '../../stores/SaltStore';
 
 
 // for code
+// ConnectorStore.register(<connector_type>, <associated_store>, [
+//     {id: 'branches', label: 'Branches'}
+// ]);
+
+
 ConnectorStore.register('github', GitHubStore, [
     {id: 'branches', label: 'Branches'}
 ]);

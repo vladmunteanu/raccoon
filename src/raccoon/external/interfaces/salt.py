@@ -65,4 +65,5 @@ class SaltStackInterface(BaseInterface):
 
         raise gen.Return(response)
 
+
 REGISTERED['salt'] = SaltStackInterface
