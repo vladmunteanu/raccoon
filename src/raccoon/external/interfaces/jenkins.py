@@ -261,8 +261,10 @@ class JenkinsInterface(BaseInterface):
         except DoesNotExist:
             raise ReplyError(404)
 
-        install = Install(build=build, project=project,
-                          environment=env, task=task)
+        install = Install(
+            build=build, project=project,
+            environment=env, task=task
+        )
         install.save()
 
         # Notify clients about the new Install
@@ -304,20 +306,17 @@ class JenkinsInterface(BaseInterface):
             url=url,
         )
 
-        user = request.user
-        task_kw = {
-            "user": user,
-            "connector_type": 'jenkins',
-            "job": flow.job,
-            "context": kwargs,
-            "status": PENDING,
-            "date_added": datetime.datetime.utcnow()
-        }
-
-        if 'environment' in kwargs:
-            task_kw['environment'] = kwargs['environment']['id']
-
-        task = Task(**task_kw)
+        task = Task(
+            connector_type='jenkins',
+            action_type=flow.job.action_type,
+            user=request.user,
+            job=flow.job,
+            context=kwargs,
+            status=PENDING,
+            date_added=datetime.datetime.utcnow(),
+            environment=kwargs.get('environment', {}).get('id'),
+            project=kwargs.get('project', {}).get('id')
+        )
         task.add_callback(callback_method)
         task.save()
 

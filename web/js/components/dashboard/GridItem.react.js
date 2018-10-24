@@ -3,11 +3,15 @@ import TimeAgo from 'react-timeago'
 
 import CardMenu from './CardMenu.react';
 import Utils from '../../utils/Utils';
+import TaskProgressBar from '../TaskProgressBar.react';
 
 import ActionStore from '../../stores/ActionStore';
 import BuildStore from '../../stores/BuildStore';
 import InstallStore from '../../stores/InstallStore';
-
+import TaskStore from '../../stores/TaskStore';
+import ProjectStore from '../../stores/ProjectStore';
+import EnvironmentStore from '../../stores/EnvironmentStore';
+import {TASK_UNREADY_STATES} from "../../constants/Constants";
 
 class GridItem extends React.Component {
 
@@ -17,16 +21,21 @@ class GridItem extends React.Component {
         this.state = {
             install: null,
             installedBuild: null,
-            noInstalledBuild: false
+            noInstalledBuild: false,
+            tasksInProgress: null
         };
 
         this._onInstallChange = this._onInstallChange.bind(this);
         this._onBuildChange = this._onBuildChange.bind(this);
+        this._onChange = this._onChange.bind(this);
     }
 
     componentWillMount() {
         InstallStore.addListener(this._onInstallChange);
         BuildStore.addListener(this._onBuildChange);
+        TaskStore.addListener(this._onChange);
+        ProjectStore.addListener(this._onChange);
+        EnvironmentStore.addListener(this._onChange);
 
         InstallStore.fetchInstalls(this.props.project, this.props.environment)
     }
@@ -34,13 +43,19 @@ class GridItem extends React.Component {
     componentWillUnmount() {
         InstallStore.removeListener(this._onInstallChange);
         BuildStore.removeListener(this._onBuildChange);
+        TaskStore.removeListener(this._onChange);
+        ProjectStore.removeListener(this._onChange);
+        EnvironmentStore.removeListener(this._onChange);
     }
 
     _onInstallChange() {
         let install = InstallStore.getLatestInstall(
             this.props.project, this.props.environment
         );
-        if ((install && !this.state.install) || (install && this.state.install && install.id != this.state.install.id)) {
+        if (
+            (install && !this.state.install) ||
+            (install && this.state.install && install.id !== this.state.install.id)
+        ) {
             this.setState({
                 install: install,
                 installedBuild: null,
@@ -67,15 +82,56 @@ class GridItem extends React.Component {
         }
     }
 
+    /**
+     * Reacts to TaskStore, ProjectStore or EnvironmentStore changes
+     * to compute the list of in progress tasks.
+     * @private
+     */
+    _onChange() {
+        let tasks = TaskStore.all.filter(task => {
+            let project = ProjectStore.getById(task.project);
+            let environment = EnvironmentStore.getById(task.environment);
+
+            if (!project || !environment) return false;
+
+            return (
+                project.id === this.props.project.id &&
+                environment.id === this.props.environment.id &&
+                (task.status === 'STARTED' || task.status === 'PENDING') &&
+                task.connector_type === 'jenkins' &&
+                task.action_type === 'install'
+            );
+        });
+
+        // sort descending by date_added
+        tasks.sort((a, b) => {return b.date_added - a.date_added});
+        this.setState({tasksInProgress: tasks});
+    }
+
     render() {
         let installedBuild = null;
-        if (this.state.installedBuild)
+        if (this.state.installedBuild) {
             installedBuild = this.state.installedBuild;
+        }
 
         let content = (<h5 className="text-center">Loading...</h5>);
         if (this.state.noInstalledBuild) {
             content = (<h5 className="text-center">No build installed yet</h5>);
         }
+
+        // progress bar for a running install task
+        let progressBar = null;
+        if (this.state.tasksInProgress && this.state.tasksInProgress.length > 0) {
+            progressBar = (
+                <div>
+                    <TaskProgressBar task={this.state.tasksInProgress[0]}/>
+                    <div style={{textAlign: 'center'}}>
+                        install in progress...
+                    </div>
+                </div>
+            )
+        }
+
         if (installedBuild) {
             content = (
                 <div className="dropdown">
@@ -91,6 +147,8 @@ class GridItem extends React.Component {
                     <a href="#" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {installedBuild.branch}
                     </a>
+                    <br/>
+                    <div>{progressBar}</div>
                     <ul className="dropdown-menu">
                         <li className="dropdown-header">Changelog</li>
                         {

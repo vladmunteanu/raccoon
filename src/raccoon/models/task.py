@@ -3,7 +3,7 @@ import datetime
 
 from mongoengine import StringField, DateTimeField, ReferenceField, DictField
 
-from raccoon.models import BaseModel, User, Job, Environment
+from raccoon.models import BaseModel, User, Job, Environment, Project
 
 
 log = logging.getLogger(__name__)
@@ -13,8 +13,10 @@ class Task(BaseModel):
 
     user = ReferenceField(document_type=User, required=True)
     connector_type = StringField(required=True)
+    action_type = StringField()
     job = ReferenceField(document_type=Job)
     environment = ReferenceField(document_type=Environment)
+    project = ReferenceField(document_type=Project)
     context = DictField()
     callback_details = DictField(default={})
     date_added = DateTimeField(default=datetime.datetime.now)

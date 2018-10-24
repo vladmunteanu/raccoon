@@ -143,7 +143,7 @@ class Flow extends React.Component {
                 this.setState({step: this.state.step + 1});
             }
             else {
-                this._displayAddonErrors(errors, enableNotifications)
+                this._displayAddonErrors(error, enableNotifications)
             }
         });
     }

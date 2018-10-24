@@ -10,6 +10,7 @@ import JobStore from '../stores/JobStore';
 import RaccoonApp from './RaccoonApp.react';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import Utils from '../utils/Utils';
+import TaskProgressBar from './TaskProgressBar.react';
 import {TASK_READY_STATES, TASK_UNREADY_STATES} from '../constants/Constants';
 
 
@@ -55,7 +56,7 @@ export class TaskItem extends React.Component {
         this.setState(state);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         JobStore.addListener(this._onChange);
 
         JobStore.fetchById(this.props.data.job);
@@ -90,20 +91,11 @@ export class TaskItem extends React.Component {
 
         let data = this.props.data;
         let now = new Date().getTime();
-        let started_at = data.started_at || 0;
-        let estimated_duration = data.estimated_duration || 0;
-        let duration = now - started_at;
-        let progress = data.status === 'SUCCESS' ? 100 : Math.round(duration * 100 / estimated_duration);
 
         // progress bar
-        let progressBar;
-        let progressStyle = {width: progress + '%'};
+        let progressBar = null;
         if (TASK_UNREADY_STATES.has(data.status)) {
-            progressBar = (
-                <div className="materialize-progress">
-                    <div className={data.status === 'PENDING' ? 'indeterminate' : 'determinate'} style={progressStyle}/>
-                </div>
-            );
+            progressBar = <TaskProgressBar task={data}/>;
         }
 
         // cancel button
