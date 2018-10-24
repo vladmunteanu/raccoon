@@ -85,9 +85,10 @@ class JenkinsInterface(BaseInterface):
         context.update({
             'project': project.get_dict(),
             'version': version,
-            'job_arguments': translate_job_arguments(
-                job.arguments, context
-            )
+        })
+
+        context.update({
+            'job_arguments': translate_job_arguments(job.arguments, context)
         })
 
         # Notify clients about project changes.
