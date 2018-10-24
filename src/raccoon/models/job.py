@@ -3,7 +3,7 @@ import datetime
 from mongoengine import StringField, ListField, DateTimeField
 from mongoengine import ReferenceField, DictField
 
-from . import BaseModel, Connector
+from raccoon.models import BaseModel, Connector
 
 
 class Job(BaseModel):

@@ -4,9 +4,9 @@ import logging
 import jwt
 from mongoengine import DoesNotExist
 
-from ..models import User
-from .utils import json_serial
-from ..settings import SECRET
+from raccoon.models import User
+from raccoon.utils.utils import json_serial
+from raccoon.settings import SECRET
 
 log = logging.getLogger(__name__)
 CLIENT_CONNECTIONS = {}
@@ -56,10 +56,10 @@ class Request(object):
 
     def broadcast(self, response=None, verb=None, resource=None, admin_only=False):
         """
-            Broadcasts a message on all websocket connections.
-            For the current request, the reply will contain the requestId so
+        Broadcasts a message on all websocket connections.
+        For the current request, the reply will contain the requestId so
         a request-response cycle can be completed.
-            For other users, the requestId will be 'notification'.
+        For other users, the requestId will be 'notification'.
 
         :param response: message to send
         :type response: dict
@@ -82,12 +82,13 @@ class Request(object):
             socket.write_message(json.dumps(data, default=json_serial))
 
     def _process_token(self):
-        """Processes the JWT token and sets user_data and is_admin."""
+        """ Processes the JWT token and sets user_data and is_admin. """
         if not self.token:
             return
         try:
-            self.user_data = jwt.decode(self.token, SECRET,
-                                        algorithms=['HS256'])
+            self.user_data = jwt.decode(
+                self.token, SECRET, algorithms=['HS256']
+            )
         except jwt.DecodeError:
             log.warning(["Cannot decode token", self.token])
         else:
@@ -96,7 +97,7 @@ class Request(object):
 
 def broadcast(response=None, verb=None, resource=None, admin_only=False):
     """
-        Broadcasts a message on all websocket connections.
+    Broadcasts a message on all websocket connections.
 
     :param response: message to send
     :type response: dict

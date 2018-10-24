@@ -4,7 +4,7 @@ import logging
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPError
 
-from ...utils.exceptions import ReplyError
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class BaseInterface(object):
               follow_redirects=True, auth_username=None, auth_password=None,
               connection_timeout=5):
         """
-            Perform and asynchronous HTTP request, deserialize the response
+        Perform and asynchronous HTTP request, deserialize the response
         body as JSON and return tuple of body and headers.
 
         :param url: HTTP url
@@ -38,22 +38,23 @@ class BaseInterface(object):
         :rtype: tuple
         """
         body = body or 'no body' if method.upper() == 'POST' else None
-        log.info(['BaseInterface.fetch', method, url])
 
         try:
-            response = yield self.HTTPClient.fetch(HTTPRequest(
-                url=url,
-                method=method,
-                body=body,
-                headers=headers,
-                follow_redirects=follow_redirects,
-                use_gzip=True,
-                validate_cert=False,
-                auth_username=auth_username,
-                auth_password=auth_password,
-                request_timeout=timeout,
-                connect_timeout=connection_timeout
-            ))
+            response = yield self.HTTPClient.fetch(
+                HTTPRequest(
+                    url=url,
+                    method=method,
+                    body=body,
+                    headers=headers,
+                    follow_redirects=follow_redirects,
+                    use_gzip=True,
+                    validate_cert=False,
+                    auth_username=auth_username,
+                    auth_password=auth_password,
+                    request_timeout=timeout,
+                    connect_timeout=connection_timeout
+                )
+            )
         except HTTPError as exc:
             raise ReplyError(exc.code, str(exc))
         except Exception as exc:

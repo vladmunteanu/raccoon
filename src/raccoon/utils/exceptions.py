@@ -3,7 +3,7 @@ import logging
 import traceback
 from http.server import BaseHTTPRequestHandler
 
-from ..settings import DEBUG
+from raccoon.settings import DEBUG
 
 log = logging.getLogger(__name__)
 
@@ -11,9 +11,7 @@ ERROR_MESSAGES = BaseHTTPRequestHandler.responses
 
 
 class ReplyError(Exception):
-    """
-    API Reply Error Exception
-    """
+    """ API Reply Error Exception """
 
     def __init__(self, code, message=None, request_id=None,
                  verb=None, resource=None):
@@ -47,7 +45,7 @@ class ReplyError(Exception):
 class RetryException(Exception):
     def __init__(self, countdown=None):
         """
-            Raised when the task should be retried.
+        Raised when the task should be retried.
         :param countdown: Timeout to wait before retry (seconds)
         :type countdown: int
         """

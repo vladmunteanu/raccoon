@@ -3,11 +3,11 @@ import logging
 from mongoengine.errors import DoesNotExist
 from tornado import gen
 
-from ..interfaces.bitbucket import BitbucketInterface
-from ...controllers import BaseController
-from ...models import Project
-from ...utils.decorators import authenticated
-from ...utils.exceptions import ReplyError
+from raccoon.external.interfaces.bitbucket import BitbucketInterface
+from raccoon.controllers import BaseController
+from raccoon.models import Project
+from raccoon.utils.decorators import authenticated
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 

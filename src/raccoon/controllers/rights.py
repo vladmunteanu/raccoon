@@ -1,13 +1,10 @@
 import logging
 
-from . import BaseController
-from ..models import Right
+from raccoon.controllers import BaseController
+from raccoon.models import Right
 
 log = logging.getLogger(__name__)
 
 
 class RightsController(BaseController):
-    """
-    Rights Controller
-    """
     model = Right

@@ -2,7 +2,7 @@ import datetime
 
 from mongoengine import StringField, ReferenceField, DateTimeField
 
-from . import BaseModel, Project, Environment, Flow
+from raccoon.models import BaseModel, Project, Environment, Flow
 
 
 class Action(BaseModel):

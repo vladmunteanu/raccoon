@@ -3,19 +3,16 @@ import logging
 from mongoengine.errors import DoesNotExist
 from tornado import gen
 
-from . import BaseController
-from ..models import Build, Project
-from ..utils.decorators import authenticated
-from ..utils.exceptions import ReplyError
-from ..external.interfaces.github import GitHubInterface
+from raccoon.controllers import BaseController
+from raccoon.models import Build, Project
+from raccoon.utils.decorators import authenticated
+from raccoon.utils.exceptions import ReplyError
+from raccoon.external.interfaces.github import GitHubInterface
 
 log = logging.getLogger(__name__)
 
 
 class BuildsController(BaseController):
-    """
-    Builds Controller
-    """
     model = Build
 
     @classmethod
@@ -23,7 +20,7 @@ class BuildsController(BaseController):
     @gen.coroutine
     def get(cls, request, pk=None, project=None, *args, **kwargs):
         """
-            Fetches all builds, or a specific instance if pk is given.
+        Fetches all builds, or a specific instance if pk is given.
 
         :param request: client request
         :type request: raccoon.utils.request.Request
@@ -46,7 +43,9 @@ class BuildsController(BaseController):
             if project:
                 query_kw['project'] = project
 
-            response = cls.model.objects(**query_kw).order_by('-date_added')[:cls.page_size]
+            response = cls.model.objects(
+                **query_kw
+            ).order_by('-date_added')[:cls.page_size]
             response = [r.get_dict() for r in response]
 
         request.send(response)

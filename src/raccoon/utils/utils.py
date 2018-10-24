@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-from bson.objectid import ObjectId
+from bson import ObjectId
 
 
 def json_serial(obj):
@@ -16,7 +16,7 @@ def json_serial(obj):
 
 def translate_job_arguments(job_arguments, context):
     """
-        Translates the Job arguments given by the user, replacing placeholders
+    Translates the Job arguments given by the user, replacing placeholders
     with actual values from the context dictionary.
 
     :param job_arguments: list of Job arguments

@@ -2,7 +2,7 @@ import datetime
 
 from mongoengine import StringField, DateTimeField
 
-from . import BaseModel
+from raccoon.models import BaseModel
 
 
 class Right(BaseModel):

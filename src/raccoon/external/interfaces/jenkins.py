@@ -5,12 +5,12 @@ from urllib.parse import urlencode, urlparse, urljoin
 from tornado import gen
 from mongoengine.errors import DoesNotExist
 
-from . import BaseInterface, REGISTERED
-from ...models import Task, Build, Project, Environment, Install, AuditLog
-from ...utils.exceptions import ReplyError
-from ...utils.request import broadcast
-from ...utils.utils import translate_job_arguments
-from ...tasks.jenkins import JenkinsQueueWatcherTask, PENDING
+from raccoon.external.interfaces import BaseInterface, REGISTERED
+from raccoon.models import Task, Build, Project, Environment, Install, AuditLog
+from raccoon.utils.exceptions import ReplyError
+from raccoon.utils.request import broadcast
+from raccoon.utils.utils import translate_job_arguments
+from raccoon.tasks.jenkins import JenkinsQueueWatcherTask, PENDING
 
 
 log = logging.getLogger(__name__)
@@ -29,9 +29,6 @@ URLS = {
 
 
 class JenkinsInterface(BaseInterface):
-    """
-    curl -vkX POST 'https://%USER%:%TOKEN%@%HOST%/job/%JOB_NAME%/buildWithParameters/api/json?%PARAMS%'
-    """
     tasks = None
 
     def __init__(self, connector):
@@ -53,7 +50,7 @@ class JenkinsInterface(BaseInterface):
     @gen.coroutine
     def build(self, request, flow=None, job=None, *args, **kwargs):
         """
-            Called by the Jenkins controller to perform a build job.
+        Called by the Jenkins controller to perform a build job.
         Executes trigger with the modified context and build_callback
         for the task.
 
@@ -88,14 +85,16 @@ class JenkinsInterface(BaseInterface):
         context.update({
             'project': project.get_dict(),
             'version': version,
+            'job_arguments': translate_job_arguments(
+                job.arguments, context
+            )
         })
 
-        context.update({'job_arguments': translate_job_arguments(job.arguments,
-                                                                 context)})
-
         # Notify clients about project changes.
-        request.broadcast(project.get_dict(), verb='put',
-                          resource='/api/v1/projects/')
+        request.broadcast(
+            project.get_dict(),
+            verb='put', resource='/api/v1/projects/'
+        )
 
         # Log build started
         user = request.user
@@ -107,21 +106,25 @@ class JenkinsInterface(BaseInterface):
         )
         audit_log.save()
 
-        request.broadcast(audit_log.get_dict(),
-                          verb='post', resource='/api/v1/auditlogs/',
-                          admin_only=True)
+        request.broadcast(
+            audit_log.get_dict(),
+            verb='post', resource='/api/v1/auditlogs/',
+            admin_only=True
+        )
 
         # Trigger the job in Jenkins
-        yield self.trigger(request, flow, callback_method=self.build_callback,
-                           *args, **context)
+        yield self.trigger(
+            request, flow, callback_method=self.build_callback,
+            *args, **context
+        )
 
     @classmethod
     @gen.coroutine
     def build_callback(cls, task, response):
         """
-            Passed to the Task object, this function represents the callback
+        Passed to the Task object, this function represents the callback
         that will be executed when the task finishes successfully.
-            Creates the Build object and broadcasts the change to all
+        Creates the Build object and broadcasts the change to all
         connected clients.
 
         :param task: Task object that was passed this callback.
@@ -140,8 +143,9 @@ class JenkinsInterface(BaseInterface):
             raise ReplyError(404)
 
         # Get commits and create changelog
-        changelog = yield project.connector.interface.commits(project=project,
-                                                              branch=branch)
+        changelog = yield project.connector.interface.commits(
+            project=project, branch=branch
+        )
 
         # Create the Build instance
         build = Build(
@@ -159,7 +163,7 @@ class JenkinsInterface(BaseInterface):
     @gen.coroutine
     def install(self, request, flow=None, job=None, *args, **kwargs):
         """
-            Called by the Jenkins controller to perform an install job.
+        Called by the Jenkins controller to perform an install job.
         Executes trigger with the modified context and install_callback
         for the task.
 
@@ -196,8 +200,9 @@ class JenkinsInterface(BaseInterface):
             raise ReplyError(404)
 
         # Replace placeholders in Job arguments that are found in context
-        context.update({'job_arguments': translate_job_arguments(job.arguments,
-                                                                 context)})
+        context.update({
+            'job_arguments': translate_job_arguments(job.arguments, context)
+        })
 
         # Log the install
         user = request.user
@@ -210,21 +215,25 @@ class JenkinsInterface(BaseInterface):
         )
         audit_log.save()
 
-        request.broadcast(audit_log.get_dict(),
-                          verb='post', resource='/api/v1/auditlogs/',
-                          admin_only=True)
+        request.broadcast(
+            audit_log.get_dict(),
+            verb='post', resource='/api/v1/auditlogs/',
+            admin_only=True
+        )
 
         # Trigger the Jenkins job
-        yield self.trigger(request, flow, callback_method=self.install_callback,
-                           *args, **context)
+        yield self.trigger(
+            request, flow, callback_method=self.install_callback,
+            *args, **context
+        )
 
     @classmethod
     @gen.coroutine
     def install_callback(cls, task, response):
         """
-            Passed to the Task object, this function represents the callback
+        Passed to the Task object, this function represents the callback
         that will be executed when the task finishes successfully.
-            Creates the Install object and broadcasts the change to all
+        Creates the Install object and broadcasts the change to all
         connected clients.
 
         :param task: Task object that was passed this callback.
@@ -262,7 +271,7 @@ class JenkinsInterface(BaseInterface):
     @gen.coroutine
     def trigger(self, request, flow, callback_method=None, *args, **kwargs):
         """
-            Triggers the job in Jenkins by collecting the job name from flow
+        Triggers the job in Jenkins by collecting the job name from flow
         and job arguments from the context generated by that flow.
         Builds the URL for the Jenkins API and performs the HTTP call,
         creates and starts the watcher tasks for the current job.
@@ -315,21 +324,23 @@ class JenkinsInterface(BaseInterface):
         # Start local Jenkins watcher jobs
         # Get queue URL from Jenkins response headers
         queue_url = headers.get('Location')
-        job_watcher = JenkinsQueueWatcherTask(task, countdown=5,
-                                              api_url=self.api_url,
-                                              queue_url=queue_url)
+        job_watcher = JenkinsQueueWatcherTask(
+            task, countdown=5, api_url=self.api_url, queue_url=queue_url
+        )
         yield job_watcher.delay()
 
         # broadcast the Task object to all connected clients
-        request.broadcast(task.get_dict(), verb='post',
-                          resource='/api/v1/tasks/')
+        request.broadcast(
+            task.get_dict(),
+            verb='post', resource='/api/v1/tasks/'
+        )
 
         raise ReplyError(201)
 
     @gen.coroutine
     def generic(self, request, flow=None, job=None, *args, **kwargs):
         """
-            Runs a generic job, starting the queue watcher and job watcher
+        Runs a generic job, starting the queue watcher and job watcher
         tasks.
 
         :param request: HTTP request
@@ -341,15 +352,17 @@ class JenkinsInterface(BaseInterface):
         :param kwargs: parameters for jenkins job
         """
         context = kwargs.copy()
-        context.update({'job_arguments': translate_job_arguments(job.arguments,
-                                                                 context)})
+        context.update({
+            'job_arguments': translate_job_arguments(job.arguments, context)
+        })
 
         yield self.trigger(request, flow, *args, **context)
 
     @gen.coroutine
     def jobs(self, *args, **kwargs):
         """
-            Retrieves the Jenkins Jobs from the API.
+        Retrieves the Jenkins Jobs from the API.
+
         :param args: not used.
         :param kwargs: not used.
         :return: jobs
@@ -406,7 +419,10 @@ class JenkinsInterface(BaseInterface):
         except DoesNotExist:
             raise ReplyError(404)
 
-        if request.user_data.get('id') != str(task.user.id) and not request.is_admin:
+        if (
+            not request.is_admin
+            and request.user_data.get('id') != str(task.user.id)
+        ):
             raise ReplyError(401)
 
         response, headers = yield self.fetch(

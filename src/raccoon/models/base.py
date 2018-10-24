@@ -16,7 +16,7 @@ class BaseModel(Document):
 
     def get_dict(self):
         """
-            Returns a dict representation of the object, adding the primary key.
+        Returns a dict representation of the object, adding the primary key.
 
         :return: dict representation
         :rtype: dict
@@ -30,7 +30,7 @@ class BaseModel(Document):
     @classmethod
     def get_message_from_exception(cls, e):
         """
-            Parses the exception and returns an error message for this model.
+        Parses the exception and returns an error message for this model.
 
         :param e: exception
         :type e: Exception

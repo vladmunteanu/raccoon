@@ -1,1 +1,1 @@
-from .base import BaseInterface, REGISTERED
+from raccoon.external.interfaces.base import BaseInterface, REGISTERED

@@ -3,10 +3,10 @@ import logging
 from tornado import gen
 from mongoengine.errors import DoesNotExist
 
-from . import BaseController
-from ..models import Task
-from ..utils.exceptions import ReplyError
-from ..tasks.long_polling import FAILURE
+from raccoon.controllers import BaseController
+from raccoon.models import Task
+from raccoon.utils.exceptions import ReplyError
+from raccoon.tasks.long_polling import FAILURE
 
 log = logging.getLogger(__name__)
 
@@ -69,5 +69,7 @@ class TasksController(BaseController):
         yield callback_method(task=task, response=kwargs.get('result'))
 
         # send the updated Task object
-        request.broadcast(task.get_dict(), verb='PUT',
-                          resource='/api/v1/tasks/{}'.format(pk))
+        request.broadcast(
+            task.get_dict(),
+            verb='PUT', resource='/api/v1/tasks/{}'.format(pk)
+        )

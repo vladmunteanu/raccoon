@@ -7,15 +7,15 @@ import tornado.web
 import tornado.httpserver
 from mongoengine import connect
 
-from .settings import DB, APP, HOST, PORT, SSL_OPTIONS
-from .handlers import WebHandler, ApiWebSocketHandler
-from .tasks.jenkins import resume_ongoing_tasks
+from raccoon.settings import DB, APP, HOST, PORT, SSL_OPTIONS
+from raccoon.handlers import WebHandler, ApiWebSocketHandler
+from raccoon.tasks.jenkins import resume_ongoing_tasks
 
 log = logging.getLogger(__name__)
 
 
 class Application(tornado.web.Application):
-    """Main Application"""
+    """ Main Application """
     def __init__(self):
         handlers = [
             (r'^/websocket/?', ApiWebSocketHandler),

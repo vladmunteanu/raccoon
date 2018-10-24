@@ -4,8 +4,8 @@ import datetime
 from tornado.ioloop import IOLoop
 from tornado import gen
 
-from ..utils.exceptions import RetryException, MaxRetriesExceeded, TaskAborted
-from ..utils.request import broadcast
+from raccoon.utils.exceptions import RetryException, MaxRetriesExceeded, TaskAborted
+from raccoon.utils.request import broadcast
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class BaseLongPollingTask(object):
 
     def __init__(self, task, countdown=None, max_retries=None, *args, **kwargs):
         """
-            Represents the base class for long polling tasks using tornado's
+        Represents the base class for long polling tasks using tornado's
         add_timeout function.
 
         :param task: Task model instance, which will be updated in the process
@@ -53,7 +53,7 @@ class BaseLongPollingTask(object):
 
     def notify_clients(self, extra=None):
         """
-            Notifies clients about task changes, such as status updates.
+        Notifies clients about task changes, such as status updates.
 
         :param extra: Extra data which will update the Task get_dict result.
         :type extra: dict
@@ -65,14 +65,16 @@ class BaseLongPollingTask(object):
         if extra:
             task_dict.update(extra)
 
-        broadcast(verb='patch',
-                  resource="/api/v1/tasks/{}".format(self.task.pk),
-                  response=task_dict)
+        broadcast(
+            verb='patch',
+            resource="/api/v1/tasks/{}".format(self.task.pk),
+            response=task_dict
+        )
 
     @gen.coroutine
     def run(self):
         """
-            Performs the actual work. Overwrite this to implement a task.
+        Performs the actual work. Overwrite this to implement a task.
         When your task runs successfully, on_success is called with the return
         value as parameter.
 
@@ -86,7 +88,7 @@ class BaseLongPollingTask(object):
     @gen.coroutine
     def on_success(self, result):
         """
-            Called to handle post-run actions, such as cleanup
+        Called to handle post-run actions, such as cleanup
         or updating objects.
         By default, it updates the task status to SUCCESS and notifies clients.
 
@@ -99,7 +101,7 @@ class BaseLongPollingTask(object):
 
     def _retry(self, countdown=None):
         """
-            Re-schedules the task after countdown seconds.
+        Re-schedules the task after countdown seconds.
         Checks the current retry counter against max_retries.
 
         :param countdown: Overwrites self.countdown (seconds)
@@ -119,7 +121,7 @@ class BaseLongPollingTask(object):
     @gen.coroutine
     def _run(self):
         """
-            Wrapper for the run function.
+        Wrapper for the run function.
         Handles RetryException to re-schedule the task.
 
         :return: None
@@ -144,7 +146,7 @@ class BaseLongPollingTask(object):
     @gen.coroutine
     def delay(self, countdown=0):
         """
-            Start the execution in countdown seconds.
+        Start the execution in countdown seconds.
 
         :param countdown: Timeout before first run. (seconds, default 0)
         :type countdown: int
@@ -162,4 +164,3 @@ class BaseLongPollingTask(object):
 
             log.error("Couldn't schedule task", exc_info=True)
             raise
-

@@ -3,18 +3,15 @@ import logging
 from tornado import gen
 from mongoengine.errors import DoesNotExist
 
-from . import BaseController
-from ..models import Install
-from ..utils.decorators import authenticated
-from ..utils.exceptions import ReplyError
+from raccoon.controllers import BaseController
+from raccoon.models import Install
+from raccoon.utils.decorators import authenticated
+from raccoon.utils.exceptions import ReplyError
 
 log = logging.getLogger(__name__)
 
 
 class InstallsController(BaseController):
-    """
-    Installs Controller
-    """
     model = Install
 
     @classmethod
@@ -22,7 +19,7 @@ class InstallsController(BaseController):
     @gen.coroutine
     def get(cls, request, pk=None, project=None, env=None, *args, **kwargs):
         """
-            Fetches all instances of that class, or a specific instance
+        Fetches all instances of that class, or a specific instance
         if pk is given.
 
         :param request: client request
@@ -47,7 +44,9 @@ class InstallsController(BaseController):
             if env:
                 query_kw['environment'] = env
 
-            response = cls.model.objects(**query_kw).order_by('-date_added')[:cls.page_size]
+            response = cls.model.objects(
+                **query_kw
+            ).order_by('-date_added')[:cls.page_size]
             response = [r.get_dict() for r in response]
 
         request.send(response)

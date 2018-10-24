@@ -1,9 +1,8 @@
-import time
 import logging
 
 from tornado import gen
 
-from . import BaseInterface, REGISTERED
+from raccoon.external.interfaces import BaseInterface, REGISTERED
 
 log = logging.getLogger(__name__)
 
@@ -11,8 +10,6 @@ log = logging.getLogger(__name__)
 class BitbucketServerInterface(BaseInterface):
     __token = None
     __expire_date = None
-
-
 
     @gen.coroutine
     def branches(self, project):
@@ -28,10 +25,10 @@ class BitbucketServerInterface(BaseInterface):
             'Authorization': 'Bearer {}'.format(token),
             'User-Agent': "raccoon/1.0.0",
         }
-        url = '{api_url}/rest/api/1.0/projects/{project_name}/repos/{repo_name}/branches?limit=100'.format(
-            api_url=project.api_url,
-            project_name=project_name,
-            repo_name=bitbucket_repo
+        url = '{}/rest/api/1.0/projects/{}/repos/{}/branches?limit=100'.format(
+            project.api_url,
+            project_name,
+            bitbucket_repo
         )
         response, _ = yield self.fetch(
             url=url,
@@ -68,11 +65,11 @@ class BitbucketServerInterface(BaseInterface):
         }
 
         # https://api.bitbucket.org/2.0/repositories/{USER_NAME}/{REPO_NAME}/commits/master
-        url = '{api_url}/rest/api/1.0/projects/{project_name}/repos/{repo_name}/commits?limit=25&until=refs/heads/{branch}'.format(
-            api_url=project.api_url,
-            project_name=project_name,
-            repo_name=bitbucket_repo,
-            branch=branch
+        url = '{}/rest/api/1.0/projects/{}/repos/{}/commits?limit=25&until=refs/heads/{}'.format(
+            project.api_url,
+            project_name,
+            bitbucket_repo,
+            branch
         )
 
         response, _ = yield self.fetch(
@@ -86,17 +83,15 @@ class BitbucketServerInterface(BaseInterface):
         if values:
             for item in values:
                 if 'displayName' in item['author']:
-                    author_raw = item['author']['displayName']
                     author_name = item['author']['displayName']
                 else:
-                    author_raw = item['author']['name']
                     author_name = item['author']['name']
                 author_email = item['author']['emailAddress']
-                commit_url = "{api_url}/projects/{project_name}/repos/{repo_name}/commits/{commit_id}".format(
-                    api_url=project.api_url,
-                    project_name=project_name,
-                    repo_name=bitbucket_repo,
-                    commit_id=item['id']
+                commit_url = "{}/projects/{}/repos/{}/commits/{}".format(
+                    project.api_url,
+                    project_name,
+                    bitbucket_repo,
+                    item['id']
                 )
                 commits.append({
                     'sha': item['displayId'],

@@ -2,7 +2,7 @@ import datetime
 
 from mongoengine import StringField, DateTimeField, ListField, ReferenceField
 
-from . import BaseModel, Job
+from raccoon.models import BaseModel, Job
 
 
 class Flow(BaseModel):
