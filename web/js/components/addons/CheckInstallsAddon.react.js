@@ -10,7 +10,7 @@ import ProjectStore from "../../stores/ProjectStore";
 
 
 // Environments excluded from the install checks
-const SAFE_ENVIRONMENTS = new Set(['DEV', 'TEST', 'ACC']);
+const SAFE_ENVIRONMENTS = new Set(['DEV', 'TEST', 'ACC', 'BETA-ACC']);
 
 
 class CheckInstallsAddon extends BaseAddon {
@@ -60,7 +60,10 @@ class CheckInstallsAddon extends BaseAddon {
 
         // sort descending by date_added
         tasks.sort((a, b) => {return b.date_added - a.date_added});
-        if (tasks.length === 0) {
+        if (
+            tasks.length === 0 ||
+            SAFE_ENVIRONMENTS.has(this.state.environment.name.toUpperCase())
+        ) {
             this.setState({confirmed: true});
         }
         this.setState({tasksInProgress: tasks});

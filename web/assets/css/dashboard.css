@@ -119,7 +119,7 @@ body {
 
 .box {
     margin: 15px 10px 0px 0px;
-    min-height: 150px;
+    min-height: 175px;
 }
 
 .box, .box .build-details {
