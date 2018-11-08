@@ -7,6 +7,7 @@ import Utils from '../utils/Utils';
 class CommitItem extends React.Component {
     constructor(props) {
         super(props);
+
         let title = this.props.commit.message;
         let skipMessage = true;
         const msg = this.props.commit.message.split('\n');
@@ -30,7 +31,7 @@ class CommitItem extends React.Component {
             <pre style={{border: '0'}}>
                 {this.state.message}
             </pre>
-        )
+        );
         return (
             <li key={`commit-${this.state.sha}`} className="container-fluid">
                 <div className="row">

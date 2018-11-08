@@ -185,8 +185,8 @@ class BitbucketServerBranchesAddon extends BaseAddon {
                 <div className="col-sm-6 col-md-6 col-lg-6" style={{height: 400, overflow: "auto"}}>
                     <ul className="media-list">
                         {
-                            this.state.commits.map((commit, i) => {
-                                return <CommitItem key={'commit-' + i} commit={commit}/>;
+                            this.state.commits.map(commit => {
+                                return <CommitItem key={'commit-' + commit.sha} commit={commit}/>;
                             })
                         }
                     </ul>

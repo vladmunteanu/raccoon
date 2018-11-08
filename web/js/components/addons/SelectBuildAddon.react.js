@@ -81,8 +81,8 @@ class SelectBuildAddon extends BaseAddon {
                 <div style={{height: 400, overflow: "auto"}}>
                     <ul className="media-list">
                         {
-                            this.state.selectedBuild.changelog.map((commit, i) => {
-                                return <CommitItem key={'commit-' + i} commit={commit}/>;
+                            this.state.selectedBuild.changelog.map(commit => {
+                                return <CommitItem key={'commit-' + commit.sha} commit={commit}/>;
                             })
                         }
                     </ul>

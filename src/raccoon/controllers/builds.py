@@ -30,7 +30,6 @@ class BuildsController(BaseController):
         :param kwargs: not used
         :return: None
         """
-
         if pk:
             try:
                 response = Build.objects.get(id=pk)
