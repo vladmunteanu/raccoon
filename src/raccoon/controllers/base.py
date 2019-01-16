@@ -53,13 +53,37 @@ class BaseController(object):
         # get the rights of the user
         rights = []
         for right_id in request.user.rights:
-            rights.append(Right.objects.get(pk=right_id))
+            try:
+                rights.append(Right.objects.get(pk=right_id))
+            except:
+                pass
 
         request.send(cls.filter_response(response, rights))
 
     @classmethod
+    def check_rights(cls, object, rights):
+        return object
+
+    @classmethod
     def filter_response(cls, response, rights):
-        return response
+        if not rights:
+            return response
+
+        # treat rights if there is only one object in the response
+        if type(response) is dict:
+            if cls.check_rights(response, rights):
+                return response
+            else:
+                ReplyError(404)
+
+        result = list()
+        # filter objects that should be returned
+        for object in response:
+            if cls.check_rights(object, rights):
+                result.append(object)
+
+        return result
+
 
     @classmethod
     @authenticated
