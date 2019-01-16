@@ -16,5 +16,5 @@ class User(BaseModel):
     password = StringField()
     active_directory = BooleanField(required=True, default=LDAP_AUTH)
     role = StringField(default='user')
-    rights = ListField(ReferenceField(document_type=Right))
+    rights = ListField(StringField())
     date_added = DateTimeField(required=True, default=datetime.datetime.now)

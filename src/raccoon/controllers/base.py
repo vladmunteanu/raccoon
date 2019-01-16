@@ -8,7 +8,7 @@ from mongoengine.errors import DoesNotExist
 
 from raccoon.utils.decorators import authenticated, is_admin
 from raccoon.utils.exceptions import ReplyError
-from raccoon.models import AuditLog
+from raccoon.models import AuditLog, Right
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +50,16 @@ class BaseController(object):
             response = cls.model.objects.all()
             response = [r.get_dict() for r in response]
 
-        request.send(response)
+        # get the rights of the user
+        rights = []
+        for right_id in request.user.rights:
+            rights.append(Right.objects.get(pk=right_id))
+
+        request.send(cls.filter_response(response, rights))
+
+    @classmethod
+    def filter_response(cls, response, rights):
+        return response
 
     @classmethod
     @authenticated
