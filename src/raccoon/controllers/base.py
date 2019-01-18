@@ -61,26 +61,26 @@ class BaseController(object):
         request.send(cls.filter_response(response, rights))
 
     @classmethod
-    def check_rights(cls, object, rights):
-        return object
+    def check_rights(cls, entity, rights):
+        return entity
 
     @classmethod
     def filter_response(cls, response, rights):
         if not rights:
             return response
 
-        # treat rights if there is only one object in the response
+        # treat rights if there is only one entity in the response
         if type(response) is dict:
             if cls.check_rights(response, rights):
                 return response
             else:
-                ReplyError(404)
+                raise ReplyError(404)
 
         result = list()
-        # filter objects that should be returned
-        for object in response:
-            if cls.check_rights(object, rights):
-                result.append(object)
+        # filter entities that should be returned
+        for entity in response:
+            if cls.check_rights(entity, rights):
+                result.append(entity)
 
         return result
 
