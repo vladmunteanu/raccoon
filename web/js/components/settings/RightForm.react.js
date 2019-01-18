@@ -62,8 +62,9 @@ class RightForm extends React.Component {
     }
 
     onFormChange(name, event) {
-        this.state.right[name] = event.target.value;
-        this.setState(this.state);
+        let state = getLocalState();
+        state.right[name] = event.target.value;
+        this.setState(state);
         this.props.validate(name);
     }
 
