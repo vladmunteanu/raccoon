@@ -66,6 +66,13 @@ class BaseController(object):
 
     @classmethod
     def filter_response(cls, response, rights):
+        """
+        Filters the response based on the assigned rights of the user
+        
+        :param response:
+        :param rights:
+        :return:
+        """
         if not rights:
             return response
 
