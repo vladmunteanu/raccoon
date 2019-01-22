@@ -10,6 +10,7 @@ import NotificationStore from '../stores/NotificationStore';
 import FlowStore from '../stores/FlowStore';
 import BuildStore from '../stores/BuildStore';
 import InstallStore from '../stores/InstallStore';
+import RightStore from '../stores/RightStore'
 
 import DashboardApp from './dashboard/DashboardApp.react';
 import Login from './auth/Login.react';
@@ -34,6 +35,10 @@ import JobUpdateForm from './settings/JobUpdateForm.react.js';
 import FlowForm from './settings/FlowForm.react';
 import FlowUpdateForm from './settings/FlowUpdateForm.react';
 import SetOrderWrapper from './settings/SetOrderWrapper.react';
+import RightForm from './settings/RightForm.react'
+import RightUpdateForm from './settings/RightUpdateForm.react'
+import UserUpdateForm from './settings/UserUpdateForm.react'
+
 
 import Addons from "./addons/Addons";
 
@@ -45,7 +50,8 @@ function getRaccoonState() {
         user: AuthStore.me,
         notifications: NotificationStore.all,
         flows: FlowStore.all,
-        addons: Addons.all
+        addons: Addons.all,
+        rights: RightStore.all
     };
 }
 
@@ -133,8 +139,10 @@ class RaccoonApp extends React.Component {
                     <Route path="project/:id" component={ProjectUpdateForm} onEnter={this.requireAuth} />
                     <Route path="flow/new" component={FlowForm} onEnter={this.requireAuth} />
                     <Route path="flow/:id" component={FlowUpdateForm} onEnter={this.requireAuth} />
-
                     <Route path="order/:elemType" component={SetOrderWrapper} onEnter={this.requireAuth} />
+                    <Route path="right/new" component={RightForm} onEnter={this.requireAuth} />
+                    <Route path="right/:id" component={RightUpdateForm} onEnter={this.requireAuth} />
+                    <Route path="user/:id" component={UserUpdateForm} onEnter={this.requireAuth} />
                 </Route>
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />

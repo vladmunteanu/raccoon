@@ -8,7 +8,7 @@ from mongoengine.errors import DoesNotExist
 
 from raccoon.utils.decorators import authenticated, is_admin
 from raccoon.utils.exceptions import ReplyError
-from raccoon.models import AuditLog
+from raccoon.models import AuditLog, Right
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +50,47 @@ class BaseController(object):
             response = cls.model.objects.all()
             response = [r.get_dict() for r in response]
 
-        request.send(response)
+        # get the rights of the user
+        rights = []
+        for right_id in request.user.rights:
+            try:
+                rights.append(Right.objects.get(pk=right_id))
+            except:
+                pass
+
+        request.send(cls.filter_response(response, rights))
+
+    @classmethod
+    def check_rights(cls, entity, rights):
+        return entity
+
+    @classmethod
+    def filter_response(cls, response, rights):
+        """
+        Filters the response based on the assigned rights of the user
+        
+        :param response:
+        :param rights:
+        :return:
+        """
+        if not rights:
+            return response
+
+        # treat rights if there is only one entity in the response
+        if type(response) is dict:
+            if cls.check_rights(response, rights):
+                return response
+            else:
+                raise ReplyError(404)
+
+        result = list()
+        # filter entities that should be returned
+        for entity in response:
+            if cls.check_rights(entity, rights):
+                result.append(entity)
+
+        return result
+
 
     @classmethod
     @authenticated

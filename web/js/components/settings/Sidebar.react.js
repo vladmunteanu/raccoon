@@ -170,14 +170,9 @@ class Sidebar extends React.Component {
                                             if(a.name > b.name) return 1;
                                             return 0;
                                         }).map(user => {
-                                            return <MenuItem key={user.id} item={user} />;
+                                            return <MenuItem key={user.id} item={user} link={"/settings/user/" + user.id} />;
                                         })
                                     }
-                                    <li>
-                                        <a href="#">
-                                            <i className="fa fa-plus" /> Add new
-                                        </a>
-                                    </li>
                                 </ul>
                             </div>
                         </li>
@@ -189,11 +184,11 @@ class Sidebar extends React.Component {
                                 <ul className="nav nav-submenu">
                                     {
                                         this.props.rights.map(right => {
-                                            return <MenuItem key={right.id} item={right} />;
+                                            return <MenuItem key={right.id} item={right} link={"/settings/right/" + right.id} />;
                                         })
                                     }
                                     <li>
-                                        <a href="#">
+                                        <a href="/settings/right/new">
                                             <i className="fa fa-plus" /> Add new
                                         </a>
                                     </li>
