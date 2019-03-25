@@ -193,7 +193,7 @@ export class TaskItem extends React.Component {
                         { data.status }
                         <span className="time pull-right">
                             <TimeAgo
-                                date={data.date_added * 1000 - (task_date.getTimezoneOffset() * 60000)}
+                                date={new Date(data.date_added * 1000)}
                                 minPeriod={60}
                                 formatter={Utils.timeAgoFormatter}
                             />

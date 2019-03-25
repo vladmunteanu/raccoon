@@ -4,7 +4,7 @@ services:
   db:
     image: mongo:latest
     volumes:
-      - /data/db:/data/db
+      - ~/data/db:/data/db
   app:
     build: .
     image: raccoon
