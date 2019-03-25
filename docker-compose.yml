@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:latest
+    volumes:
+      - /data/db:/data/db
+  app:
+    build: .
+    image: raccoon
+    volumes:
+      - .:/opt/repo
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
