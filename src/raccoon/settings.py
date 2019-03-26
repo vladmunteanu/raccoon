@@ -7,6 +7,8 @@ ROOT_PATH = path.abspath(path.join(path.dirname(__file__), '../..'))
 DB = {
     'scheme': 'mongodb',
     'host': '127.0.0.1',
+# docker net
+#    'host': '172.18.0.2',
     'port': 27017,
     'name': 'raccoon'
 }
